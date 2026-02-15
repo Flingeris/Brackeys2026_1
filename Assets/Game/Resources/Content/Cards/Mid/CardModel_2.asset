@@ -17,10 +17,11 @@ MonoBehaviour:
   ClassType: 1
   CardType: 2
   CardLogic:
-  - rid: 5181037678727004382
+  - rid: 5181037684589592702
   references:
     version: 2
     RefIds:
-    - rid: 5181037678727004382
-      type: {class: StartHealAll, ns: , asm: Assembly-CSharp}
-      data: 
+    - rid: 5181037684589592702
+      type: {class: DoDamage, ns: , asm: Assembly-CSharp}
+      data:
+        DmgAmount: 1

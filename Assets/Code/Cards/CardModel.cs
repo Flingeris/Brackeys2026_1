@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public enum ClassType
@@ -32,7 +33,7 @@ public class CardModel : ContentDef, ITooltipInfo
     public CardInstance Prefab => "prefabs/Card".Load<CardInstance>();
     [Header("Stats")] public ClassType ClassType;
     public CardType CardType;
-    [SerializeReference, SubclassSelector] public List<CardLogic> CardLogic = new();
+    [SerializeReference, SubclassSelector] public List<CardLogic> CardLogic;
 }
 
 [Serializable]
@@ -54,6 +55,7 @@ public abstract class CardLogic
         return true;
     }
 }
+
 [Serializable]
 public abstract class StartCardLogic : CardLogic
 {
@@ -64,6 +66,7 @@ public abstract class StartCardLogic : CardLogic
         throw new NotImplementedException();
     }
 }
+
 [Serializable]
 public abstract class MidCardLogic : CardLogic
 {
@@ -72,6 +75,7 @@ public abstract class MidCardLogic : CardLogic
         throw new NotImplementedException();
     }
 }
+
 [Serializable]
 public abstract class EndCarLogic : CardLogic
 {
@@ -87,5 +91,19 @@ public class StartHealAll : StartCardLogic
     protected override void OnUse()
     {
         throw new NotImplementedException();
+    }
+}
+
+
+[Serializable]
+public class DoDamage : CardLogic
+{
+    public int DmgAmount;
+
+    protected override void OnUse()
+    {
+        var enemy = G.main.enemyContainer.GetComponentInChildren<EnemyInstance>();
+        if (enemy == null) return;
+        enemy.TakeDamage(DmgAmount);
     }
 }

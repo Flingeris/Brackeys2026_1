@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -49,5 +52,22 @@ public class CardInstance : DraggableWContainer<CardInstance, ICardContainer>
     private void UpdateTypeText()
     {
         cardTypeText.text = state.model.CardType.ToString()[0].ToString();
+    }
+
+    public IEnumerator CardPlaySequence()
+    {
+        var startPos = transform.position;
+        var NewPos = startPos;
+        NewPos.y += 0.8f;
+        yield return transform.DOMove(NewPos, 0.3f).WaitForCompletion();
+         transform.DOShakePosition(0.5f, 0.2f, 40);
+        var logic = state.model.CardLogic;
+        foreach (var e in logic)
+        {
+            e.Use();
+        }
+
+        yield return new WaitForSeconds(0.75f);
+        yield return transform.DOMove(startPos, 0.3f).WaitForCompletion();
     }
 }

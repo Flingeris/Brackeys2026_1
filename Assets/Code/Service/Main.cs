@@ -17,9 +17,12 @@ public class Main : MonoBehaviour
     public static event UnityAction OnGameReady;
     public static bool TitleShown;
     public bool ShowTitle;
+    public Field field;
+    public Transform enemyContainer;
 
     private void Awake()
     {
+        G.main = this;
     }
 
     private void Start()
@@ -38,7 +41,29 @@ public class Main : MonoBehaviour
 #if !UNITY_EDITOR
        while (!ServiceMain.ServicesReady) yield return null;
 #endif
+
+
+        var enemy = CMS.Get<EnemyModel>("en0");
+        var enInst = Instantiate(enemy.Prefab, enemyContainer, false);
+        enInst.transform.localPosition = Vector3.zero;
+        enInst.SetModel(enemy);
     }
+
+    public void EndTurn()
+    {
+        StartCoroutine(EndTurnSequence());
+    }
+
+    private IEnumerator EndTurnSequence()
+    {
+        var playerCards = field.PlayedCards;
+        foreach (var card in playerCards)
+        {
+            if(card == null) continue;
+            yield return card.CardPlaySequence();
+        }
+    }
+
 
     private void Update()
     {
@@ -69,18 +94,3 @@ public class Main : MonoBehaviour
 public class Pile : MonoBehaviour
 {
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
