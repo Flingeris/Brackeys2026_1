@@ -7,7 +7,8 @@ public abstract class ContainerBase<TDraggable> : MonoBehaviour, IDraggableConta
 {
     public event UnityAction OnContainerChanged;
 
-    public TDraggable AcceptedDrag { get; protected set; }
+    [field: SerializeField] public TDraggable AcceptedDrag { get; protected set; }
+    public bool IsLocking;
 
     public bool IsEmpty => AcceptedDrag == null;
     [SerializeField] protected bool AnimDragOnAccept = true;
@@ -20,8 +21,16 @@ public abstract class ContainerBase<TDraggable> : MonoBehaviour, IDraggableConta
 
         AcceptedDrag = d;
         //d.transform.SetParent(this.transform, worldPositionStays: true);
-        if (gameObject.activeInHierarchy && AnimDragOnAccept) d.transform.DOMove(this.transform.position, 0.15f).SetId("Container moving draggable to centre");
-        else d.transform.position = this.transform.position;
+        if (gameObject.activeInHierarchy && AnimDragOnAccept)
+        {
+            d.transform.DOMove(this.transform.position, 0.15f).SetId("Container moving draggable to centre");
+            d.transform.DORotate(this.transform.rotation.eulerAngles, 0.15f);
+        }
+        else
+        {
+            d.transform.position = this.transform.position;
+            d.transform.rotation = this.transform.rotation;
+        }
 
         OnContainerChanged?.Invoke();
         return true;
@@ -50,7 +59,8 @@ public abstract class ContainerBase<TDraggable> : MonoBehaviour, IDraggableConta
 
     public virtual bool CanRemove(TDraggable d)
     {
-        return AcceptedDrag == d;
+        if (AcceptedDrag != d) return false;
+        return IsLocking;
     }
 
     public virtual void Clear()
@@ -65,5 +75,6 @@ public abstract class ContainerBase<TDraggable> : MonoBehaviour, IDraggableConta
     }
 
     protected virtual void OnClear(TDraggable d)
-    { }
+    {
+    }
 }

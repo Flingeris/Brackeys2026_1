@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6542074420988329600}
   - component: {fileID: 5639625838311933735}
+  - component: {fileID: 8680209980785729606}
   m_Layer: 0
   m_Name: Card
   m_TagString: Untagged
@@ -48,11 +49,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79315a2beb7942e8b6b9fbe12c09af08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardInstance
-  sortGroup: {fileID: 0}
+  sortGroup: {fileID: 8680209980785729606}
   cardNameText: {fileID: 0}
   cardDescText: {fileID: 0}
   cardClassText: {fileID: 4423706118793571225}
   cardTypeText: {fileID: 6306394181847068629}
+--- !u!210 &8680209980785729606
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300505125525149941}
+  m_Enabled: 1
+  m_SortingLayerID: 2136261383
+  m_SortingLayer: 3
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
 --- !u!1 &4520034363213131603
 GameObject:
   m_ObjectHideFlags: 0

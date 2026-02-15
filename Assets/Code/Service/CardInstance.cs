@@ -1,9 +1,17 @@
 using TMPro;
 using UnityEngine;
 
-public class CardInstance : Draggable
+public class CardState
+{
+    public CardModel model;
+}
+
+public class CardInstance : DraggableWContainer<CardInstance, FieldCardSlot>
 {
     public CardState state;
+    
+    
+    
     [SerializeField] private TMP_Text cardNameText;
     [SerializeField] private TMP_Text cardDescText;
     [SerializeField] private TMP_Text cardClassText;

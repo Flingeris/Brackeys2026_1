@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using DG.Tweening;
@@ -70,7 +71,16 @@ public class Pile : MonoBehaviour
 }
 
 
-public class CardState
+public class Field : MonoBehaviour
 {
-    public CardModel model;
+    [SerializeField] private FieldCardSlot[] cardsSlots;
+
+
+    private void OnValidate()
+    {
+      if(cardsSlots == null ||  cardsSlots.Length == 0 || cardsSlots.Length != transform.childCount) 
+          cardsSlots = GetComponentsInChildren<FieldCardSlot>();
+    }
 }
+
+
