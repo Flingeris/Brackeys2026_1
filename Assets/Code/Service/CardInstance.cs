@@ -9,9 +9,8 @@ public class CardState
 public class CardInstance : DraggableWContainer<CardInstance, ICardContainer>
 {
     public CardState state;
-    
-    
-    
+
+
     [SerializeField] private TMP_Text cardNameText;
     [SerializeField] private TMP_Text cardDescText;
     [SerializeField] private TMP_Text cardClassText;
@@ -38,7 +37,17 @@ public class CardInstance : DraggableWContainer<CardInstance, ICardContainer>
 
     private void UpdateVisuals()
     {
-        cardClassText.text = state.model.ClassType.ToString();
-        cardTypeText.text = state.model.CardType.ToString();
+        UpdateClassText();
+        UpdateTypeText();
+    }
+
+    private void UpdateClassText()
+    {
+        cardClassText.text = state.model.ClassType.ToString()[0].ToString();
+    }
+
+    private void UpdateTypeText()
+    {
+        cardTypeText.text = state.model.CardType.ToString()[0].ToString();
     }
 }

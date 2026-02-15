@@ -57,10 +57,12 @@ public class Hand : MonoBehaviour, ICardContainer
 
     public void Draw()
     {
-        var cardModel = CMS.Get<CardModel>("card0");
-        var card = Instantiate(cardModel.Prefab, cardsParent, false);
-        if (card == null) return;
-        TryAccept(card, out var _);
+        var allCards = CMS.GetAll<CardModel>();
+        var cardModel = allCards.GetRandomElement();
+        var cardInst = Instantiate(cardModel.Prefab, cardsParent, false);
+        cardInst.SetModel(cardModel);
+
+        TryAccept(cardInst, out var _);
     }
 
     public event UnityAction OnContainerChanged;
@@ -89,7 +91,7 @@ public class Hand : MonoBehaviour, ICardContainer
     public bool TryRemove(CardInstance d)
     {
         if (!CanRemove(d)) return false;
-        var b =  cardsInHand.Remove(d);
+        var b = cardsInHand.Remove(d);
         return b;
     }
 
