@@ -43,7 +43,7 @@ public class Tooltip : MonoBehaviour
     //     Show(data, user);
     // }
 
-    private void Show(ITooltipInfo data, GameObject user)
+    public void Show(ITooltipInfo data, GameObject user)
     {
         //Debug.Log("Showing tooltip for: " + data.ItemName);
         if (IsBlocked) return;

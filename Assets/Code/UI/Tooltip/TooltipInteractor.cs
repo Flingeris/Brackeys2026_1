@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 public class TooltipInteractor : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private ITooltipInfoGiver InfoGiver;
-    [SerializeField] private bool ShowAddtionalTooltip = true;
     private bool isCurrentlyHovered = false;
 
     private void Awake()
@@ -26,7 +25,7 @@ public class TooltipInteractor : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
         if (InfoGiver != null && G.HUD != null && G.HUD.tooltip != null)
         {
-            G.HUD.tooltip.Show(InfoGiver.GetTooltipInfo(), ShowAddtionalTooltip, gameObject);
+            G.HUD.tooltip.Show(InfoGiver.GetTooltipInfo(), gameObject);
         }
     }
 
