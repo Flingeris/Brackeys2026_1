@@ -88,7 +88,11 @@ public class Main : MonoBehaviour
             yield return card.CardPlaySequence();
         }
 
-        yield return CheckForWin();
+        if (CheckForWin())
+        {
+            yield return WinSequence();
+            yield break;
+        }
 
         foreach (var enemy in enemyContainer.enemies)
         {
@@ -106,17 +110,18 @@ public class Main : MonoBehaviour
         yield return StartTurnSequence();
     }
 
+    public bool CheckForWin()
 
-    public IEnumerator CheckForWin()
     {
         foreach (var e in enemyContainer.enemies)
         {
             if (e == null) continue;
-            if (!e.IsDead) yield break;
+            if (!e.IsDead) return false;
         }
 
-        yield return WinSequence();
+        return true;
     }
+
 
     private IEnumerator WinSequence()
     {

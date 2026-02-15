@@ -59,15 +59,16 @@ public class CardInstance : DraggableWContainer<CardInstance, ICardContainer>
         var startPos = transform.position;
         var NewPos = startPos;
         NewPos.y += 0.8f;
-        yield return transform.DOMove(NewPos, 0.3f).WaitForCompletion();
-         transform.DOShakePosition(0.5f, 0.2f, 40);
+        yield return transform.DOMove(NewPos, 0.2f).WaitForCompletion();
+        transform.DOShakePosition(0.5f, 0.2f, 40);
+
         var logic = state.model.CardLogic;
         foreach (var e in logic)
         {
             e.Use();
         }
 
-        yield return new WaitForSeconds(0.75f);
-        yield return transform.DOMove(startPos, 0.3f).WaitForCompletion();
+        yield return new WaitForSeconds(0.5f);
+        yield return transform.DOMove(startPos, 0.2f).WaitForCompletion();
     }
 }

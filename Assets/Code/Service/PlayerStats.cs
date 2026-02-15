@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -22,6 +23,7 @@ public class PlayerStats : MonoBehaviour
     {
         if (dmgAmount <= 0) return;
         CurrHp = Mathf.Max(0, CurrHp - dmgAmount);
+        transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f);
         CheckIsDead();
         UpdateVisuals();
     }
