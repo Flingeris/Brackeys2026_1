@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Mono.Cecil;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class Hand : MonoBehaviour
+public class Hand : MonoBehaviour, ICardContainer
 {
     public List<CardInstance> cardsInHand = new();
     [SerializeField] private Transform cardsParent;
@@ -26,12 +28,12 @@ public class Hand : MonoBehaviour
         for (int i = 0; i < cardsInHand.Count; i++)
         {
             CardInstance c = cardsInHand[i];
-            
+
             if (c == null) continue;
-            if(c.IsDragging) continue;
-            
-            float t = (cardsInHand.Count == 1) 
-                ? 0.5f 
+            if (c.IsDragging) continue;
+
+            float t = (cardsInHand.Count == 1)
+                ? 0.5f
                 : (float)i / (cardsInHand.Count - 1);
 
             float xPos = Mathf.Lerp(-6f / 2f, 6f / 2f, t);
@@ -48,17 +50,59 @@ public class Hand : MonoBehaviour
             // }
 
             // c.InHandPos = new Vector3(xPos, yPos, 0f);
-            c.transform.localPosition =new Vector3(xPos, yPos, 0f);
+            c.transform.localPosition = new Vector3(xPos, yPos, 0f);
             c.transform.localRotation = Quaternion.Euler(0f, 0f, rotationZ);
         }
     }
 
     public void Draw()
+    {
+        var cardModel = CMS.Get<CardModel>("card0");
+        var card = Instantiate(cardModel.Prefab, cardsParent, false);
+        if (card == null) return;
+        TryAccept(card, out var _);
+    }
+
+    public event UnityAction OnContainerChanged;
+    public bool IsEmpty { get; }
+
+    public bool CanAccept(CardInstance d)
+    {
+        return true;
+    }
+
+    public bool CanRemove(CardInstance d)
+    {
+        return cardsInHand.Contains(d);
+    }
+
+    public bool TryAccept(CardInstance d, out CardInstance oldD)
+    {
+        oldD = null;
+        if (!CanAccept(d)) return false;
+        d.SetContainer(this);
+        cardsInHand.Add(d);
+        UpdateCardsPositions();
+        return true;
+    }
+
+    public bool TryRemove(CardInstance d)
+    {
+        if (!CanRemove(d)) return false;
+        var b =  cardsInHand.Remove(d);
+        return b;
+    }
+
+    public void Clear()
+    {
+        for (int i = 0; i < cardsInHand.Count; i++)
         {
-            var cardModel = CMS.Get<CardModel>("card0");
-            var card = Instantiate(cardModel.Prefab, cardsParent, false);
-            if (card == null) return;
-            cardsInHand.Add(card);
-            UpdateCardsPositions();
+            var d = cardsInHand[i];
+            if (d == null) continue;
+
+            // G.PileManager.Discard(d.DiceDef);
+            Destroy(d.gameObject);
+            cardsInHand[i] = null;
         }
     }
+}

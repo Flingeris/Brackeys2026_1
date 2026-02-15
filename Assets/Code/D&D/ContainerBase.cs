@@ -23,13 +23,13 @@ public abstract class ContainerBase<TDraggable> : MonoBehaviour, IDraggableConta
         //d.transform.SetParent(this.transform, worldPositionStays: true);
         if (gameObject.activeInHierarchy && AnimDragOnAccept)
         {
-            d.transform.DOMove(this.transform.position, 0.15f).SetId("Container moving draggable to centre");
-            d.transform.DORotate(this.transform.rotation.eulerAngles, 0.15f);
+            d.transform.DOMove(transform.position, 0.15f).SetId("Container moving draggable to centre");
+            d.transform.DORotate(transform.rotation.eulerAngles, 0.15f);
         }
         else
         {
-            d.transform.position = this.transform.position;
-            d.transform.rotation = this.transform.rotation;
+            d.transform.position = transform.position;
+            d.transform.rotation = transform.rotation;
         }
 
         OnContainerChanged?.Invoke();

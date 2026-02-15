@@ -6,7 +6,7 @@ public class CardState
     public CardModel model;
 }
 
-public class CardInstance : DraggableWContainer<CardInstance, FieldCardSlot>
+public class CardInstance : DraggableWContainer<CardInstance, ICardContainer>
 {
     public CardState state;
     

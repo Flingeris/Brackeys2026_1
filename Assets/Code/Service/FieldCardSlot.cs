@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FieldCardSlot : ContainerBase<CardInstance>
+public class FieldCardSlot : ContainerBase<CardInstance>, ICardContainer
 {
     [SerializeField] private CardType acceptedType;
 
@@ -10,6 +10,5 @@ public class FieldCardSlot : ContainerBase<CardInstance>
         if(!base.CanAccept(c)) return false;
         if(acceptedType == CardType.None) return true;
         return c.state.model.CardType == acceptedType;
-        
     }
 }
