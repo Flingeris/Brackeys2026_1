@@ -3,6 +3,9 @@ using UnityEngine;
 
 public static class G
 {
+    public static Draggable currentDrag;
+    
+    
     public static AudioSystem audioSystem;
 
     public static Main main;
@@ -15,6 +18,7 @@ public static class G
     public static GameFeel feel = new GameFeel();
     public static ScreenFader ScreenFader;
     public static TextPopupManager textPopup;
+    public static Hand Hand { get; set; }
 }
 
 

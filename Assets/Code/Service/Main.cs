@@ -1,12 +1,15 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 
+
+public class RunState
+{
+}
 
 public class Main : MonoBehaviour
 {
@@ -38,6 +41,10 @@ public class Main : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            G.Hand.Draw();
+        }
     }
 
     private IEnumerator ShowTitleScreen()
@@ -56,4 +63,14 @@ public class Main : MonoBehaviour
     {
         Application.Quit();
     }
+}
+
+public class Pile : MonoBehaviour
+{
+}
+
+
+public class CardState
+{
+    public CardModel model;
 }
