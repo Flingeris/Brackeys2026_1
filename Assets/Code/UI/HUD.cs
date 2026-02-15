@@ -9,8 +9,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private PauseManager pauseManager;
     [SerializeField] private TMP_Text sayText;
 
-    [Header("Buttons")]
-    [SerializeField] private Button EndTurnButton;
+    [Header("Buttons")] [SerializeField] private Button EndTurnButton;
 
 
     //Runtime
@@ -36,6 +35,12 @@ public class HUD : MonoBehaviour
 
     public void HideHUD(bool b)
     {
+    }
+
+
+    public void SetEndTurnInteractable(bool b)
+    {
+        EndTurnButton.interactable = b;
     }
 
 

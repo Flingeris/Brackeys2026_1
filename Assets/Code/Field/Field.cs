@@ -12,4 +12,16 @@ public class Field : MonoBehaviour
         if (cardsSlots == null || cardsSlots.Length == 0 || cardsSlots.Length != transform.childCount)
             cardsSlots = GetComponentsInChildren<FieldCardSlot>();
     }
+
+
+    public void Clear()
+    {
+        foreach (var c in cardsSlots)
+        {
+            if (c == null) continue;
+            c.Clear();
+        }
+        
+    }
+    
 }

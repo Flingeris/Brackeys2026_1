@@ -102,7 +102,7 @@ public class DoDamage : CardLogic
 
     protected override void OnUse()
     {
-        var enemy = G.main.enemyContainer.GetComponentInChildren<EnemyInstance>();
+        var enemy = G.main.enemyContainer.enemies[0];
         if (enemy == null) return;
         enemy.TakeDamage(DmgAmount);
     }

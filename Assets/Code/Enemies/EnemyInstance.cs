@@ -7,6 +7,8 @@ public class EnemyInstance : MonoBehaviour
     public event UnityAction<int> OnHealthChanged;
     public EnemyModel currModel;
     public int CurrHp { get; private set; }
+    public bool IsDead { get; private set; }
+    public int CurrDmg { get; set; }
 
 
     [SerializeField] private TMP_Text hpValueText;
@@ -17,6 +19,7 @@ public class EnemyInstance : MonoBehaviour
         currModel = newModel;
         if (currModel == null) return;
         CurrHp = currModel.StartingHealth;
+        CurrDmg = currModel.Dmg; 
     }
 
     private void UpdateVisuals()
@@ -36,6 +39,16 @@ public class EnemyInstance : MonoBehaviour
     {
         if (dmgAmount <= 0) return;
         CurrHp = Mathf.Max(0, CurrHp - dmgAmount);
+        CheckIsDead();
         UpdateVisuals();
+    }
+
+    private void CheckIsDead()
+    {
+        if (CurrHp <= 0)
+        {
+            IsDead = true;
+            Destroy(this.gameObject);
+        }
     }
 }

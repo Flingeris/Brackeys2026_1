@@ -13,12 +13,13 @@ public static class G
 
 
     public static HUD HUD;
-    public static UI ui;
+    public static UI UI;
 
     public static GameFeel feel = new GameFeel();
     public static ScreenFader ScreenFader;
     public static TextPopupManager textPopup;
     public static Hand Hand { get; set; }
+    public static PlayerStats Player { get; set; }
 }
 
 

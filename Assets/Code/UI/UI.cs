@@ -9,25 +9,23 @@ public class UI : MonoBehaviour
 
     public Image TitleScreenImage => titleScreen.GetComponent<Image>();
 
-    [SerializeField] private Button exitGameButton;
 
     private void Awake()
     {
-        G.ui = this;
+        G.UI = this;
     }
 
     private void Start()
     {
-        exitGameButton.onClick.AddListener(G.main.QuitGame);
     }
 
-    public void SetWin(bool win)
+    public void SetWinActive(bool win)
     {
         if (winScreen == null) return;
         winScreen.SetActive(win);
     }
 
-    public void SetLose(bool win)
+    public void SetLoseActive(bool win)
     {
         if (loseScreen == null) return;
         loseScreen.SetActive(win);

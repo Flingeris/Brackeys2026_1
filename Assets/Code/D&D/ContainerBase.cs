@@ -59,8 +59,11 @@ public abstract class ContainerBase<TDraggable> : MonoBehaviour, IDraggableConta
 
     public virtual bool CanRemove(TDraggable d)
     {
-        if (AcceptedDrag != d) return false;
-        return IsLocking;
+        return AcceptedDrag == d;
+        // if (AcceptedDrag != d) return false;
+        // return IsLocking;
+
+
     }
 
     public virtual void Clear()

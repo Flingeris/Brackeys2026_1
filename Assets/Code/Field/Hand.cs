@@ -106,5 +106,8 @@ public class Hand : MonoBehaviour, ICardContainer
             Destroy(d.gameObject);
             cardsInHand[i] = null;
         }
+        
+        cardsInHand.Clear();
     }
 }
+

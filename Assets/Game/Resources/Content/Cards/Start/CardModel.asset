@@ -24,4 +24,4 @@ MonoBehaviour:
     - rid: 5181037684589592703
       type: {class: DoDamage, ns: , asm: Assembly-CSharp}
       data:
-        DmgAmount: 1
+        DmgAmount: 2
