@@ -36,7 +36,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
-        if(CanDrag())
+        if (!CanDrag()) return;
         if (G.HUD != null && G.HUD.tooltip != null) G.HUD.tooltip.PushBlock();
 
         G.currentDrag = this;
@@ -66,6 +66,10 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
 
     public virtual void OnDrag(PointerEventData eventData)
     {
+        if (!IsDragging) return;
+        if (!CanDrag()) return;
+
+
         UpdatePosToCursor();
     }
 
@@ -78,6 +82,8 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
 
     public virtual void OnEndDrag(PointerEventData eventData)
     {
+        if (!IsDragging) return;
+        if (!CanDrag()) return;
         LockHover();
         Release();
 

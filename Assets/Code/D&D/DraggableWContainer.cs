@@ -11,7 +11,7 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
     public Coroutine PutInContCoroutine { get; protected set; }
     private TD selfCasted => this as TD;
 
-    public bool IsLocked;
+    public bool IsLocked { get; protected set; }
 
 
     protected override bool CanDrag()
@@ -19,6 +19,15 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
         if (!base.CanDrag()) return false;
         return !IsLocked;
     }
+
+    public void SetLocked(bool isLocked)
+    {
+        Debug.Log("Locked " + isLocked + " " + gameObject.name);
+
+
+        IsLocked = isLocked;
+    }
+
 
     public virtual void SetOwner(IDraggableOwner<TD> newOwner)
     {
@@ -31,6 +40,7 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
         Owner = newOwner;
 
         Owner?.OnDragEnter(selfCasted);
+        Debug.Log("Curr owner is " + Owner + " OldOwner is " + prev);
     }
 
     public virtual void SetContainer(TC newContainer)
@@ -49,6 +59,8 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
 
         var rawContainer = DraggableUtil<TD>.FindContainer(selfCasted, eventData);
         var targetCont = rawContainer as TC;
+
+        Debug.Log("Target container is " + targetCont);
         PutInContainer(targetCont);
     }
 
