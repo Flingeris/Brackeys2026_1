@@ -9,10 +9,10 @@ public class CardState
     public CardModel model;
 }
 
-public class CardInstance : DraggableWContainer<CardInstance, ICardContainer>
+public class CardInstance : MonoBehaviour
 {
     public CardState state;
-
+    public DraggableCard Draggable;
 
     [SerializeField] private TMP_Text cardNameText;
     [SerializeField] private TMP_Text cardDescText;
@@ -54,7 +54,7 @@ public class CardInstance : DraggableWContainer<CardInstance, ICardContainer>
         cardTypeText.text = state.model.CardType.ToString()[0].ToString();
     }
 
-    public IEnumerator CardPlaySequence()
+    public IEnumerator OnTurnEndSequence()
     {
         var startPos = transform.position;
         var NewPos = startPos;

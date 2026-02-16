@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3387f52dd55a253478b8379f46370f95, type: 3}
-  m_Name: EnemyModel
+  m_Name: EnemyModel 4
   m_EditorClassIdentifier: Assembly-CSharp::EnemyModel
-  id: en0
+  id: 
   preferPos: -1
   Sprite: {fileID: 21300000, guid: 6204fafed0cac9944b321192ef1dbf78, type: 3}
   StartingHealth: 10

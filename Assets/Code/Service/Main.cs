@@ -20,7 +20,6 @@ public class Main : MonoBehaviour
     public static bool TitleShown;
     public bool ShowTitle;
     public Field field;
-    public EnemyContainer enemyContainer;
 
     private void Awake()
     {
@@ -56,14 +55,14 @@ public class Main : MonoBehaviour
             G.party.AddMember(character);
         }
 
-        var enemy = CMS.Get<EnemyModel>("en0");
-        var enInst = Instantiate(enemy.Prefab, enemyContainer.transform, false);
-        enInst.transform.localPosition = Vector3.zero;
-        enemyContainer.enemies.Add(enInst);
-        enInst.transform.localPosition = Vector3.zero;
-        enInst.SetModel(enemy);
+        for (int i = 0; i <= 2; i++)
+        {
+            var enemies = CMS.GetAll<EnemyModel>();
+            var enemy = enemies.GetRandomElement();
+            G.enemies.AddEnemy(enemy);
+        }
 
-        yield return null;
+        yield break;
     }
 
 
@@ -98,7 +97,7 @@ public class Main : MonoBehaviour
         foreach (var card in playerCards)
         {
             if (card == null) continue;
-            yield return card.CardPlaySequence();
+            yield return card.OnTurnEndSequence();
             if (CheckForWin())
             {
                 yield return WinSequence();
@@ -106,7 +105,9 @@ public class Main : MonoBehaviour
             }
         }
 
-        foreach (var enemy in enemyContainer.enemies)
+
+        var enemies = G.enemies.GetAliveEnemies();
+        foreach (var enemy in enemies)
         {
             var startPos = enemy.transform.position;
             var endPos = startPos;
@@ -115,8 +116,7 @@ public class Main : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.1f);
             enemy.transform.DOMove(startPos, 0.1f);
 
-
-            G.party.DealDamage(UnityEngine.Random.Range(0, 3), enemy.CurrDmg);
+            G.party.GetRandomMember().TakeDamage(enemy.CurrDmg);
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -127,13 +127,7 @@ public class Main : MonoBehaviour
     public bool CheckForWin()
 
     {
-        foreach (var e in enemyContainer.enemies)
-        {
-            if (e == null) continue;
-            if (!e.IsDead) return false;
-        }
-
-        return true;
+        return G.enemies.AllMembersDead();
     }
 
 

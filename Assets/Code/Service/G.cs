@@ -3,6 +3,7 @@ using UnityEngine;
 
 public static class G
 {
+    public static EnemyGroup enemies;
     public static PartyManager party;
     public static Draggable currentDrag;
     

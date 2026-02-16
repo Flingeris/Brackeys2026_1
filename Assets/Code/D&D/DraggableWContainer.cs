@@ -2,15 +2,15 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public abstract class DraggableWContainer<TDraggable, TContainer> : Draggable
-    where TDraggable : DraggableWContainer<TDraggable, TContainer>
-    where TContainer : class, IDraggableContainer<TDraggable>
+public abstract class DraggableWContainer<TD, TC> : Draggable
+    where TD : DraggableWContainer<TD, TC>
+    where TC : class, IDraggableContainer<TD>
 {
-    public virtual TContainer CurrContainer { get; protected set; }
+    public virtual TC CurrContainer { get; protected set; }
     public Coroutine PutInContCoroutine { get; protected set; }
-    private TDraggable selfCasted => this as TDraggable;
+    private TD selfCasted => this as TD;
 
-    public virtual void SetContainer(TContainer newContainer)
+    public virtual void SetContainer(TC newContainer)
     {
         CurrContainer = newContainer;
     }
@@ -19,41 +19,57 @@ public abstract class DraggableWContainer<TDraggable, TContainer> : Draggable
     {
         base.OnDropped(eventData);
 
-        var raw = DraggableUtil<TDraggable>.FindContainer(selfCasted, eventData);
-        var targetCont = raw as TContainer;
+        var rawContainer = DraggableUtil<TD>.FindContainer(selfCasted, eventData);
+        var targetCont = rawContainer as TC;
         PutInContainer(targetCont);
     }
 
-    public void PutInContainer(TContainer targetCont)
+    public void PutInContainer(TC targetCont)
     {
         if (PutInContCoroutine != null)
         {
             StopCoroutine(PutInContCoroutine);
         }
-        PutInContCoroutine = StartCoroutine(PutInContainerCoroutine(targetCont));   
+
+        PutInContCoroutine = StartCoroutine(PutInContainerSequence(targetCont));
     }
 
-    protected virtual IEnumerator PutInContainerCoroutine(TContainer targetCont)
+    protected virtual IEnumerator PutInContainerSequence(TC targetCont)
     {
         var sourceCont = CurrContainer;
-        if (targetCont != null && targetCont.TryAccept(selfCasted, out var oldD))
-        {
-            if (sourceCont != null && !ReferenceEquals(sourceCont, targetCont))
-            {
-                sourceCont.TryRemove(selfCasted);
-                if (oldD != null)
-                {
-                    oldD.LockHover();
-                    sourceCont.TryAccept(oldD, out _);
-                }
-            }
-        }
-        else
+
+        if (!ValidateMove(sourceCont, targetCont))
         {
             ReturnToOrigin();
+            PutInContCoroutine = null;
             yield break;
         }
 
+        if (sourceCont != null && !ReferenceEquals(sourceCont, targetCont))
+        {
+            sourceCont.TryRemove(selfCasted);
+        }
+
+
+        if (!targetCont.TryAccept(selfCasted, out _))
+        {
+            ReturnToOrigin();
+            PutInContCoroutine = null;
+            yield break;
+        }
+
+        SetContainer(targetCont);
+
         PutInContCoroutine = null;
+        yield break;
+    }
+
+
+    protected virtual bool ValidateMove(TC sourceCont, TC targetCont)
+    {
+        if (targetCont == null) return false;
+        if (sourceCont != null && !sourceCont.CanRemove(selfCasted)) return false;
+        if (!targetCont.CanAccept(selfCasted)) return false;
+        return true;
     }
 }
