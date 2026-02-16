@@ -18,5 +18,5 @@ public interface IDraggableContainer<TDraggable>
     void Clear();
 }
 
-public interface ICardContainer : IDraggableContainer<CardInstance>
+public interface ICardContainer : IDraggableContainer<DraggableCard>
 {}

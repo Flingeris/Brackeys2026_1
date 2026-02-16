@@ -5,6 +5,7 @@ public class EnemyModel : ContentDef, ITooltipInfo
 {
     [Header("Enemy info")] public string ItemName { get; }
     public string Description { get; }
+    public int preferPos;
 
     [Header("Enemy Visuals")] public Sprite Sprite;
 

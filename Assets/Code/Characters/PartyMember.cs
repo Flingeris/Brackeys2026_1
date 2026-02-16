@@ -21,6 +21,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity
     public MemberState state { get; private set; }
     public bool IsDead { get; private set; }
     public int CurrShield { get; private set; }
+    public CombatGroup CombatGroup;
 
     public int MaxHP => state.MaxHP;
     public int CurrHP => state.CurrHP;
@@ -149,7 +150,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity
         if (state.CurrHP > 0) return;
 
         IsDead = true;
-        G.party.OnMemberDeath(this);
+        CombatGroup.CheckMemberDeath(this);
     }
 
     public void Kill()

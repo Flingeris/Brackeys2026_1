@@ -30,7 +30,7 @@ public class Hand : MonoBehaviour, ICardContainer
             CardInstance c = cardsInHand[i];
 
             if (c == null) continue;
-            if (c.IsDragging) continue;
+            if (c.Draggable.IsDragging) continue;
 
             float t = (cardsInHand.Count == 1)
                 ? 0.5f
@@ -106,8 +106,7 @@ public class Hand : MonoBehaviour, ICardContainer
             Destroy(d.gameObject);
             cardsInHand[i] = null;
         }
-        
+
         cardsInHand.Clear();
     }
 }
-

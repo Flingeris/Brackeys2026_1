@@ -7,7 +7,6 @@ using UnityEngine.Rendering;
 public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     public event UnityAction OnDragBegin;
-
     public event UnityAction OnDragEnd;
 
     [SerializeField] private SortingGroup sortGroup;
