@@ -12,7 +12,7 @@ public class CardState
 public class CardInstance : MonoBehaviour
 {
     public CardState state;
-    public DraggableCard Draggable;
+    [Header("References")] public DraggableCard Draggable;
 
     [SerializeField] private TMP_Text cardNameText;
     [SerializeField] private TMP_Text cardDescText;

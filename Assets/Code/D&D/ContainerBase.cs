@@ -80,4 +80,12 @@ public abstract class ContainerBase<TDraggable> : MonoBehaviour, IDraggableConta
     protected virtual void OnClear(TDraggable d)
     {
     }
+
+    public virtual void OnDragEnter(TDraggable d)
+    {
+    }
+
+    public virtual void OnDragExit(TDraggable d)
+    {
+    }
 }

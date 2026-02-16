@@ -4,7 +4,7 @@ using Mono.Cecil;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Hand : MonoBehaviour, ICardContainer
+public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
 {
     public List<CardInstance> cardsInHand = new();
     [SerializeField] private Transform cardsParent;
@@ -61,39 +61,9 @@ public class Hand : MonoBehaviour, ICardContainer
         var cardModel = allCards.GetRandomElement();
         var cardInst = Instantiate(cardModel.Prefab, cardsParent, false);
         cardInst.SetModel(cardModel);
-
-        TryAccept(cardInst, out var _);
+        cardInst.Draggable.SetOwner(this);
     }
 
-    public event UnityAction OnContainerChanged;
-    public bool IsEmpty { get; }
-
-    public bool CanAccept(CardInstance d)
-    {
-        return true;
-    }
-
-    public bool CanRemove(CardInstance d)
-    {
-        return cardsInHand.Contains(d);
-    }
-
-    public bool TryAccept(CardInstance d, out CardInstance oldD)
-    {
-        oldD = null;
-        if (!CanAccept(d)) return false;
-        d.SetContainer(this);
-        cardsInHand.Add(d);
-        UpdateCardsPositions();
-        return true;
-    }
-
-    public bool TryRemove(CardInstance d)
-    {
-        if (!CanRemove(d)) return false;
-        var b = cardsInHand.Remove(d);
-        return b;
-    }
 
     public void Clear()
     {
@@ -108,5 +78,20 @@ public class Hand : MonoBehaviour, ICardContainer
         }
 
         cardsInHand.Clear();
+    }
+
+    public void OnDragEnter(DraggableCard d)
+    {
+        var card = d.instance;
+        if (cardsInHand.Contains(card)) return;
+
+        cardsInHand.Add(card);
+        card.transform.SetParent(cardsParent, worldPositionStays: false);
+    }
+
+    public void OnDragExit(DraggableCard d)
+    {
+        var card = d.instance;
+        cardsInHand.Remove(card);
     }
 }

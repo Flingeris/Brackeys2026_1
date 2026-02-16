@@ -1,5 +1,6 @@
-public class DraggableCard : DraggableWContainer<DraggableCard, ICardContainer>
+public class DraggableCard : DraggableWContainer<DraggableCard, IDraggableContainer<DraggableCard>>
 {
+    public CardInstance instance;
     public bool IsLocked { get; private set; }
 
 

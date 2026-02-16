@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
@@ -35,6 +36,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
+        if(CanDrag())
         if (G.HUD != null && G.HUD.tooltip != null) G.HUD.tooltip.PushBlock();
 
         G.currentDrag = this;
@@ -55,6 +57,11 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
         offset = transform.position - worldPos;
 
         OnDragBegin?.Invoke();
+    }
+
+    protected virtual bool CanDrag()
+    {
+        return true;
     }
 
     public virtual void OnDrag(PointerEventData eventData)
