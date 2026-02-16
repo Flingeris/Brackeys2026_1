@@ -107,3 +107,15 @@ public class DoDamage : CardLogic
         enemy.TakeDamage(DmgAmount);
     }
 }
+
+
+[Serializable]
+public class AddShield : CardLogic
+{
+    public int ShieldToAdd;
+
+    protected override void OnUse()
+    {
+        G.party.GetRandomMember().AddShield(ShieldToAdd);
+    }
+}

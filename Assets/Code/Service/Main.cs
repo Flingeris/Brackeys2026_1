@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
+using Random = System.Random;
 
 
 public class RunState
@@ -42,7 +43,18 @@ public class Main : MonoBehaviour
 #if !UNITY_EDITOR
        while (!ServiceMain.ServicesReady) yield return null;
 #endif
+        yield return LoadLvl();
 
+        StartTurn();
+    }
+
+    private IEnumerator LoadLvl()
+    {
+        var characters = CMS.GetAll<MemberModel>();
+        foreach (var character in characters)
+        {
+            G.party.AddMember(character);
+        }
 
         var enemy = CMS.Get<EnemyModel>("en0");
         var enInst = Instantiate(enemy.Prefab, enemyContainer.transform, false);
@@ -51,8 +63,9 @@ public class Main : MonoBehaviour
         enInst.transform.localPosition = Vector3.zero;
         enInst.SetModel(enemy);
 
-        StartTurn();
+        yield return null;
     }
+
 
     public void StartTurn()
     {
@@ -86,12 +99,11 @@ public class Main : MonoBehaviour
         {
             if (card == null) continue;
             yield return card.CardPlaySequence();
-        }
-
-        if (CheckForWin())
-        {
-            yield return WinSequence();
-            yield break;
+            if (CheckForWin())
+            {
+                yield return WinSequence();
+                yield break;
+            }
         }
 
         foreach (var enemy in enemyContainer.enemies)
@@ -102,7 +114,9 @@ public class Main : MonoBehaviour
             enemy.transform.DOMove(endPos, 0.1f);
             yield return new WaitForSecondsRealtime(0.1f);
             enemy.transform.DOMove(startPos, 0.1f);
-            G.Player.TakeDamage(enemy.CurrDmg);
+
+
+            G.party.DealDamage(UnityEngine.Random.Range(0, 3), enemy.CurrDmg);
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -120,6 +134,20 @@ public class Main : MonoBehaviour
         }
 
         return true;
+    }
+
+
+    public void GameLost()
+    {
+        StartCoroutine(LoseSequence());
+    }
+
+    public IEnumerator LoseSequence()
+    {
+        G.UI.SetLoseActive(true);
+
+        yield return new WaitForSecondsRealtime(2f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 
@@ -143,7 +171,16 @@ public class Main : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            G.Hand.Draw();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            var party = G.party.GetAliveMembers();
+            foreach (var member in party)
+            {
+                member.Kill();
+            }
         }
     }
 
@@ -163,6 +200,10 @@ public class Main : MonoBehaviour
     {
         Application.Quit();
     }
+}
+
+internal class LevelModel : ScriptableObject
+{
 }
 
 public class Pile : MonoBehaviour

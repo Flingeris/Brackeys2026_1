@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 46389ce91bc738e4f906a59f2e3e2096
+guid: 1bc8ac6457af9d64b8d4e907fd213739
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4171791983676894557
-    second: Cat DD_0
+      213: 1011554200039631908
+    second: hp enemy_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,9 +49,9 @@ TextureImporter:
   spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 9
-  spritePivot: {x: 0.53531605, y: 0.1720364}
-  spritePixelsToUnits: 300
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cat DD_0
+      name: hp enemy_0
       rect:
         serializedVersion: 2
-        x: 967
-        y: 104
-        width: 235
-        height: 958
+        x: 0
+        y: 0
+        width: 17
+        height: 17
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d5d22efb4be25e930800000000000000
-      internalID: 4171791983676894557
+      spriteID: 42caa6c7f23c90e00800000000000000
+      internalID: 1011554200039631908
       vertices: []
       indices: 
       edges: []
@@ -139,7 +139,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Cat DD_0: 4171791983676894557
+      hp enemy_0: 1011554200039631908
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

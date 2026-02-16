@@ -3,6 +3,7 @@ using UnityEngine;
 
 public static class G
 {
+    public static PartyManager party;
     public static Draggable currentDrag;
     
     
@@ -19,7 +20,6 @@ public static class G
     public static ScreenFader ScreenFader;
     public static TextPopupManager textPopup;
     public static Hand Hand { get; set; }
-    public static PlayerStats Player { get; set; }
 }
 
 
