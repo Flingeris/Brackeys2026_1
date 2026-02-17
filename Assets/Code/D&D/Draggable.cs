@@ -7,20 +7,29 @@ using UnityEngine.UIElements;
 
 public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
+    
+    [Header("Return animation")]
+    [SerializeField] private float returnDuration = 0.2f;
+    [SerializeField] private Ease returnEase = Ease.OutCubic;
+    
     public event UnityAction OnDragBegin;
     public event UnityAction OnDragEnd;
+    
 
     [SerializeField] private SortingGroup sortGroup;
     public bool IsDragging { get; private set; } = false;
+    public bool IsReturning { get; private set; }
+
 
     //protected bool isPickedUp = false;
     //protected static Draggable ActivePicked = null;
 
     private int origLayer;
     private int origSortOrder;
-    private Camera mainCamera;
-    private Vector3 offset;
-    private Vector3 origin;
+    protected Camera mainCamera;
+    protected Vector3 offset;
+    protected Vector3 origin;
+    
 
     protected float HoverLockUntil = 0.2f;
 
@@ -107,11 +116,21 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
     {
     }
 
-    protected virtual void ReturnToOrigin()
+    public void ReturnToOrigin()
     {
-        transform.DOMove(origin, 0.05f).SetId("Draggable return to origin");
+        transform.DOKill();
+
+        IsReturning = true;
+
+        transform.DOMove(origin, returnDuration)
+            .SetEase(returnEase)
+            .OnComplete(() =>
+            {
+                IsReturning = false;
+            });
     }
 
+    
     public void LockHover(float seconds = 0.5f)
     {
         HoverLockUntil = Mathf.Max(HoverLockUntil, Time.time + seconds);
