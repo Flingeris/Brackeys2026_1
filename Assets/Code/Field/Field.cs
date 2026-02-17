@@ -5,7 +5,7 @@ public class Field : MonoBehaviour
 {
     [SerializeField] private FieldCardSlot[] cardsSlots;
 
-    public CardInstance[] PlayedCards => cardsSlots.Select(r => r.AcceptedDrag).ToArray();
+    public CardInstance[] PlayedCards => cardsSlots.Select(r => r.AcceptedCard).ToArray();
 
     private void OnValidate()
     {
@@ -21,7 +21,5 @@ public class Field : MonoBehaviour
             if (c == null) continue;
             c.Clear();
         }
-        
     }
-    
 }

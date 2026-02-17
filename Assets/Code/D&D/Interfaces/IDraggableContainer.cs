@@ -1,6 +1,7 @@
+using System;
 using UnityEngine.Events;
 
-public interface IDraggableContainer<TDraggable>
+public interface IDraggableContainer<TDraggable> : IDraggableOwner<TDraggable>
     where TDraggable : Draggable
 {
     event UnityAction OnContainerChanged;
@@ -18,5 +19,10 @@ public interface IDraggableContainer<TDraggable>
     void Clear();
 }
 
-public interface ICardContainer : IDraggableContainer<DraggableCard>
-{}
+
+public interface IDraggableOwner<TD>
+    where TD : Draggable
+{
+    void OnDragEnter(TD d);
+    void OnDragExit(TD d);
+}

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
@@ -35,6 +36,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
+        if (!CanDrag()) return;
         if (G.HUD != null && G.HUD.tooltip != null) G.HUD.tooltip.PushBlock();
 
         G.currentDrag = this;
@@ -57,8 +59,17 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
         OnDragBegin?.Invoke();
     }
 
+    protected virtual bool CanDrag()
+    {
+        return true;
+    }
+
     public virtual void OnDrag(PointerEventData eventData)
     {
+        if (!IsDragging) return;
+        if (!CanDrag()) return;
+
+
         UpdatePosToCursor();
     }
 
@@ -71,6 +82,8 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
 
     public virtual void OnEndDrag(PointerEventData eventData)
     {
+        if (!IsDragging) return;
+        if (!CanDrag()) return;
         LockHover();
         Release();
 
