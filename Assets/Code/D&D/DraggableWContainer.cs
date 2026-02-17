@@ -22,9 +22,6 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
 
     public void SetLocked(bool isLocked)
     {
-        Debug.Log("Locked " + isLocked + " " + gameObject.name);
-
-
         IsLocked = isLocked;
     }
 
@@ -40,7 +37,6 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
         Owner = newOwner;
 
         Owner?.OnDragEnter(selfCasted);
-        Debug.Log("Curr owner is " + Owner + " OldOwner is " + prev);
     }
 
     public virtual void SetContainer(TC newContainer)
@@ -60,7 +56,6 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
         var rawContainer = DraggableUtil<TD>.FindContainer(selfCasted, eventData);
         var targetCont = rawContainer as TC;
 
-        Debug.Log("Target container is " + targetCont);
         PutInContainer(targetCont);
     }
 

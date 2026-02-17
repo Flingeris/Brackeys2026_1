@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public enum ClassType
 {
@@ -20,102 +23,45 @@ public enum CardType
 }
 
 
-[CreateAssetMenu(fileName = "CardModel", menuName = "Cards/CardModel", order = 1)]
-public class CardModel : ContentDef, ITooltipInfo
+public abstract class CardModel : ContentDef, ITooltipInfo
 {
     [Header("Card info")]
     [field: SerializeField]
-    public string ItemName { get; }
+    public string ItemName { get; protected set; }
 
-    [field: SerializeField] public string Description { get; }
+    public string Description => GetDescription();
 
-    [Header("Card visuals")] public Sprite CardSprite;
+    [Header("Card visuals")] public Sprite Sprite;
     public CardInstance Prefab => "prefabs/Card".Load<CardInstance>();
-    [Header("Stats")] public ClassType ClassType;
+
+    [Header("Stats")] public abstract ClassType ClassType { get; }
+
     public CardType CardType;
-    [SerializeReference, SubclassSelector] public List<CardLogic> CardLogic;
-}
+    [SerializeReference, SubclassSelector] public List<IOnCardPlayed> OnPlayedCardInteractions;
 
-[Serializable]
-public abstract class CardLogic
-{
-    public virtual CardType cardType { get; protected set; }
 
-    public bool Use()
+    [Space(10f)] [SerializeReference, SubclassSelector]
+    public List<IOnCardEndTurn> OnTurnEndInteractions;
+
+    public string GetDescription()
     {
-        if (!CanBeUsed()) return false;
-        OnUse();
-        return true;
-    }
+        if (OnTurnEndInteractions == null || OnTurnEndInteractions.Count == 0)
+            return string.Empty;
 
-    protected abstract void OnUse();
+        var sb = new StringBuilder();
 
-    protected virtual bool CanBeUsed()
-    {
-        return true;
-    }
-}
+        for (int i = 0; i < OnTurnEndInteractions.Count; i++)
+        {
+            var interaction = OnTurnEndInteractions[i];
+            if (interaction == null)
+                continue;
 
-[Serializable]
-public abstract class StartCardLogic : CardLogic
-{
-    public override CardType cardType => CardType.Start;
+            if (sb.Length > 0)
+                sb.Append('\n');
 
-    protected override void OnUse()
-    {
-        throw new NotImplementedException();
-    }
-}
+            sb.Append(interaction.desc);
+        }
 
-[Serializable]
-public abstract class MidCardLogic : CardLogic
-{
-    protected override void OnUse()
-    {
-        throw new NotImplementedException();
-    }
-}
-
-[Serializable]
-public abstract class EndCarLogic : CardLogic
-{
-    protected override void OnUse()
-    {
-        throw new NotImplementedException();
-    }
-}
-
-[Serializable]
-public class StartHealAll : StartCardLogic
-{
-    protected override void OnUse()
-    {
-        throw new NotImplementedException();
-    }
-}
-
-
-[Serializable]
-public class DoDamage : CardLogic
-{
-    public int DmgAmount;
-
-    protected override void OnUse()
-    {
-        var enemy = G.enemies.GetMember(0);
-        if (enemy == null) return;
-        enemy.TakeDamage(DmgAmount);
-    }
-}
-
-
-[Serializable]
-public class AddShield : CardLogic
-{
-    public int ShieldToAdd;
-
-    protected override void OnUse()
-    {
-        G.party.GetRandomMember().AddShield(ShieldToAdd);
+        return sb.ToString();
     }
 }

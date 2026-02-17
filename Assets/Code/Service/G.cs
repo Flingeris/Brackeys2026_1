@@ -6,8 +6,8 @@ public static class G
     public static EnemyGroup enemies;
     public static PartyManager party;
     public static Draggable currentDrag;
-    
-    
+
+
     public static AudioSystem audioSystem;
 
     public static Main main;
@@ -22,7 +22,6 @@ public static class G
     public static TextPopupManager textPopup;
     public static Hand Hand { get; set; }
 }
-
 
 
 public static class TextStuff
@@ -44,5 +43,16 @@ public static class TextStuff
 
         Debug.LogWarning($"[TextStuff] Не удалось распарсить цвет: {html}");
         return Color.magenta;
+    }
+
+    public static string ToShortName(this CardType type)
+    {
+        return type switch
+        {
+            CardType.Start => "S",
+            CardType.Mid => "M",
+            CardType.End => "E",
+            _ => "?"
+        };
     }
 }

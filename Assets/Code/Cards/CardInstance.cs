@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 public class CardState
 {
     public CardModel model;
 }
 
-public class CardInstance : MonoBehaviour
+public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public CardState state;
     [Header("References")] public DraggableCard Draggable;
@@ -18,6 +20,8 @@ public class CardInstance : MonoBehaviour
     [SerializeField] private TMP_Text cardDescText;
     [SerializeField] private TMP_Text cardClassText;
     [SerializeField] private TMP_Text cardTypeText;
+
+    [SerializeField] private SpriteRenderer cardSprite;
 
 
     public void SetState(CardState newState)
@@ -42,7 +46,21 @@ public class CardInstance : MonoBehaviour
     {
         UpdateClassText();
         UpdateTypeText();
+        UpdateSprite();
+        UpdateName();
+        UpdateDescription();
     }
+
+    private void UpdateName()
+    {
+        cardNameText.text = state.model.name;
+    }
+
+    private void UpdateDescription()
+    {
+        cardDescText.text = state.model.Description;
+    }
+
 
     private void UpdateClassText()
     {
@@ -54,21 +72,60 @@ public class CardInstance : MonoBehaviour
         cardTypeText.text = state.model.CardType.ToString()[0].ToString();
     }
 
-    public IEnumerator OnTurnEndSequence()
+    private void UpdateSprite()
+    {
+        cardSprite.sprite = state.model.Sprite;
+    }
+
+
+    public IEnumerator OnCardPlayed()
+    {
+        var inters = state.model.OnPlayedCardInteractions;
+        foreach (var i in inters)
+        {
+            yield return i.OnPlay(state);
+        }
+    }
+
+
+    public IEnumerator OnCardTurnEnd()
     {
         var startPos = transform.position;
         var NewPos = startPos;
         NewPos.y += 0.8f;
         yield return transform.DOMove(NewPos, 0.2f).WaitForCompletion();
+
+        var inters = state.model.OnTurnEndInteractions;
+        foreach (var i in inters)
+        {
+            yield return i.OnEndTurn(state);
+        }
+
         transform.DOShakePosition(0.5f, 0.2f, 40);
 
-        var logic = state.model.CardLogic;
-        foreach (var e in logic)
-        {
-            e.Use();
-        }
 
         yield return new WaitForSeconds(0.5f);
         yield return transform.DOMove(startPos, 0.2f).WaitForCompletion();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (G.main.IsChoosingTarget) return;
+        List<ICardInteraction> inters = new List<ICardInteraction>();
+        inters.AddRange(state.model.OnPlayedCardInteractions);
+        inters.AddRange(state.model.OnTurnEndInteractions);
+        bool isTarget = false;
+        foreach (var i in inters)
+        {
+            if (i is ChooseTargetInteractionBase targetInteraction)
+            {
+                isTarget = true;
+            }
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (G.main.IsChoosingTarget) return;
     }
 }

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PartyManager : CombatGroup
 {
+    protected override TargetSide Side => TargetSide.Allies;
+
     protected override void Awake()
     {
         base.Awake();

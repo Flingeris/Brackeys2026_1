@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class EnemyGroup : CombatGroup
 {
+    protected override TargetSide Side => TargetSide.Enemies;
+
     public void AddEnemy(EnemyModel model)
     {
         //TODO - check array bound

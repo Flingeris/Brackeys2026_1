@@ -4,6 +4,7 @@ using DG.Tweening;
 using TMPro;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 
 public class MemberState
@@ -16,11 +17,12 @@ public class MemberState
 }
 
 
-public class PartyMember : MonoBehaviour, ICombatEntity
+public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
 {
     public MemberState state { get; private set; }
     public bool IsDead { get; private set; }
     public int CurrShield { get; private set; }
+    public bool IsPossibleTarget { get; private set; }
     public CombatGroup CombatGroup;
 
     public int MaxHP => state.MaxHP;
@@ -33,7 +35,13 @@ public class PartyMember : MonoBehaviour, ICombatEntity
     [SerializeField] private TMP_Text shieldText;
     [SerializeField] private SpriteRenderer shieldIconSprite;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer highlight;
 
+
+    public void SetTarget(bool b)
+    {
+        IsPossibleTarget = b;
+    }
 
     public void SetState(MemberState newState)
     {
@@ -56,6 +64,16 @@ public class PartyMember : MonoBehaviour, ICombatEntity
         SetState(newState);
     }
 
+    private void Update()
+    {
+        SetHighlight(IsPossibleTarget);
+    }
+
+    private void SetHighlight(bool b)
+    {
+        if (highlight == null) return;
+        highlight.gameObject.SetActive(b);
+    }
 
     public void TakeDamage(int dmgAmount)
     {
@@ -156,5 +174,10 @@ public class PartyMember : MonoBehaviour, ICombatEntity
     public void Kill()
     {
         TakeDamage(CurrHP);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        G.main.TryChooseTarget(this);
     }
 }

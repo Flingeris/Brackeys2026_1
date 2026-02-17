@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: acfb22737e8548e4fb19bdd8da0738ed
+guid: 5cba5a844cc1e2048b82228c60da019f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2341613157474962232
-    second: Strike_G_0
+      213: 4326872430171513394
+    second: Tank_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Strike_G_0
+      name: Tank_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 3
-        width: 667
-        height: 871
+        x: 22
+        y: 0
+        width: 653
+        height: 857
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8c4f25b5d3be08fd0800000000000000
-      internalID: -2341613157474962232
+      spriteID: 232edccec832c0c30800000000000000
+      internalID: 4326872430171513394
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Strike_G_0: -2341613157474962232
+      Tank_0: 4326872430171513394
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

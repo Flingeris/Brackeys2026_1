@@ -1,22 +1,31 @@
+using System;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
-public class EnemyInstance : MonoBehaviour, ICombatEntity
+public class EnemyInstance : MonoBehaviour, ICombatEntity, IPointerClickHandler
 {
     public EnemyModel currModel;
     public int MaxHP { get; private set; }
     public int CurrHP { get; private set; }
     public bool IsDead { get; private set; }
     public int CurrShield { get; private set; }
+    public bool IsPossibleTarget { get; private set; }
     public int CurrDmg { get; private set; }
 
     public CombatGroup combatGroup;
 
 
     [SerializeField] private TMP_Text hpValueText;
+    [SerializeField] private SpriteRenderer highlight;
 
+
+    public void SetTarget(bool b)
+    {
+        IsPossibleTarget = b;
+    }
 
     public void SetModel(EnemyModel newModel)
     {
@@ -91,6 +100,18 @@ public class EnemyInstance : MonoBehaviour, ICombatEntity
         AddShield(amount);
     }
 
+    private void Update()
+    {
+        SetHighlight(IsPossibleTarget);
+    }
+
+    private void SetHighlight(bool b)
+    {
+        if (highlight == null) return;
+        highlight.gameObject.SetActive(b);
+    }
+
+
     private void CheckIsDead()
     {
         if (CurrHP <= 0)
@@ -104,5 +125,10 @@ public class EnemyInstance : MonoBehaviour, ICombatEntity
     public void Kill()
     {
         TakeDamage(CurrHP);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        G.main.TryChooseTarget(this);
     }
 }

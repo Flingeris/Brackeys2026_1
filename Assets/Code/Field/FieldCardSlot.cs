@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class FieldCardSlot : ContainerBase<DraggableCard>
 {
-    [SerializeField] private CardType acceptedType;
+    [field: SerializeField] public CardType acceptedType { get; private set; }
     public CardInstance AcceptedCard => GetAcceptedCard();
 
 

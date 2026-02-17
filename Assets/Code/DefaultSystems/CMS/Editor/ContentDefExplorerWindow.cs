@@ -59,50 +59,93 @@ public class ContentDefExplorerWindow : EditorWindow
             Reload();
         }
 
-        protected override TreeViewItem BuildRoot()
+       protected override TreeViewItem BuildRoot()
+{
+    // Корневой элемент (обязателен, id = 0, depth = -1)
+    var root = new TreeViewItem
+    {
+        id = 0,
+        depth = -1,
+        displayName = "Root"
+    };
+
+    _idToInfo.Clear();
+
+    if (_allItems.Count == 0)
+    {
+        root.AddChild(new TreeViewItem(1, 0, "No ContentDef assets found"));
+        return root;
+    }
+
+    // Группируем по типу ContentDef (ItemDef, DiceDef и т.п.)
+    var groups = _allItems
+        .GroupBy(i => i.TypeName)
+        .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase);
+
+    int idCounter = 1;
+
+    foreach (var group in groups)
+    {
+        var groupItem = new TreeViewItem(idCounter++, 0, group.Key);
+        root.AddChild(groupItem);
+
+        // Проверяем, является ли эта группа "карточной"
+        // (ассеты наследуются от CardModel)
+        bool isCardGroup = group.Any(info => info.Asset is CardModel);
+
+        if (isCardGroup)
         {
-            // Корневой элемент (обязателен, id = 0, depth = -1)
-            var root = new TreeViewItem
-            {
-                id = 0,
-                depth = -1,
-                displayName = "Root"
-            };
-
-            _idToInfo.Clear();
-
-            if (_allItems.Count == 0)
-            {
-                // Пустой список
-                root.AddChild(new TreeViewItem(1, 0, "No ContentDef assets found"));
-                return root;
-            }
-
-            // Группируем по типу ContentDef (ItemDef, DiceDef и т.п.)
-            var groups = _allItems
-                .GroupBy(i => i.TypeName)
-                .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase);
-
-            int idCounter = 1;
-
-            foreach (var group in groups)
-            {
-                var groupItem = new TreeViewItem(idCounter++, 0, group.Key);
-                root.AddChild(groupItem);
-
-                // Внутри группы сортируем по имени
-                foreach (var info in group.OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase))
+            // --- Спец-логика для CardModel: подгруппы по CardType ---
+            // Собираем пары (info, cardModel)
+            var cardItems = group
+                .Select(info => new
                 {
-                    var child = new ContentDefTreeItem(idCounter++, 1, info.Name, info);
-                    groupItem.AddChild(child);
+                    Info = info,
+                    Card = info.Asset as CardModel
+                })
+                .Where(x => x.Card != null);
+
+            // Группируем по CardType (Start/Mid/End/None)
+            var byCardType = cardItems
+                .GroupBy(x => x.Card.CardType)
+                .OrderBy(g => g.Key); // порядок по enum'у
+
+            foreach (var cardTypeGroup in byCardType)
+            {
+                var cardType = cardTypeGroup.Key;
+                string cardTypeName = cardType.ToString(); // "Start", "Mid", "End", "None"
+
+                var cardTypeItem = new TreeViewItem(idCounter++, 1, cardTypeName);
+                groupItem.AddChild(cardTypeItem);
+
+                // Внутри CardType сортируем по имени ассета
+                foreach (var x in cardTypeGroup
+                             .OrderBy(x => x.Info.Name, StringComparer.OrdinalIgnoreCase))
+                {
+                    var info = x.Info;
+                    var child = new ContentDefTreeItem(idCounter++, 2, info.Name, info);
+                    cardTypeItem.AddChild(child);
                     _idToInfo[child.id] = info;
                 }
             }
-
-            // Обязательный вызов: сетим root и возвращаем
-            SetupDepthsFromParentsAndChildren(root);
-            return root;
         }
+        else
+        {
+            // Обычная логика для всех остальных типов ContentDef
+            foreach (var info in group.OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase))
+            {
+                var child = new ContentDefTreeItem(idCounter++, 1, info.Name, info);
+                groupItem.AddChild(child);
+                _idToInfo[child.id] = info;
+            }
+        }
+    }
+
+    // Обязательный вызов: сетим root и возвращаем
+    SetupDepthsFromParentsAndChildren(root);
+    return root;
+}
+
 
         protected override void RowGUI(RowGUIArgs args)
         {

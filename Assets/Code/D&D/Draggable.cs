@@ -109,7 +109,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
 
     protected virtual void ReturnToOrigin()
     {
-        transform.DOMove(origin, 0.05f).SetId("Draggable return to origin");
+        transform.DOMove(origin, 0.5f).SetId("Draggable return to origin");
     }
 
     public void LockHover(float seconds = 0.5f)

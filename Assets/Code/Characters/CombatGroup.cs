@@ -4,9 +4,19 @@ using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 
+
+public enum TargetSide
+{
+    Any = 0,
+    Allies = 1,
+    Enemies = 2,
+}
+
 public abstract class CombatGroup : MonoBehaviour
 {
+    protected abstract TargetSide Side { get; }
     protected ICombatEntity[] partyMembers;
+
     [SerializeField] protected Transform[] membersPos;
     public int maxMembersCount = 3;
 
@@ -38,12 +48,48 @@ public abstract class CombatGroup : MonoBehaviour
         return partyMembers[index];
     }
 
+    public List<ICombatEntity> GetMembers(int[] positions)
+    {
+        if (positions == null || positions.Length == 0)
+        {
+            return GetAliveMembers();
+        }
+
+        return positions.Select(i => partyMembers[i]).ToList();
+    }
+
+
+    public void TargetAll()
+    {
+        foreach (var member in partyMembers)
+            member.SetTarget(true);
+    }
+
+    public void UntargetAll()
+    {
+        foreach (var member in partyMembers)
+        {
+            member.SetTarget(false);
+        }
+    }
+
 
     public void DealDamage(int target, int damage)
     {
         var member = partyMembers[target];
         if (member == null || member.IsDead) return;
         member.TakeDamage(damage);
+    }
+
+    public void DamageAll(int amount)
+    {
+        foreach (var member in partyMembers)
+        {
+            if (!member.IsDead)
+            {
+                member.TakeDamage(amount);
+            }
+        }
     }
 
     public void Heal(int target, int amount)
@@ -53,11 +99,30 @@ public abstract class CombatGroup : MonoBehaviour
         member.Heal(amount);
     }
 
+    public void HealAll(int amount)
+    {
+        foreach (var member in partyMembers)
+        {
+            if (!member.IsDead)
+                member.Heal(amount);
+        }
+    }
+
+
     public void AddShield(int target, int amount)
     {
         var member = partyMembers[target];
         if (member == null || member.IsDead) return;
         member.AddShield(amount);
+    }
+
+    public void ShieldAll(int amount)
+    {
+        foreach (var member in partyMembers)
+        {
+            if (!member.IsDead)
+                member.AddShield(amount);
+        }
     }
 
 
@@ -77,6 +142,15 @@ public abstract class CombatGroup : MonoBehaviour
         if (alive.Count == 0) return null;
         return alive.GetRandomElement();
     }
+
+    public ICombatEntity GetLowestMember()
+    {
+        return partyMembers
+            .Where(m => m != null && !m.IsDead)
+            .OrderBy(m => m.CurrHP)
+            .FirstOrDefault();
+    }
+
 
     public List<ICombatEntity> GetAliveMembers()
     {

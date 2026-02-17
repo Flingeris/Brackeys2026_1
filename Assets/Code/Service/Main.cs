@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
@@ -20,6 +21,8 @@ public class Main : MonoBehaviour
     public static bool TitleShown;
     public bool ShowTitle;
     public Field field;
+
+    public bool IsChoosingTarget;
 
     private void Awake()
     {
@@ -97,7 +100,7 @@ public class Main : MonoBehaviour
         foreach (var card in playerCards)
         {
             if (card == null) continue;
-            yield return card.OnTurnEndSequence();
+            yield return card.OnCardTurnEnd();
             if (CheckForWin())
             {
                 yield return WinSequence();
@@ -178,6 +181,16 @@ public class Main : MonoBehaviour
         }
     }
 
+    public void PlayCard(CardInstance card)
+    {
+        StartCoroutine(OnCardPlayed(card));
+    }
+
+    public IEnumerator OnCardPlayed(CardInstance card)
+    {
+        yield return card.OnCardPlayed();
+    }
+
     private IEnumerator ShowTitleScreen()
     {
         // G.ui.ToggleTitle(true);
@@ -187,6 +200,65 @@ public class Main : MonoBehaviour
         // G.ScreenFader.FadeOutCustom(G.ui.TitleScreenImage, 2f);
         // TitleShown = true;
         yield break;
+    }
+
+
+    public void TryChooseTarget(ICombatEntity target)
+    {
+        if (!IsChoosingTarget) return;
+        if (target == null) return;
+
+        if (possibleTargets.Contains(target)) Target = target;
+    }
+
+    public ICombatEntity Target;
+    public List<ICombatEntity> possibleTargets;
+
+    public IEnumerator ChooseTarget(TargetSide targetSide, int[] targetsPos)
+    {
+        IsChoosingTarget = true;
+        Target = null;
+
+        CheckTargets(targetSide, targetsPos);
+
+        if (possibleTargets.Count > 0)
+        {
+            while (Target == null)
+                yield return null;
+        }
+
+        IsChoosingTarget = false;
+        G.party.UntargetAll();
+        G.enemies.UntargetAll();
+    }
+
+    public void CheckTargets(TargetSide targetSide, int[] possiblePos)
+    {
+        if (!IsChoosingTarget) return;
+        List<ICombatEntity> targets;
+        switch (targetSide)
+        {
+            case TargetSide.Any:
+                targets = G.party.GetAliveMembers();
+                targets.AddRange(G.enemies.GetAliveMembers());
+                break;
+            case TargetSide.Allies:
+                targets = G.party.GetMembers(possiblePos).ToList();
+                break;
+            case TargetSide.Enemies:
+                targets = G.enemies.GetMembers(possiblePos).ToList();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        foreach (var target in targets)
+        {
+            if (target == null) continue;
+            target.SetTarget(true);
+        }
+
+        possibleTargets = targets;
     }
 
 

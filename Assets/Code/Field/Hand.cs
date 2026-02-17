@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Mono.Cecil;
 using UnityEngine;
@@ -91,7 +92,13 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
 
     public void OnDragExit(DraggableCard d)
     {
+        StartCoroutine(DragExitSequence(d));
+    }
+
+    public IEnumerator DragExitSequence(DraggableCard d)
+    {
         var card = d.instance;
         cardsInHand.Remove(card);
+        yield return G.main.OnCardPlayed(card);
     }
 }
