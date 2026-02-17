@@ -1115,6 +1115,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hand
   cardsInHand: []
   cardsParent: {fileID: 1890039405}
+  hoveredBottomY: 1
+  hoverSpread: 1
+  hoverSpreadFar: 0.6
+  layoutLerpSpeed: 12
 --- !u!4 &736881536
 Transform:
   m_ObjectHideFlags: 0
