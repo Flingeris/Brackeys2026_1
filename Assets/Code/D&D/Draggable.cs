@@ -7,14 +7,14 @@ using UnityEngine.UIElements;
 
 public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
-    
-    [Header("Return animation")]
-    [SerializeField] private float returnDuration = 0.2f;
+    [Header("Return animation")] [SerializeField]
+    private float returnDuration = 0.2f;
+
     [SerializeField] private Ease returnEase = Ease.OutCubic;
-    
+
     public event UnityAction OnDragBegin;
     public event UnityAction OnDragEnd;
-    
+
 
     [SerializeField] private SortingGroup sortGroup;
     public bool IsDragging { get; private set; } = false;
@@ -29,9 +29,9 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
     protected Camera mainCamera;
     protected Vector3 offset;
     protected Vector3 origin;
-    
 
-    protected float HoverLockUntil = 0.2f;
+
+    public float HoverLockUntil { get; protected set; } = 0.2f;
 
     private void OnValidate()
     {
@@ -124,14 +124,11 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
 
         transform.DOMove(origin, returnDuration)
             .SetEase(returnEase)
-            .OnComplete(() =>
-            {
-                IsReturning = false;
-            });
+            .OnComplete(() => { IsReturning = false; });
     }
 
-    
-    public void LockHover(float seconds = 0.5f)
+
+    public void LockHover(float seconds = 1f)
     {
         HoverLockUntil = Mathf.Max(HoverLockUntil, Time.time + seconds);
     }

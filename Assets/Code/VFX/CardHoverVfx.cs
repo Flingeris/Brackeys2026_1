@@ -5,22 +5,23 @@ using UnityEngine.Rendering;
 
 public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("Hand hover")]
-    [SerializeField] private float handHoverScale = 1.7f;
+    [Header("Hand hover")] [SerializeField]
+    private float handHoverScale = 1.7f;
 
-    [Header("Slot hover")]
-    [SerializeField] private float slotHoverScale = 1.5f;
+    [Header("Slot hover")] [SerializeField]
+    private float slotHoverScale = 1.5f;
+
     [SerializeField] private float slotHoverLift = 0.2f;
     [SerializeField] private float slotHoverTiltX = -10f;
-    [SerializeField] private float slotHoverDuration = 0.12f;
+    [SerializeField] private float slotHoverAnimDuration = 0.12f;
 
-    [Header("Common")]
-    [SerializeField] private float scaleDuration = 0.12f;
+    [Header("Common")] [SerializeField] private float scaleDuration = 0.12f;
     [SerializeField] private Ease scaleEase = Ease.OutBack;
     [SerializeField] private Transform visual; // ССЫЛКА НА ВИЗУАЛ КАРТЫ
-    
-    [Header("Sorting / Front")]
-    [SerializeField] private int hoverSortingBoost = 200;
+
+    [Header("Sorting / Front")] [SerializeField]
+    private int hoverSortingBoost = 200;
+
     [SerializeField] private bool bringToFrontInUIIfNoSortingGroup = true;
 
     private CardInstance _card;
@@ -41,7 +42,7 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private Tween _scaleTween;
     private Tween _slotMoveTween;
     private Tween _slotRotateTween;
-    
+
 
     private void Awake()
     {
@@ -75,14 +76,13 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     }
 
 
-    
     private bool IsInSlot()
     {
         return _draggableCard != null &&
-               _draggableCard.CurrContainer != null;  // или твой класс слота
+               _draggableCard.CurrContainer != null; // или твой класс слота
     }
 
-    
+
     private void HandleDragBegin()
     {
         _isDragging = true;
@@ -128,25 +128,26 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     }
 
 
-    
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (Time.time < _draggable.HoverLockUntil) return;
         if (_isDragging) return;
 
         if (IsInSlot())
         {
             // --- Ховер для карты в слоте ---
+            visual.DOKill();
             PlaySlotHoverScale(true);
 
-            visual.DOKill();
+
             _slotMoveTween = visual.DOLocalMove(
                     _visualBaseLocalPos + new Vector3(0f, slotHoverLift, 0f),
-                    slotHoverDuration)
+                    slotHoverAnimDuration)
                 .SetEase(Ease.OutCubic);
 
             _slotRotateTween = visual.DOLocalRotateQuaternion(
                     Quaternion.Euler(slotHoverTiltX, 0f, 0f) * _visualBaseLocalRot,
-                    slotHoverDuration)
+                    slotHoverAnimDuration)
                 .SetEase(Ease.OutCubic);
 
             BringToFront();
@@ -160,21 +161,20 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     }
 
 
-
-    
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (Time.time < _draggable.HoverLockUntil) return;
         if (_isDragging) return;
 
         if (IsInSlot())
         {
             // откат слота
+            visual.DOKill();
             PlaySlotHoverScale(false);
 
-            visual.DOKill();
-            _slotMoveTween = visual.DOLocalMove(_visualBaseLocalPos, slotHoverDuration)
+            _slotMoveTween = visual.DOLocalMove(_visualBaseLocalPos, slotHoverAnimDuration)
                 .SetEase(Ease.OutCubic);
-            _slotRotateTween = visual.DOLocalRotateQuaternion(_visualBaseLocalRot, slotHoverDuration)
+            _slotRotateTween = visual.DOLocalRotateQuaternion(_visualBaseLocalRot, slotHoverAnimDuration)
                 .SetEase(Ease.OutCubic);
 
             RestoreOrder();
@@ -195,7 +195,6 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             .SetEase(scaleEase)
             .SetUpdate(true);
     }
-
 
 
     private void BringToFront()
@@ -248,10 +247,8 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         var target = hovered ? _baseScale * slotHoverScale : _baseScale;
 
         _scaleTween?.Kill();
-        _scaleTween = visual.DOScale(target, slotHoverDuration)
+        _scaleTween = visual.DOScale(target, slotHoverAnimDuration)
             .SetEase(scaleEase)
             .SetUpdate(true);
     }
-
-    
 }

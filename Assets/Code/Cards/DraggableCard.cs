@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -6,24 +7,24 @@ public class DraggableCard
 {
     public CardInstance instance;
 
-    [Header("Drag physics")]
-    [SerializeField] private float dragMaxSpeed = 20f;
+    [Header("Drag physics")] [SerializeField]
+    private float dragMaxSpeed = 20f;
+
     [SerializeField] private float dragAccelLerp = 25f;
     [SerializeField] private float dragTiltAmount = 1f;
     [SerializeField] private float dragTiltReturnSpeed = 10f;
     [SerializeField] float spring = 60f;
-    [SerializeField] float damping = 10f;  // сопротивление, чтобы не разносило 
+    [SerializeField] float damping = 10f; // сопротивление, чтобы не разносило 
 
-    [Header("Visual")]
-    [SerializeField] private Transform visual;
+    [Header("Visual")] [SerializeField] private Transform visual;
 
     private Vector3 dragTargetPos;
     private Vector3 dragVelocity;
     private float currentTilt;
     private Quaternion baseVisualLocalRot;
-    private bool wasInContainerOnDragStart;   
+    private bool wasInContainerOnDragStart;
     private IDraggableContainer<DraggableCard> dragSourceContainer;
-    
+
 
     private void Awake()
     {
@@ -39,14 +40,13 @@ public class DraggableCard
 
     public override void OnBeginDrag(PointerEventData eventData)
     {
-
         dragSourceContainer = CurrContainer;
         if (CurrContainer != null)
         {
             CurrContainer.TryRemove(this);
             SetContainer(null);
         }
-        
+
         base.OnBeginDrag(eventData);
 
         var cursorWorldPos = mainCamera.ScreenToWorldPoint(eventData.position);
@@ -56,7 +56,6 @@ public class DraggableCard
         dragVelocity = Vector3.zero;
         transform.localRotation = Quaternion.identity;
     }
-
 
 
     protected override void UpdatePosToCursor()
@@ -89,23 +88,22 @@ public class DraggableCard
 
         if (visual != null)
             visual.localRotation = baseVisualLocalRot * Quaternion.Euler(0f, 0f, currentTilt);
-
     }
 
     public override void OnEndDrag(PointerEventData eventData)
     {
         base.OnEndDrag(eventData);
         dragVelocity = Vector3.zero;
-        currentTilt = 0f;
+        // currentTilt = 0f;
 
-        if (visual != null)
-            visual.localRotation = baseVisualLocalRot;
+        // if (visual != null)
+        // visual.localRotation = baseVisualLocalRot;
     }
 
-    protected override System.Collections.IEnumerator PutInContainerSequence(IDraggableContainer<DraggableCard> targetCont)
+    protected override IEnumerator PutInContainerSequence(IDraggableContainer<DraggableCard> targetCont)
     {
         bool fromSlot = dragSourceContainer != null;
-        
+
         if (targetCont == null)
         {
             if (fromSlot)
@@ -121,19 +119,7 @@ public class DraggableCard
             dragSourceContainer = null;
             yield break;
         }
-        
-        if (!targetCont.CanAccept(this))
-        {
-            if (fromSlot)
-                SetOwner(G.Hand);
-            else
-                ReturnToOrigin();
 
-            PutInContCoroutine = null;
-            dragSourceContainer = null;
-            yield break;
-        }
-        
         if (!targetCont.TryAccept(this, out var oldCard))
         {
             if (fromSlot)
@@ -145,9 +131,10 @@ public class DraggableCard
             dragSourceContainer = null;
             yield break;
         }
-        
+
+
         SetContainer(targetCont);
-        
+
         if (oldCard != null && oldCard != this)
         {
             if (dragSourceContainer != null &&

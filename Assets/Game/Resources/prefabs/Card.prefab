@@ -52,7 +52,7 @@ MonoBehaviour:
   cardNameText: {fileID: 4101987075127349384}
   cardDescText: {fileID: 7840116083793199590}
   cardClassText: {fileID: 4423706118793571225}
-  cardTypeText: {fileID: 6306394181847068629}
+  turnIndexText: {fileID: 0}
   cardSprite: {fileID: 3251211588939619362}
 --- !u!210 &8680209980785729606
 SortingGroup:
@@ -102,15 +102,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d88d6a2176564c189ac2c975be7a4f1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardHoverVFX
-  hoverScale: 1.7
+  handHoverScale: 1.7
+  slotHoverScale: 1.6
+  slotHoverLift: 1
+  slotHoverTiltX: -30
+  slotHoverAnimDuration: 0.12
   scaleDuration: 0.12
   scaleEase: 27
-  slotHoverScale: 0.4
-  slotHoverLift: 0.7
-  slotHoverTiltX: -30
+  visual: {fileID: 1289456653016150302}
   hoverSortingBoost: 200
   bringToFrontInUIIfNoSortingGroup: 1
-  visual: {fileID: 1289456653016150302}
 --- !u!1 &4520034363213131603
 GameObject:
   m_ObjectHideFlags: 0
