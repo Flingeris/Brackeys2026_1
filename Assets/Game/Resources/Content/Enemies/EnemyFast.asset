@@ -19,12 +19,14 @@ MonoBehaviour:
   preferPos: -1
   Speed: 10
   Sprite: {fileID: 21300000, guid: c5e3eaf2dbfa8e541af265c57df1601e, type: 3}
-  OnEndTurnInteractions:
-  - rid: 5181037750336094366
+  EndTurnActions:
+  - OnEndTurnInteractions:
+    - rid: 5181037750336094480
+    Amount: 0
   references:
     version: 2
     RefIds:
-    - rid: 5181037750336094366
+    - rid: 5181037750336094480
       type: {class: DealDamageToRandomTarget, ns: , asm: Assembly-CSharp}
       data:
-        DmgAmount: 3
+        damageAmount: 4

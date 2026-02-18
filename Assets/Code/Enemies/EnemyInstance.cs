@@ -29,7 +29,14 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     [SerializeField] private SpriteRenderer highlight;
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private TMP_Text turnIndexText;
+    [SerializeField] private SpriteRenderer actionIconImage;
+    [SerializeField] private TMP_Text actionValueText;
 
+
+    private void Start()
+    {
+        UpdateVisuals();
+    }
 
     public void SetTarget(bool b)
     {
@@ -50,6 +57,28 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     {
         UpdateHpText();
         UpdateSprite();
+        UpdateNextActionIcon();
+    }
+
+
+    private void UpdateNextActionIcon()
+    {
+        actionIconImage.enabled = false;
+        actionValueText.SetText("");
+
+        var nextAction = GetAction(CurrTurnIndex + 1, model.EndTurnActions);
+        if (nextAction == null || nextAction.Type == InteractionType.None) return;
+
+        var actionSprite = ActionDef.GetSprite(nextAction.Type);
+        if (sprite == null) return;
+
+        actionIconImage.enabled = true;
+        actionIconImage.sprite = actionSprite;
+
+        if (nextAction.Amount != 0)
+        {
+            actionValueText.SetText(nextAction.Amount.ToString());
+        }
     }
 
     private void UpdateSprite()
@@ -156,6 +185,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
             turnIndexText.SetText(TurnOrder.ToString());
     }
 
+
     public void OnPointerClick(PointerEventData eventData)
     {
         G.main.TryChooseTarget(this);
@@ -171,8 +201,8 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         transform.DOMove(endPos, 0.2f);
         yield return new WaitForSeconds(0.2f);
 
-        var action = GetNextAction(CurrTurnIndex, model.EndTurnActions);
-        
+        var action = GetAction(CurrTurnIndex, model.EndTurnActions);
+
         if (action != null)
         {
             var inters = action.OnEndTurnInteractions;
@@ -184,19 +214,21 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
 
         transform.DOMove(startPos, 0.2f);
         yield return new WaitForSeconds(0.2f);
+
+        UpdateNextActionIcon();
     }
 
-    public ActionDef GetNextAction(int turnIndex, List<ActionDef> actions)
+    public ActionDef GetAction(int turnIndex, List<ActionDef> actions)
     {
         var activeAct = actions.Where(r => r != null && r.OnEndTurnInteractions.Any()).ToList();
 
         if (activeAct.Count == 0)
         {
-            Debug.LogError($"Enemy {model.name} has no actions defined.");
+            Debug.LogWarning($"Enemy {model.name} has no actions defined.");
             return null;
         }
 
-        int index = turnIndex % actions.Count;
+        int index = turnIndex % activeAct.Count;
         return actions[index];
     }
 }

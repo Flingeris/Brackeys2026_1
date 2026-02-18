@@ -36,6 +36,7 @@ public class Main : MonoBehaviour
         OnGameReady?.Invoke();
 
         StartCoroutine(GameStartSequence());
+        
     }
 
     private IEnumerator GameStartSequence()
@@ -129,7 +130,7 @@ public class Main : MonoBehaviour
                 yield break;
             }
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.25f);
         }
 
         yield return FieldClearSequence();

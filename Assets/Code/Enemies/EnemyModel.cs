@@ -5,15 +5,15 @@ using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 
-[Serializable]
-public class ActionDef
-{
-    [SerializeReference, SubclassSelector] public List<IOnEnemyTurnEnd> OnEndTurnInteractions;
-}
-
 
 public interface IEnemyInteraction
 {
+    public InteractionType type { get; }
+}
+
+public interface IAmountInteraction
+{
+    int GetAmount();
 }
 
 
@@ -45,11 +45,11 @@ public interface IOnEnemyTurnEnd : IEnemyInteraction
 
 
 [Serializable]
-public class DealDamageInteraction : IOnEnemyTurnEnd
+public class DealDamageInteraction : IOnEnemyTurnEnd, IAmountInteraction
 {
     public int[] possibleTargets;
-    public int DmgAmount;
-    public string desc => "Will deal " + DmgAmount + " damage";
+    public int damageAmount;
+    public string desc => "Will deal " + damageAmount + " damage";
 
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
@@ -59,15 +59,22 @@ public class DealDamageInteraction : IOnEnemyTurnEnd
             yield break;
 
         var targetIndx = aliveTargets.GetRandomElement();
-        G.party.DealDamage(targetIndx, DmgAmount);
+        G.party.DealDamage(targetIndx, damageAmount);
+    }
+
+    public InteractionType type => InteractionType.Attack;
+
+    public int GetAmount()
+    {
+        return damageAmount;
     }
 }
 
 [Serializable]
-public class DealDamageToRandomTarget : IOnEnemyTurnEnd
+public class DealDamageToRandomTarget : IOnEnemyTurnEnd, IAmountInteraction
 {
-    public int DmgAmount;
-    public string desc => "Will deal " + DmgAmount + " to random target";
+    public int damageAmount;
+    public string desc => "Will deal " + damageAmount + " to random target";
 
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
@@ -77,19 +84,26 @@ public class DealDamageToRandomTarget : IOnEnemyTurnEnd
             yield break;
 
 
-        target.TakeDamage(DmgAmount);
+        target.TakeDamage(damageAmount);
+    }
+
+    public InteractionType type => InteractionType.Attack;
+
+    public int GetAmount()
+    {
+        return damageAmount;
     }
 }
 
 [Serializable]
-public class HealLowestTarget : IOnEnemyTurnEnd
+public class HealLowestTarget : IOnEnemyTurnEnd, IAmountInteraction
 {
     public int HealAmount;
-    public string desc => "Will heal ally";
+    public string desc => "Will heal allies ";
 
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
-        var target = G.enemies.GetRandomMember();
+        var target = G.enemies.GetLowestMember();
 
         if (target == null || target.IsDead)
             yield break;
@@ -97,17 +111,31 @@ public class HealLowestTarget : IOnEnemyTurnEnd
 
         target.Heal(HealAmount);
     }
+
+    public InteractionType type => InteractionType.Heal;
+
+    public int GetAmount()
+    {
+        return HealAmount;
+    }
 }
 
 [Serializable]
-public class HealAllAllies : IOnEnemyTurnEnd
+public class HealAllAllies : IOnEnemyTurnEnd, IAmountInteraction
 {
     public int HealAmount;
-    public string desc => "Will heal ally";
+    public string desc => "Will heal allies";
 
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
         G.enemies.HealAll(HealAmount);
         yield return null;
+    }
+
+    public InteractionType type => InteractionType.Heal;
+
+    public int GetAmount()
+    {
+        return HealAmount;
     }
 }

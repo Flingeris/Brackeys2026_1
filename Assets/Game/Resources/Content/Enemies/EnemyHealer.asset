@@ -19,12 +19,15 @@ MonoBehaviour:
   preferPos: -1
   Speed: 0
   Sprite: {fileID: 21300000, guid: c5e3eaf2dbfa8e541af265c57df1601e, type: 3}
-  OnEndTurnInteractions:
-  - rid: 5181037750336094367
+  EndTurnActions:
+  - OnEndTurnInteractions:
+    - rid: 5181037750336094481
+    Amount: 0
   references:
     version: 2
     RefIds:
-    - rid: 5181037750336094367
-      type: {class: HealAllAllies, ns: , asm: Assembly-CSharp}
+    - rid: 5181037750336094481
+      type: {class: DealDamageInteraction, ns: , asm: Assembly-CSharp}
       data:
-        HealAmount: 3
+        possibleTargets: 000000000100000002000000
+        damageAmount: 4
