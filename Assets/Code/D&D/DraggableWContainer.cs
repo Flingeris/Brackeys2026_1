@@ -104,6 +104,7 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
     }
 
 
+
     protected virtual bool ValidateMove(TC sourceCont, TC targetCont)
     {
         if (targetCont == null) return false;

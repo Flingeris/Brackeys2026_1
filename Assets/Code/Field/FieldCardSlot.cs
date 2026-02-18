@@ -9,15 +9,22 @@ public class FieldCardSlot : ContainerBase<DraggableCard>
     public override bool CanAccept(DraggableCard c)
     {
         if (!base.CanAccept(c)) return false;
-        if (AcceptedDrag != null) return false;
         if (acceptedType == CardType.None) return true;
         return c.instance.state.model.CardType == acceptedType;
     }
 
+
+
     public override void OnDragEnter(DraggableCard d)
     {
         base.OnDragEnter(d);
-        d.SetLocked(true);
+
+    }
+
+    public override void OnDragExit(DraggableCard d)
+    {
+        base.OnDragExit(d);
+        d.SetLocked(false);
     }
 
 
