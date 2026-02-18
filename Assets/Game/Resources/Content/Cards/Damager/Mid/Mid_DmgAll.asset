@@ -10,25 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f792f981288481f84c121a1bbc7af7d, type: 3}
-  m_Name: Start_DmgTargetEnemy
+  m_Name: Mid_DmgAll
   m_EditorClassIdentifier: Assembly-CSharp::DamageCard
   id: 
-  <ItemName>k__BackingField: Target srtike
+  <ItemName>k__BackingField: Random strike
   Sprite: {fileID: 21300000, guid: dc896925218ed1a44905923f086b0327, type: 3}
-  CardType: 1
+  CardType: 2
   OnPlayedCardInteractions: []
   OnTurnEndInteractions:
-  - rid: 5181037725820911843
-  - rid: 5181037725820911785
+  - rid: 5181037725820911895
   references:
     version: 2
     RefIds:
-    - rid: 5181037725820911785
-      type: {class: DealDamageToTarget, ns: , asm: Assembly-CSharp}
+    - rid: 5181037725820911895
+      type: {class: DealDamageToAllInteraction, ns: , asm: Assembly-CSharp}
       data:
-        DmgAmount: 7
-    - rid: 5181037725820911843
-      type: {class: ChooseTargetOnTurnEndInteraction, ns: , asm: Assembly-CSharp}
-      data:
-        TargetSide: 2
-        possiblePositions: 0000000001000000
+        DmgAmount: 2

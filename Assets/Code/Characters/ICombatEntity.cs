@@ -1,9 +1,10 @@
 public interface ICombatEntity
 {
     int MaxHP { get; }
+    // int Speed { get; }
+    int CurrShield { get; }
     int CurrHP { get; }
     bool IsDead { get; }
-    int CurrShield { get; }
 
     public void SetTarget(bool b);
 

@@ -48,6 +48,11 @@ public abstract class CombatGroup : MonoBehaviour
         return partyMembers[index];
     }
 
+
+    public bool CheckIsAlive(int target)
+    {
+        return partyMembers[target] != null && !partyMembers[target].IsDead;
+    }
     public List<ICombatEntity> GetMembers(int[] positions)
     {
         if (positions == null || positions.Length == 0)

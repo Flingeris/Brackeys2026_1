@@ -58,9 +58,9 @@ public class Main : MonoBehaviour
             G.party.AddMember(character);
         }
 
+        var enemies = CMS.GetAll<EnemyModel>().ToList();
         for (int i = 0; i <= 2; i++)
         {
-            var enemies = CMS.GetAll<EnemyModel>();
             var enemy = enemies.GetRandomElement();
             G.enemies.AddEnemy(enemy);
         }
@@ -76,6 +76,8 @@ public class Main : MonoBehaviour
 
     private IEnumerator StartTurnSequence()
     {
+        turns = BuildTurnOrder();
+
         for (int i = 0; i < DrawSize; i++)
         {
             G.Hand.Draw();
@@ -86,46 +88,54 @@ public class Main : MonoBehaviour
         yield return null;
     }
 
+    private List<ITurnEntity> BuildTurnOrder()
+    {
+        var result = new List<ITurnEntity>();
+        result.AddRange(G.enemies.GetAliveEnemies());
+        result.AddRange(field.cardsSlots.Where(c => c != null));
+
+        result = result.OrderByDescending(e => e.Speed).ToList();
+
+        for (int i = 0; i < result.Count; i++)
+        {
+            if (result[i] is MonoBehaviour mb && mb == null) continue;
+            result[i].SetTurnIndex(i + 1);
+        }
+
+
+        return result;
+    }
 
     public void EndTurn()
     {
         StartCoroutine(EndTurnSequence());
     }
 
+
+    public List<ITurnEntity> turns;
+
     private IEnumerator EndTurnSequence()
     {
         G.HUD.SetEndTurnInteractable(false);
 
-        var playerCards = field.PlayedCards;
-        foreach (var card in playerCards)
+
+        foreach (var turn in turns)
         {
-            if (card == null) continue;
-            yield return card.OnCardTurnEnd();
+            if (turn is MonoBehaviour mb && mb == null) continue;
+            yield return turn.OnTurnEnd();
             if (CheckForWin())
             {
                 yield return WinSequence();
                 yield break;
             }
-        }
 
-
-        var enemies = G.enemies.GetAliveEnemies();
-        foreach (var enemy in enemies)
-        {
-            var startPos = enemy.transform.position;
-            var endPos = startPos;
-            endPos.x -= 3f;
-            enemy.transform.DOMove(endPos, 0.1f);
-            yield return new WaitForSecondsRealtime(0.1f);
-            enemy.transform.DOMove(startPos, 0.1f);
-
-            G.party.GetRandomMember().TakeDamage(enemy.CurrDmg);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.5f);
         }
 
         yield return FieldClearSequence();
         yield return StartTurnSequence();
     }
+
 
     public bool CheckForWin()
 
@@ -180,6 +190,7 @@ public class Main : MonoBehaviour
             }
         }
     }
+
 
     public void PlayCard(CardInstance card)
     {

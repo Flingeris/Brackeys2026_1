@@ -5,6 +5,7 @@ public interface ICardInteraction
 {
 }
 
+
 public interface IOnCardPlayed : ICardInteraction
 {
     public string desc { get; }

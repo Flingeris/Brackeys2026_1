@@ -16,11 +16,11 @@ public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public CardState state;
     [Header("References")] public DraggableCard Draggable;
     public Hand Hand => G.Hand;
-    
+
     [SerializeField] private TMP_Text cardNameText;
     [SerializeField] private TMP_Text cardDescText;
     [SerializeField] private TMP_Text cardClassText;
-    [SerializeField] private TMP_Text cardTypeText;
+    [SerializeField] private TMP_Text turnIndexText;
 
     [SerializeField] private SpriteRenderer cardSprite;
 
@@ -46,7 +46,6 @@ public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private void UpdateVisuals()
     {
         UpdateClassText();
-        UpdateTypeText();
         UpdateSprite();
         UpdateName();
         UpdateDescription();
@@ -68,10 +67,6 @@ public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         cardClassText.text = state.model.ClassType.ToString()[0].ToString();
     }
 
-    private void UpdateTypeText()
-    {
-        cardTypeText.text = state.model.CardType.ToString()[0].ToString();
-    }
 
     private void UpdateSprite()
     {
@@ -89,7 +84,7 @@ public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     }
 
 
-    public IEnumerator OnCardTurnEnd()
+    public IEnumerator OnTurnEnd()
     {
         var startPos = transform.position;
         var NewPos = startPos;
@@ -108,6 +103,7 @@ public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         yield return new WaitForSeconds(0.5f);
         yield return transform.DOMove(startPos, 0.2f).WaitForCompletion();
     }
+
 
     public void OnPointerEnter(PointerEventData eventData)
     {

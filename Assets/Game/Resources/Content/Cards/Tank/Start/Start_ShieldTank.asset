@@ -10,18 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f4336e87bbc4ab5a1141c39ea65942c, type: 3}
-  m_Name: Start_ShieldAll
+  m_Name: Start_ShieldTank
   m_EditorClassIdentifier: Assembly-CSharp::TankCard
   id: 
   <ItemName>k__BackingField: 
   Sprite: {fileID: 21300000, guid: 5cba5a844cc1e2048b82228c60da019f, type: 3}
   CardType: 1
+  OnPlayedCardInteractions: []
   OnTurnEndInteractions:
-  - rid: 5181037725820911723
+  - rid: 5181037725820911903
   references:
     version: 2
     RefIds:
-    - rid: 5181037725820911723
-      type: {class: ShieldAllInteraction, ns: , asm: Assembly-CSharp}
+    - rid: 5181037725820911903
+      type: {class: AddShieldToClassInteraction, ns: , asm: Assembly-CSharp}
       data:
-        ShieldAmount: 5
+        ShieldAmount: 7
+        ClassType: 2

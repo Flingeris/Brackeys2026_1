@@ -8,11 +8,11 @@ public class CardSlotView : ContainerViewBase<DraggableCard, FieldCardSlot>
 
     private void Start()
     {
-        UpdateText();
+        // UpdateText();
     }
 
-    private void UpdateText()
-    {
-        slotTypeText.text = containerInst.acceptedType.ToShortName();
-    }
+    // private void UpdateText()
+    // {
+    //     slotTypeText.text = containerInst.acceptedType.ToShortName();
+    // }
 }

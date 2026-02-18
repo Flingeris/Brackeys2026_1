@@ -10,8 +10,9 @@ using UnityEngine;
 /// <summary>
 /// Простое окно-эксплорер для ContentDef:
 /// - находит все ассеты ContentDef;
-/// - группирует по типу (ItemDef, DiceDef и т.п.);
-/// - поиск по имени / Id / типу;
+/// - группирует по типу (ItemDef, DiceDef, Card и т.п.);
+/// - для CardModel внутри типа добавляет уровни по CardType (Start/Mid/End);
+/// - поиск по имени / Id / типу / GUID / пути / папке;
 /// - двойной клик пингует ассет в Project.
 /// </summary>
 public class ContentDefExplorerWindow : EditorWindow
@@ -21,14 +22,17 @@ public class ContentDefExplorerWindow : EditorWindow
     {
         public string Guid;
         public string AssetPath;
-        public string FolderPath;      // относительный путь папки (Assets/.../...)
+        public string FolderPath;      // относительный путь папки (Assets/./.)
         public string Name;            // имя ассета
         public string Id;              // ContentDef.Id
-        public string TypeName;        // короткое имя типа (ItemDef, DiceDef...)
+        public string TypeName;        // короткое имя типа (ItemDef, DiceDef и т.п.)
         public ContentDef Asset;       // ссылка на сам ассет
     }
 
-    private class ContentDefTreeItem : TreeViewItem
+    // --- TreeView ---
+
+    // Используем новые дженериковые версии TreeViewItem / TreeView / TreeViewState с int в качестве идентификатора.
+    private class ContentDefTreeItem : TreeViewItem<int>
     {
         public ContentDefInfo Info;
 
@@ -39,13 +43,13 @@ public class ContentDefExplorerWindow : EditorWindow
         }
     }
 
-    private class ContentDefTreeView : TreeView
+    private class ContentDefTreeView : TreeView<int>
     {
         private readonly List<ContentDefInfo> _allItems = new();
         private readonly Dictionary<int, ContentDefInfo> _idToInfo = new();
         private Action<ContentDefInfo> _onItemDoubleClick;
 
-        public ContentDefTreeView(TreeViewState state) : base(state)
+        public ContentDefTreeView(TreeViewState<int> state) : base(state)
         {
             showBorder = true;
             rowHeight = EditorGUIUtility.singleLineHeight + 2;
@@ -59,93 +63,77 @@ public class ContentDefExplorerWindow : EditorWindow
             Reload();
         }
 
-       protected override TreeViewItem BuildRoot()
-{
-    // Корневой элемент (обязателен, id = 0, depth = -1)
-    var root = new TreeViewItem
-    {
-        id = 0,
-        depth = -1,
-        displayName = "Root"
-    };
-
-    _idToInfo.Clear();
-
-    if (_allItems.Count == 0)
-    {
-        root.AddChild(new TreeViewItem(1, 0, "No ContentDef assets found"));
-        return root;
-    }
-
-    // Группируем по типу ContentDef (ItemDef, DiceDef и т.п.)
-    var groups = _allItems
-        .GroupBy(i => i.TypeName)
-        .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase);
-
-    int idCounter = 1;
-
-    foreach (var group in groups)
-    {
-        var groupItem = new TreeViewItem(idCounter++, 0, group.Key);
-        root.AddChild(groupItem);
-
-        // Проверяем, является ли эта группа "карточной"
-        // (ассеты наследуются от CardModel)
-        bool isCardGroup = group.Any(info => info.Asset is CardModel);
-
-        if (isCardGroup)
+        protected override TreeViewItem<int> BuildRoot()
         {
-            // --- Спец-логика для CardModel: подгруппы по CardType ---
-            // Собираем пары (info, cardModel)
-            var cardItems = group
-                .Select(info => new
-                {
-                    Info = info,
-                    Card = info.Asset as CardModel
-                })
-                .Where(x => x.Card != null);
+            // Корневой элемент (обязателен, id = 0, depth = -1)
+            var root = new TreeViewItem<int>(0, -1, "Root");
 
-            // Группируем по CardType (Start/Mid/End/None)
-            var byCardType = cardItems
-                .GroupBy(x => x.Card.CardType)
-                .OrderBy(g => g.Key); // порядок по enum'у
+            _idToInfo.Clear();
 
-            foreach (var cardTypeGroup in byCardType)
+            if (_allItems.Count == 0)
             {
-                var cardType = cardTypeGroup.Key;
-                string cardTypeName = cardType.ToString(); // "Start", "Mid", "End", "None"
+                // Пустой список
+                root.AddChild(new TreeViewItem<int>(1, 0, "No ContentDef assets found"));
+                return root;
+            }
 
-                var cardTypeItem = new TreeViewItem(idCounter++, 1, cardTypeName);
-                groupItem.AddChild(cardTypeItem);
+            // Группируем по типу ContentDef (ItemDef, DiceDef, DamageCard и т.п.)
+            var groups = _allItems
+                .GroupBy(i => i.TypeName)
+                .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase);
 
-                // Внутри CardType сортируем по имени ассета
-                foreach (var x in cardTypeGroup
-                             .OrderBy(x => x.Info.Name, StringComparer.OrdinalIgnoreCase))
+            int idCounter = 1;
+
+            foreach (var group in groups)
+            {
+                var groupItem = new TreeViewItem<int>(idCounter++, 0, group.Key);
+                root.AddChild(groupItem);
+
+                // Проверяем: это группа карточек?
+                bool isCardGroup = group.Any(i => i.Asset is CardModel);
+
+                if (isCardGroup)
                 {
-                    var info = x.Info;
-                    var child = new ContentDefTreeItem(idCounter++, 2, info.Name, info);
-                    cardTypeItem.AddChild(child);
-                    _idToInfo[child.id] = info;
+                    // Внутри класса карт делаем доп.уровень по CardType (Start / Mid / End)
+                    var byCardType = group
+                        .GroupBy(info =>
+                        {
+                            if (info.Asset is CardModel card)
+                                return card.CardType;
+                            return CardType.None;
+                        })
+                        .OrderBy(g => g.Key); // порядок по enum CardType
+
+                    foreach (var typeGroup in byCardType)
+                    {
+                        string headerName = typeGroup.Key.ToString(); // None / Start / Mid / End
+                        var typeItem = new TreeViewItem<int>(idCounter++, 1, headerName);
+                        groupItem.AddChild(typeItem);
+
+                        foreach (var info in typeGroup.OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase))
+                        {
+                            var child = new ContentDefTreeItem(idCounter++, 2, info.Name, info);
+                            typeItem.AddChild(child);
+                            _idToInfo[child.id] = info;
+                        }
+                    }
+                }
+                else
+                {
+                    // Обычные типы как раньше: просто список ассетов
+                    foreach (var info in group.OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase))
+                    {
+                        var child = new ContentDefTreeItem(idCounter++, 1, info.Name, info);
+                        groupItem.AddChild(child);
+                        _idToInfo[child.id] = info;
+                    }
                 }
             }
-        }
-        else
-        {
-            // Обычная логика для всех остальных типов ContentDef
-            foreach (var info in group.OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase))
-            {
-                var child = new ContentDefTreeItem(idCounter++, 1, info.Name, info);
-                groupItem.AddChild(child);
-                _idToInfo[child.id] = info;
-            }
-        }
-    }
 
-    // Обязательный вызов: сетим root и возвращаем
-    SetupDepthsFromParentsAndChildren(root);
-    return root;
-}
-
+            // Обязательный вызов: сетим depth'ы и возвращаем
+            SetupDepthsFromParentsAndChildren(root);
+            return root;
+        }
 
         protected override void RowGUI(RowGUIArgs args)
         {
@@ -188,7 +176,7 @@ public class ContentDefExplorerWindow : EditorWindow
 
     // --- поля окна ---
 
-    private TreeViewState _treeViewState;
+    private TreeViewState<int> _treeViewState;
     private ContentDefTreeView _treeView;
     private SearchField _searchField;
     private string _searchText = string.Empty;
@@ -207,7 +195,7 @@ public class ContentDefExplorerWindow : EditorWindow
     private void OnEnable()
     {
         if (_treeViewState == null)
-            _treeViewState = new TreeViewState();
+            _treeViewState = new TreeViewState<int>();
 
         _treeView ??= new ContentDefTreeView(_treeViewState);
         _searchField ??= new SearchField();
@@ -257,7 +245,10 @@ public class ContentDefExplorerWindow : EditorWindow
     {
         using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
         {
-            _statusScroll = EditorGUILayout.BeginScrollView(_statusScroll, GUILayout.Height(EditorGUIUtility.singleLineHeight * 2));
+            _statusScroll = EditorGUILayout.BeginScrollView(
+                _statusScroll,
+                GUILayout.Height(EditorGUIUtility.singleLineHeight * 2)
+            );
 
             if (_allDefs.Count == 0)
             {
@@ -265,8 +256,14 @@ public class ContentDefExplorerWindow : EditorWindow
             }
             else
             {
-                EditorGUILayout.LabelField("Hint: double-click a definition to ping it in the Project window.", EditorStyles.miniLabel);
-                EditorGUILayout.LabelField("Search works by Name, Id and Type name.", EditorStyles.miniLabel);
+                EditorGUILayout.LabelField(
+                    "Hint: double-click a definition to ping it in the Project window.",
+                    EditorStyles.miniLabel
+                );
+                EditorGUILayout.LabelField(
+                    "Search works by Name, Id, Type name, GUID, path and folder.",
+                    EditorStyles.miniLabel
+                );
             }
 
             EditorGUILayout.EndScrollView();
@@ -315,11 +312,20 @@ public class ContentDefExplorerWindow : EditorWindow
         if (!string.IsNullOrWhiteSpace(_searchText))
         {
             var search = _searchText.Trim();
+
             result = result.Where(i =>
-                i.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                i.Id.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                i.TypeName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                i.FolderPath.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0
+                (!string.IsNullOrEmpty(i.Name) &&
+                 i.Name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                (!string.IsNullOrEmpty(i.Id) &&
+                 i.Id.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                (!string.IsNullOrEmpty(i.TypeName) &&
+                 i.TypeName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                (!string.IsNullOrEmpty(i.Guid) &&
+                 i.Guid.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                (!string.IsNullOrEmpty(i.AssetPath) &&
+                 i.AssetPath.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                (!string.IsNullOrEmpty(i.FolderPath) &&
+                 i.FolderPath.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
             );
         }
 
@@ -328,11 +334,11 @@ public class ContentDefExplorerWindow : EditorWindow
 
     private void OnItemDoubleClicked(ContentDefInfo info)
     {
-        if (info.Asset == null)
-            return;
-
-        Selection.activeObject = info.Asset;
-        EditorGUIUtility.PingObject(info.Asset);
+        if (info.Asset != null)
+        {
+            EditorGUIUtility.PingObject(info.Asset);
+            Selection.activeObject = info.Asset;
+        }
     }
 }
 #endif

@@ -16,12 +16,14 @@ MonoBehaviour:
   <ItemName>k__BackingField: Last chance
   Sprite: {fileID: 21300000, guid: e9490755114a5fa47818c7cd0004da33, type: 3}
   CardType: 3
+  OnPlayedCardInteractions: []
   OnTurnEndInteractions:
-  - rid: 5181037725820911756
+  - rid: 5181037725820911886
   references:
     version: 2
     RefIds:
-    - rid: 5181037725820911756
-      type: {class: AdditionalHealForEachHealCardOnFieldInteraction, ns: , asm: Assembly-CSharp}
+    - rid: 5181037725820911886
+      type: {class: HealAllForEachClassCardInteraction, ns: , asm: Assembly-CSharp}
       data:
         AdditionalHealAmount: 2
+        classCardsType: 1

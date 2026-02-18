@@ -292,7 +292,7 @@ MonoBehaviour:
   <AcceptedDrag>k__BackingField: {fileID: 0}
   IsLocking: 1
   AnimDragOnAccept: 1
-  <acceptedType>k__BackingField: 0
+  turnIndexText: {fileID: 7364711930023346930}
 --- !u!61 &7160276310934845352
 BoxCollider2D:
   m_ObjectHideFlags: 0

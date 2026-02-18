@@ -8,7 +8,7 @@ public static class GameUtils
     /// Returns a random element from the collection.
     /// Throws if the collection is null or empty.
     /// </summary>
-    public static T GetRandomElement<T>( this IEnumerable<T> collection)
+    public static T GetRandomElement<T>(this IEnumerable<T> collection)
     {
         if (collection == null)
             throw new ArgumentNullException(nameof(collection));
@@ -32,7 +32,7 @@ public static class GameUtils
     /// <summary>
     /// Shuffles the list in place using Fisher-Yates algorithm.
     /// </summary>
-    public static void Shuffle<T>(IList<T> list)
+    public static IList<T> Shuffle<T>(this IList<T> list)
     {
         if (list == null)
             throw new ArgumentNullException(nameof(list));
@@ -42,6 +42,8 @@ public static class GameUtils
             int j = UnityEngine.Random.Range(i, list.Count);
             (list[i], list[j]) = (list[j], list[i]);
         }
+
+        return list;
     }
 
     /// <summary>
