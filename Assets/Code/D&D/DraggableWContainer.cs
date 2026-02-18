@@ -39,7 +39,7 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
         Owner?.OnDragEnter(selfCasted);
     }
 
-    public virtual void SetContainer(TC newContainer)
+    protected virtual void SetContainer(TC newContainer)
     {
         CurrContainer = newContainer;
 
