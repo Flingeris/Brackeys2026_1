@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 
@@ -13,7 +14,7 @@ public enum InteractionType
 
 
 [Serializable]
-public class ActionDef
+public class ActionDef : ITooltipInfo
 {
     public virtual InteractionType Type => GetActionType();
     [SerializeReference, SubclassSelector] public List<IOnEnemyTurnEnd> OnEndTurnInteractions;
@@ -35,6 +36,28 @@ public class ActionDef
         return InteractionType.None;
     }
 
+    public string GetDescription()
+    {
+        if (OnEndTurnInteractions == null || OnEndTurnInteractions.Count == 0)
+            return string.Empty;
+
+        var sb = new StringBuilder();
+
+        for (int i = 0; i < OnEndTurnInteractions.Count; i++)
+        {
+            var interaction = OnEndTurnInteractions[i];
+            if (interaction == null)
+                continue;
+
+            if (sb.Length > 0)
+                sb.Append('\n');
+
+            sb.Append(interaction.desc);
+        }
+
+        return sb.ToString();
+    }
+
     public static Sprite GetSprite(InteractionType type)
     {
         switch (type)
@@ -53,4 +76,7 @@ public class ActionDef
 
         return null;
     }
+
+    public string ItemName => string.Empty;
+    public string Description => GetDescription();
 }

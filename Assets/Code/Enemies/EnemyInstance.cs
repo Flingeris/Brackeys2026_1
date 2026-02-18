@@ -21,6 +21,8 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     public int TurnOrder { get; private set; }
     public int CurrTurnIndex = -1;
 
+    public ActionDef nextAction;
+
 
     public CombatGroup combatGroup;
 
@@ -66,7 +68,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         actionIconImage.enabled = false;
         actionValueText.SetText("");
 
-        var nextAction = GetAction(CurrTurnIndex + 1, model.EndTurnActions);
+        nextAction = GetAction(CurrTurnIndex + 1, model.EndTurnActions);
         if (nextAction == null || nextAction.Type == InteractionType.None) return;
 
         var actionSprite = ActionDef.GetSprite(nextAction.Type);
@@ -112,7 +114,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         if (remainDmg > 0)
         {
             CurrHP = Mathf.Max(0, CurrHP - remainDmg);
-            // G.audioSystem.Play(SoundId.SFX_PlayerDamaged);
+            G.audioSystem.Play(SoundId.SFX_EnemyDamaged);
         }
         else
         {

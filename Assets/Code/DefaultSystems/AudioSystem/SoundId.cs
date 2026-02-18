@@ -7,6 +7,7 @@
     SFX_Typing = 2,
     SFX_PlayerDamaged = 3,
     SFX_DamageBlocked = 4,
+    SFX_EnemyDamaged = 5,
     
 
     //Music
@@ -17,5 +18,5 @@
     Music_Bonfire = 104,
 
     //Ambient
-    Ambient_Forest = 201
+    Ambient_Sewer = 201
 }

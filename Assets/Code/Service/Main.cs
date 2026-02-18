@@ -47,6 +47,7 @@ public class Main : MonoBehaviour
        while (!ServiceMain.ServicesReady) yield return null;
 #endif
         yield return LoadLvl();
+        G.audioSystem.Play(SoundId.Ambient_Sewer);
 
         StartTurn();
     }
@@ -69,6 +70,7 @@ public class Main : MonoBehaviour
         yield break;
     }
 
+    
 
     public void StartTurn()
     {

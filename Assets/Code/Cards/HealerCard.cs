@@ -92,3 +92,20 @@ public class HealAllInteraction : IOnCardEndTurn
         yield break;
     }
 }
+
+[Serializable]
+public class TargetRandomHealInteraction : IOnCardEndTurn
+{
+    public int MinHealAmount;
+    public int MaxHealAmount;
+    public string desc => "+ " + MinHealAmount + "-" + MaxHealAmount + " hp to target ally";
+
+
+    public IEnumerator OnEndTurn(CardState state)
+    {
+        var target = G.main.Target;
+        if (target == null) yield break;
+        var heal = UnityEngine.Random.Range(MinHealAmount, MaxHealAmount);
+        target.Heal(heal);
+    }
+}

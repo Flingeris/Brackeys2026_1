@@ -45,13 +45,19 @@ MonoBehaviour:
     Volume: 0.442
   - soundId: 201
     Clips:
-    - {fileID: 8300000, guid: c6b0e5aa19548f642b871b7fc6c3591c, type: 3}
+    - {fileID: 8300000, guid: 13fc4d790cdfcd24b86abe204b36289c, type: 3}
     type: 1
     Loop: 1
-    Volume: 0.442
+    Volume: 0.117
   - soundId: 4
     Clips:
     - {fileID: 8300000, guid: 950ad11f49aa440409d56259736ba1fe, type: 3}
     type: 0
     Loop: 0
     Volume: 0.393
+  - soundId: 5
+    Clips:
+    - {fileID: 8300000, guid: 15cc2e2a42ba403459dc15f0972a7d53, type: 3}
+    type: 0
+    Loop: 0
+    Volume: 0.139

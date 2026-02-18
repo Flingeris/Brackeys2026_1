@@ -293,6 +293,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyInstance
   model: {fileID: 0}
   CurrTurnIndex: -1
+  nextAction:
+    OnEndTurnInteractions: []
+    Amount: 0
   combatGroup: {fileID: 0}
   hpValueText: {fileID: 1072367902137500544}
   highlight: {fileID: 9140077641631171752}
@@ -300,6 +303,9 @@ MonoBehaviour:
   turnIndexText: {fileID: 2135744159988830904}
   actionIconImage: {fileID: 276410315015498780}
   actionValueText: {fileID: 4865592169043401209}
+  references:
+    version: 2
+    RefIds: []
 --- !u!61 &5389942328359969195
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -900,6 +906,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6419105476377619852}
   - component: {fileID: 276410315015498780}
+  - component: {fileID: 5568745953294185589}
+  - component: {fileID: 4004750724394108003}
+  - component: {fileID: 57871144762388387}
   m_Layer: 0
   m_Name: IntentIconImage
   m_TagString: Untagged
@@ -982,3 +991,64 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!58 &5568745953294185589
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7773560171860067397}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.265625
+--- !u!114 &4004750724394108003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7773560171860067397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af0bc415ee64d65a96ccd71b420ae6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ActionTooltipGiver
+  enemy: {fileID: 2012501916991670793}
+--- !u!114 &57871144762388387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7773560171860067397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e40f1677e12157049a78a87b2549b93d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TooltipInteractor

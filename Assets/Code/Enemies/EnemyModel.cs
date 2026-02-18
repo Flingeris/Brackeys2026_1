@@ -74,7 +74,7 @@ public class DealDamageInteraction : IOnEnemyTurnEnd, IAmountInteraction
 public class DealDamageToRandomTarget : IOnEnemyTurnEnd, IAmountInteraction
 {
     public int damageAmount;
-    public string desc => "Will deal " + damageAmount + " to random target";
+    public string desc => "Will deal " + damageAmount + " dmg to random target";
 
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
@@ -139,3 +139,4 @@ public class HealAllAllies : IOnEnemyTurnEnd, IAmountInteraction
         return HealAmount;
     }
 }
+
