@@ -1222,10 +1222,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4468517225334480028, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: [{targetCorrespondingSourceObject: {fileID: 4468517225334480028, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}, insertIndex: -1, addedObject: {fileID: 0}}]
   m_SourcePrefab: {fileID: 100100000, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
 --- !u!4 &742355827 stripped
 Transform:
@@ -2193,7 +2190,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5789376279559989579, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
       propertyPath: acceptedType
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5789376279559989579, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
       propertyPath: <Speed>k__BackingField
@@ -2210,10 +2207,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4468517225334480028, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: [{targetCorrespondingSourceObject: {fileID: 4468517225334480028, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}, insertIndex: -1, addedObject: {fileID: 0}}]
   m_SourcePrefab: {fileID: 100100000, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

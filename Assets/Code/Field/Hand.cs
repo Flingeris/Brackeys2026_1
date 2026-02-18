@@ -84,10 +84,6 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
             pos.y = hoveredBottomY;
         }
     }
-
-
-
-
     
     public void UpdateCardsPositions()
     {
@@ -123,9 +119,7 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
             );
         }
     }
-
-
-
+    
     public void Draw()
     {
         var allCards = CMS.GetAll<CardModel>();
@@ -134,8 +128,7 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
         cardInst.SetModel(cardModel);
         cardInst.Draggable.SetOwner(this);
     }
-
-
+    
     public void Clear()
     {
         for (int i = 0; i < cardsInHand.Count; i++)
@@ -157,8 +150,10 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
         if (cardsInHand.Contains(card)) return;
 
         cardsInHand.Add(card);
-        card.transform.SetParent(cardsParent, worldPositionStays: false);
+        card.transform.SetParent(cardsParent, worldPositionStays: true);
     }
+
+
 
     public void OnDragExit(DraggableCard d)
     {

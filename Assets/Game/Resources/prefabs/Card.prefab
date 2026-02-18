@@ -105,8 +105,12 @@ MonoBehaviour:
   hoverScale: 1.7
   scaleDuration: 0.12
   scaleEase: 27
+  slotHoverScale: 0.4
+  slotHoverLift: 0.7
+  slotHoverTiltX: -30
   hoverSortingBoost: 200
   bringToFrontInUIIfNoSortingGroup: 1
+  visual: {fileID: 1289456653016150302}
 --- !u!1 &4520034363213131603
 GameObject:
   m_ObjectHideFlags: 0
