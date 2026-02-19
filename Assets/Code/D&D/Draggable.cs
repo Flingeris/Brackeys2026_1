@@ -29,6 +29,8 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
     protected Camera mainCamera;
     protected Vector3 offset;
     protected Vector3 origin;
+    
+    public static bool DisableHoverGlobal = false;
 
 
     public float HoverLockUntil { get; protected set; } = 0.2f;
@@ -47,7 +49,17 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
     {
         if (!CanDrag()) return;
         if (G.HUD != null && G.HUD.tooltip != null) G.HUD.tooltip.PushBlock();
-
+        
+        if (IsReturning)
+        {
+            transform.DOKill();
+            IsReturning = false;
+        }
+        else
+        {
+            transform.DOKill();
+        }
+        
         G.currentDrag = this;
         IsDragging = true;
 
@@ -56,7 +68,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
         if (sortGroup != null)
         {
             origSortOrder = sortGroup.sortingOrder;
-            sortGroup.sortingOrder = 1000;
+            sortGroup.sortingOrder = 9999;
         }
 
         origin = transform.position;
@@ -64,9 +76,11 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
         var worldPos = mainCamera.ScreenToWorldPoint(eventData.position);
         worldPos.z = transform.position.z;
         offset = transform.position - worldPos;
-
+        
+        DisableHoverGlobal = true;
         OnDragBegin?.Invoke();
     }
+
 
     protected virtual bool CanDrag()
     {
@@ -95,7 +109,8 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
         if (!CanDrag()) return;
         LockHover();
         Release();
-
+        
+        DisableHoverGlobal = false;
         OnDropped(eventData);
     }
 
@@ -128,7 +143,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
     }
 
 
-    public void LockHover(float seconds = 1f)
+    public void LockHover(float seconds = 0.3f)
     {
         HoverLockUntil = Mathf.Max(HoverLockUntil, Time.time + seconds);
     }

@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,10 +10,9 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
     [SerializeField] private Transform cardsParent;
 
     private const float PLACEMENT_X_RANGE = 1.75f;
-
-    [Header("Hover layout")] [SerializeField]
-    private float hoveredBottomY = -3f; // локальный Y для наведённой карты
-
+    
+    [Header("Hover layout")]
+    [SerializeField] private float hoveredBottomY = -3f; // локальный Y для наведённой карты
     [SerializeField] private float hoverSpread = 0.6f;
     [SerializeField] private float hoverSpreadFar = 0.3f;
     [SerializeField] private float layoutLerpSpeed = 12f;
@@ -28,7 +28,6 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
 
     public void ClearHovered(CardInstance card)
     {
-        // очищаем только если очищает именно текущий hover
         if (_hoveredCard == card)
             _hoveredCard = null;
     }
@@ -42,8 +41,6 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
     {
         if (cardsInHand.Count > 0) UpdateCardsPositions();
     }
-
-    // 1) Базовая раскладка веером
     private void GetBaseLayout(int index, out Vector3 pos, out Quaternion rot)
     {
         float t = (cardsInHand.Count == 1)
@@ -65,63 +62,58 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
             return;
 
         int delta = index - hoveredIndex;
-
-        // 1) раздвигаем соседей по X
+        
         float extraX = 0f;
 
-        if (delta == -1) extraX -= hoverSpread;
-        else if (delta == 1) extraX += hoverSpread;
-        else if (delta <= -2) extraX -= hoverSpreadFar;
-        else if (delta >= 2) extraX += hoverSpreadFar;
+        if (delta == -1)       extraX -= hoverSpread;
+        else if (delta == 1)   extraX += hoverSpread;
+        else if (delta <= -2)  extraX -= hoverSpreadFar;
+        else if (delta >= 2)   extraX += hoverSpreadFar;
 
         pos.x += extraX;
-
-        // 2) если это наведённая карта — особая раскладка
+        
         if (index == hoveredIndex)
         {
-            // строго вертикально
             rot = Quaternion.identity;
-
-            // по нижней линии (локальный Y руки)
+            
             pos.y = hoveredBottomY;
         }
     }
-
-    public void UpdateCardsPositions()
+    
+    private void UpdateCardsPositions()
     {
-        int hoveredIndex = -1;
-        if (_hoveredCard != null)
-        {
-            hoveredIndex = cardsInHand.IndexOf(_hoveredCard);
-        }
+        if (cardsInHand.Count == 0)
+            return;
+
+        int hoveredIndex = _hoveredCard != null 
+            ? cardsInHand.IndexOf(_hoveredCard) 
+            : -1;
 
         for (int i = 0; i < cardsInHand.Count; i++)
         {
-            var c = cardsInHand[i];
-            if (c == null) continue;
-
-            if (c.Draggable != null &&
-                (c.Draggable.IsDragging || c.Draggable.IsReturning))
+            var card = cardsInHand[i];
+            if (card == null) 
                 continue;
 
-            GetBaseLayout(i, out Vector3 targetPos, out Quaternion targetRot);
+            var dr = card.Draggable;
 
-            ApplyHoverOffset(i, hoveredIndex, ref targetPos, ref targetRot);
+            // важно: НЕ пропускать IsReturning, иначе карта может навсегда остаться вне layout’а
+            if (dr != null && dr.IsDragging)
+                continue;
 
-            c.transform.localPosition = Vector3.Lerp(
-                c.transform.localPosition,
-                targetPos,
-                layoutLerpSpeed * Time.deltaTime
-            );
+            GetBaseLayout(i, out var localPos, out var localRot);
+            ApplyHoverOffset(i, hoveredIndex, ref localPos, ref localRot);
 
-            c.transform.localRotation = Quaternion.Lerp(
-                c.transform.localRotation,
-                targetRot,
-                layoutLerpSpeed * Time.deltaTime
-            );
+            var targetWorldPos = cardsParent.TransformPoint(localPos);
+            var targetWorldRot = cardsParent.rotation * localRot;
+
+            var t = card.transform;
+            float s = layoutLerpSpeed * Time.deltaTime;
+            t.position = Vector3.Lerp(t.position, targetWorldPos, s);
+            t.rotation = Quaternion.Slerp(t.rotation, targetWorldRot, s);
         }
     }
-
+    
     public void Draw()
     {
         var allCards = CMS.GetAll<CardModel>();
@@ -137,8 +129,7 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
         {
             var d = cardsInHand[i];
             if (d == null) continue;
-
-            // G.PileManager.Discard(d.DiceDef);
+            
             Destroy(d.gameObject);
             cardsInHand[i] = null;
         }
@@ -237,11 +228,31 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
     public void OnDragEnter(DraggableCard d)
     {
         var card = d.instance;
-        if (cardsInHand.Contains(card)) return;
+        if (!cardsInHand.Contains(card))
+            cardsInHand.Add(card);
 
-        cardsInHand.Add(card);
-        card.transform.SetParent(cardsParent, worldPositionStays: true);
+        var t = card.transform;
+
+        // 1) Гасим всё, что могло двигать root
+        t.DOKill();
+        d.transform.DOKill();
+
+        // 2) Сажаем строго под hand-parent (без сохранения world)
+        t.SetParent(cardsParent, false);
+
+        // 3) Обнуляем локальные координаты, дальше рука сама разложит
+        t.localPosition = Vector3.zero;
+        t.localRotation = Quaternion.identity;
+        
+        // --- RESET VISUAL HOVER ---
+        var hover = card.GetComponentInChildren<CardHoverVFX>();
+        if (hover != null)
+        {
+            hover.ResetVisual(); // мы сейчас напишем метод
+        }
+
     }
+
 
 
     public void OnDragExit(DraggableCard d)
