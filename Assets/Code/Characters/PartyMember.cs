@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using DG.Tweening;
 using TMPro;
@@ -28,6 +29,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
     public int MaxHP => state.MaxHP;
     public int CurrHP => state.CurrHP;
 
+    public List<IStatusEffectInteraction> statusEffects;
 
     [Header("References")] [SerializeField]
     private TMP_Text hpText;
@@ -36,6 +38,26 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
     [SerializeField] private SpriteRenderer shieldIconSprite;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private SpriteRenderer highlight;
+
+
+    public int StatusTypeStacks(StatusEffectType type)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AddStatus(IStatusEffectInteraction statusEffect, int stacks)
+    {
+        if (statusEffects.Contains(statusEffect))
+        {
+            var index = statusEffects.IndexOf(statusEffect);
+            statusEffects[index].AddStacks(stacks);
+        }
+        else
+        {
+            statusEffects.Add(statusEffect);
+            statusEffect.AddStacks(stacks);
+        }
+    }
 
 
     public void SetTarget(bool b)

@@ -4,35 +4,40 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using TMPro;
-using UnityEditor.Rendering;
+using Unity.IntegerTime;
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.Animations;
 using UnityEngine.EventSystems;
 
 public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointerClickHandler
 {
     public EnemyModel model;
-    public int MaxHP { get; private set; }
     public int Speed { get; private set; }
+    public int MaxHP { get; private set; }
+    public int TurnOrder { get; private set; }
     public int CurrHP { get; private set; }
     public bool IsDead { get; private set; }
     public int CurrShield { get; private set; }
     public bool IsPossibleTarget { get; private set; }
-    public int TurnOrder { get; private set; }
     public int CurrTurnIndex = -1;
 
+
+    public List<IStatusEffectInteraction> statusEffects = new();
+
     public ActionDef nextAction;
-
-
     public CombatGroup combatGroup;
 
+    [Header("Visual References")] [SerializeField]
+    private TMP_Text hpValueText;
 
-    [SerializeField] private TMP_Text hpValueText;
     [SerializeField] private SpriteRenderer highlight;
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private TMP_Text turnIndexText;
     [SerializeField] private SpriteRenderer actionIconImage;
     [SerializeField] private TMP_Text actionValueText;
+
+    [SerializeField] private SpriteRenderer statusEffectsIcons;
+    [SerializeField] private TMP_Text statusEffectsText;
 
 
     private void Start()
@@ -60,6 +65,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         UpdateHpText();
         UpdateSprite();
         UpdateNextActionIcon();
+        UpdateStatusIcon();
     }
 
 
@@ -83,6 +89,40 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         }
     }
 
+    public int StatusTypeStacks(StatusEffectType type)
+    {
+        var stacks = 0;
+        foreach (var statusEffectInteraction in statusEffects)
+        {
+            if (statusEffectInteraction.Type == type)
+            {
+                stacks += statusEffectInteraction.Stacks;
+            }
+        }
+
+        return stacks;
+    }
+
+    private void UpdateStatusIcon()
+    {
+        statusEffectsIcons.enabled = false;
+        statusEffectsText.SetText("");
+
+        var effect = statusEffects.FirstOrDefault();
+        if (effect == null || effect.Type == StatusEffectType.None) return;
+
+        var sprite = effect.GetSprite();
+        if (sprite == null) return;
+
+        statusEffectsIcons.enabled = true;
+        statusEffectsIcons.sprite = sprite;
+
+        if (effect.Stacks != 0)
+        {
+            statusEffectsText.SetText(effect.Stacks.ToString());
+        }
+    }
+
     private void UpdateSprite()
     {
         if (sprite == null) return;
@@ -97,10 +137,20 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         hpValueText.SetText(CurrHP.ToString() + " / " + model.StartingHealth.ToString());
     }
 
+
     public void TakeDamage(int dmgAmount)
     {
         if (IsDead) return;
         if (dmgAmount <= 0) return;
+
+        foreach (var statusEffectInteraction in statusEffects)
+        {
+            if (statusEffectInteraction is ITakenDamageFilter dmgFilter)
+            {
+                dmgAmount = dmgFilter.OnBeforeDamageTakenTick(dmgAmount);
+            }
+        }
+
 
         var remainDmg = dmgAmount;
 
@@ -165,6 +215,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         {
             IsDead = true;
             combatGroup.CheckMemberDeath(this);
+            StopAllCoroutines();
             Destroy(gameObject);
         }
     }
@@ -172,6 +223,26 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     public void Kill()
     {
         TakeDamage(CurrHP);
+    }
+
+
+    public void AddStatus(IStatusEffectInteraction statusEffect, int stacks)
+    {
+        var existing = statusEffects.FirstOrDefault(s => s.GetType() == statusEffect.GetType());
+
+        if (existing != null)
+        {
+            existing.AddStacks(stacks);
+            Debug.Log($"Added stack {stacks} to {statusEffect.GetType()}");
+        }
+        else
+        {
+            var instance = (IStatusEffectInteraction)Activator.CreateInstance(statusEffect.GetType());
+            instance.AddStacks(stacks);
+            statusEffects.Add(instance);
+        }
+
+        UpdateStatusIcon();
     }
 
     public void SetTurnIndex(int index)
@@ -196,6 +267,24 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     public IEnumerator OnTurnEnd()
     {
         CurrTurnIndex++;
+
+
+        foreach (var status in statusEffects)
+        {
+            if (status is IOnTurnEndStatusInteraction endStatus)
+            {
+                yield return endStatus.OnTurnEndTick(this);
+                yield return new WaitForSeconds(0.2f);
+                if (IsDead) yield break;
+            }
+
+            status.Tick();
+        }
+
+        statusEffects.RemoveAll(s => s.Stacks <= 0);
+        UpdateStatusIcon();
+
+        if (IsDead || !gameObject) yield break;
 
         var startPos = transform.position;
         var endPos = startPos;

@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -59,5 +61,22 @@ public abstract class CardModel : ContentDef, ITooltipInfo
         }
 
         return sb.ToString();
+    }
+}
+
+
+[Serializable]
+public class AddStatusToTargetInteraction : IOnCardEndTurn
+{
+    [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
+    public int stacksToAdd;
+
+    public string desc => "Apply " +stacksToAdd +" Stacks of " + statusToAdd.GetType() + " to target";
+
+    public IEnumerator OnEndTurn(CardState state)
+    {
+        var target = G.main.Target;
+        if (target == null) yield break;
+        target.AddStatus(statusToAdd, stacksToAdd);
     }
 }

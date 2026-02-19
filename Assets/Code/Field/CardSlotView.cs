@@ -16,3 +16,6 @@ public class CardSlotView : ContainerViewBase<DraggableCard, FieldCardSlot>
     //     slotTypeText.text = containerInst.acceptedType.ToShortName();
     // }
 }
+
+
+

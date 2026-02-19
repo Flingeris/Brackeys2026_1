@@ -80,11 +80,13 @@ public class Main : MonoBehaviour
     private IEnumerator StartTurnSequence()
     {
         turns = BuildTurnOrder();
+        //
+        // for (int i = 0; i < DrawSize; i++)
+        // {
+        //     G.Hand.Draw();
+        // }
 
-        for (int i = 0; i < DrawSize; i++)
-        {
-            G.Hand.Draw();
-        }
+        G.Hand.DrawControlledHand(DrawSize);
 
         G.HUD.SetEndTurnInteractable(true);
 

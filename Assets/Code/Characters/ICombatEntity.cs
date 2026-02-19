@@ -1,6 +1,7 @@
 public interface ICombatEntity
 {
     int MaxHP { get; }
+
     // int Speed { get; }
     int CurrShield { get; }
     int CurrHP { get; }
@@ -15,4 +16,9 @@ public interface ICombatEntity
     void AddShield(int amount);
 
     void Kill();
+
+
+    public int StatusTypeStacks(StatusEffectType type);
+
+    void AddStatus(IStatusEffectInteraction statusEffect, int stacks);
 }

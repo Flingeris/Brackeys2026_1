@@ -15,14 +15,14 @@ MonoBehaviour:
   id: FastEnemy
   <ItemName>k__BackingField: 
   <Description>k__BackingField: 
-  StartingHealth: 12
+  StartingHealth: 20
   preferPos: -1
   Speed: 10
-  Sprite: {fileID: 21300000, guid: c5e3eaf2dbfa8e541af265c57df1601e, type: 3}
+  Sprite: {fileID: 21300000, guid: 74cdbded02725d14aad19a51ee1cd584, type: 3}
   EndTurnActions:
   - OnEndTurnInteractions:
     - rid: 5181037750336094480
-    Amount: 0
+    Amount: 4
   references:
     version: 2
     RefIds:
