@@ -58,7 +58,6 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         if (visual == null)
         {
-            // Назови ребёнка CardVisual/Visual и подцепи его
             var t = transform.Find("Visual");
             visual = t != null ? t : transform;
         }
@@ -79,63 +78,58 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private bool IsInSlot()
     {
         return _draggableCard != null &&
-               _draggableCard.CurrContainer != null; // или твой класс слота
+               _draggableCard.CurrContainer != null;
     }
 
 
     private void HandleDragBegin()
     {
         _isDragging = true;
-
-        // 1) перестаём считать карту hovered в руке
+        
         _card?.Hand?.ClearHovered(_card);
-
-        // 2) убиваем все твины визуала
+        
         _scaleTween?.Kill();
         _slotMoveTween?.Kill();
         _slotRotateTween?.Kill();
-
-        // если где-то остался DOKill — лучше точечно, но можно и так:
-        // visual.DOKill();  // (если ты больше не используешь global kill для скейла)
-
-        // 3) жёстко возвращаем визуал в базу, чтобы карта “взялась” нормальной
-        visual.localScale = _baseScale;
+        
         visual.localPosition = _visualBaseLocalPos;
         visual.localRotation = _visualBaseLocalRot;
+        
 
-        // 4) на всякий случай возвращаем порядок отрисовки
-        RestoreOrder();
     }
 
 
     private void HandleDragEnd()
     {
         _isDragging = false;
-
-        // На всякий случай глушим твины
+        
         _scaleTween?.Kill();
         _slotMoveTween?.Kill();
         _slotRotateTween?.Kill();
         visual.DOKill();
-
-        // Жёстко возвращаем визуал в базу
+        
         visual.localScale = _baseScale;
         visual.localPosition = _visualBaseLocalPos;
         visual.localRotation = _visualBaseLocalRot;
-
-        // И порядок отрисовки (если нужно)
+        
         RestoreOrder();
     }
 
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (Draggable.DisableHoverGlobal)
+            return;
+        
+        if (G.currentDrag != null)
+            return;
+        
+        
         if (Time.time < _draggable.HoverLockUntil) return;
         if (_isDragging) return;
 
         if (IsInSlot())
         {
-            // --- Ховер для карты в слоте ---
             visual.DOKill();
             PlaySlotHoverScale(true);
 
@@ -153,8 +147,7 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             BringToFront();
             return;
         }
-
-        // --- Обычный ховер для карты в руке ---
+        
         PlayHandHoverScale(true);
         BringToFront();
         _card?.Hand?.SetHovered(_card);
@@ -163,12 +156,17 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (Draggable.DisableHoverGlobal)
+            return;
+        
         if (Time.time < _draggable.HoverLockUntil) return;
         if (_isDragging) return;
 
         if (IsInSlot())
         {
-            // откат слота
+            if (G.currentDrag != null)
+                return;
+            
             visual.DOKill();
             PlaySlotHoverScale(false);
 
@@ -180,8 +178,7 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             RestoreOrder();
             return;
         }
-
-        // откат руки
+        
         PlayHandHoverScale(false);
         RestoreOrder();
         _card?.Hand?.ClearHovered(_card);
@@ -251,4 +248,19 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             .SetEase(scaleEase)
             .SetUpdate(true);
     }
+    
+    public void ResetVisual()
+    {
+        _scaleTween?.Kill();
+        _slotMoveTween?.Kill();
+        _slotRotateTween?.Kill();
+
+        visual.localScale = _baseScale;
+        visual.localPosition = _visualBaseLocalPos;
+        visual.localRotation = _visualBaseLocalRot;
+
+        RestoreOrder();
+    }
+    
+
 }

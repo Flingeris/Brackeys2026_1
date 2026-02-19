@@ -49,6 +49,7 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
         }
     }
 
+
     protected override void OnDropped(PointerEventData eventData)
     {
         base.OnDropped(eventData);

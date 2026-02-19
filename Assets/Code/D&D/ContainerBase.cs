@@ -18,9 +18,11 @@ public abstract class ContainerBase<TDraggable> : MonoBehaviour, IDraggableConta
         oldD = AcceptedDrag;
 
         if (!CanAccept(d)) return false;
+        
+        d.transform.DOKill();
 
         AcceptedDrag = d;
-        //d.transform.SetParent(this.transform, worldPositionStays: true);
+
         if (gameObject.activeInHierarchy && AnimDragOnAccept)
         {
             d.transform.DOMove(transform.position, 0.15f).SetId("Container moving draggable to centre");
@@ -35,6 +37,7 @@ public abstract class ContainerBase<TDraggable> : MonoBehaviour, IDraggableConta
         OnContainerChanged?.Invoke();
         return true;
     }
+
 
     public virtual bool TryRemove(TDraggable d)
     {
