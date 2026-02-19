@@ -6,8 +6,13 @@
     SFX_LevelTransiton = 1,
     SFX_Typing = 2,
     SFX_PlayerDamaged = 3,
-    SFX_DamageBlocked = 4,
-    SFX_EnemyDamaged = 5,
+    SFX_PlayerShielded = 4,
+    SFX_PlayerHealed = 5,
+    SFX_DamageBlocked = 6,
+    SFX_EnemyDamaged = 7,
+    SFX_CardDraw = 8,
+    SFX_CardGrab = 9,
+    SFX_CardSwap = 10,
     
 
     //Music

@@ -1,0 +1,18 @@
+[33m95eed5f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{Thu Feb 19 22:13:58 2026}: reset: moving to 6eae803^
+[33m425af47[m HEAD@{Thu Feb 19 22:13:12 2026}: reset: moving to HEAD~1
+[33m95eed5f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{Thu Feb 19 22:11:20 2026}: checkout: moving from VFX to main
+[33m6eae803[m[33m ([m[1;32mVFX[m[33m)[m HEAD@{Thu Feb 19 22:10:12 2026}: reset: moving to 6eae803
+[33m043fdcc[m[33m ([m[1;31morigin/VFX[m[33m)[m HEAD@{Thu Feb 19 22:02:05 2026}: checkout: moving from main to VFX
+[33m95eed5f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{Thu Feb 19 22:02:01 2026}: reset: moving to HEAD
+[33m95eed5f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{Thu Feb 19 21:56:36 2026}: reset: moving to HEAD
+[33m95eed5f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{Thu Feb 19 21:55:23 2026}: reset: moving to HEAD~1
+[33m6eae803[m[33m ([m[1;32mVFX[m[33m)[m HEAD@{Thu Feb 19 19:43:46 2026}: commit: end with d&d animations
+[33m95eed5f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{Thu Feb 19 13:38:15 2026}: pull: Fast-forward
+[33m582b688[m HEAD@{Thu Feb 19 13:37:59 2026}: checkout: moving from VFX to main
+[33m043fdcc[m[33m ([m[1;31morigin/VFX[m[33m)[m HEAD@{Thu Feb 19 13:37:57 2026}: reset: moving to HEAD
+[33m043fdcc[m[33m ([m[1;31morigin/VFX[m[33m)[m HEAD@{Wed Feb 18 22:08:25 2026}: commit: add card movements between hand and slots
+[33m87a01a0[m HEAD@{Tue Feb 17 22:33:00 2026}: commit: add hand and card animations
+[33m582b688[m HEAD@{Tue Feb 17 22:32:40 2026}: reset: moving to HEAD~1
+[33m901e0e1[m HEAD@{Tue Feb 17 22:32:05 2026}: commit: add hand and card animations
+[33m582b688[m HEAD@{Tue Feb 17 15:08:26 2026}: checkout: moving from main to VFX
+[33m582b688[m HEAD@{Tue Feb 17 15:07:02 2026}: clone: from https://github.com/Flingeris/Brackeys2026_1.git

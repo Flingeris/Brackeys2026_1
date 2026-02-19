@@ -70,3 +70,24 @@ public class DealDamageForEachClassCard : IOnCardEndTurn
         target.TakeDamage(AddDmg);
     }
 }
+
+
+[Serializable]
+public class AddDamageForStatus : IOnCardEndTurn
+{
+    public int AddDmg;
+    public StatusEffectType status;
+
+    public string desc =>
+        "Deal " + AddDmg + " dmg to target enemy for each` " + status + " stack on it";
+
+    public IEnumerator OnEndTurn(CardState state)
+    {
+        var target = G.main.Target;
+        if (target == null) yield break;
+
+        var stack = target.StatusTypeStacks(status);
+
+        target.TakeDamage(stack * AddDmg);
+    }
+}

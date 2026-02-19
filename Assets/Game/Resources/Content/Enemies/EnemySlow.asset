@@ -15,20 +15,17 @@ MonoBehaviour:
   id: SlowEnemy
   <ItemName>k__BackingField: 
   <Description>k__BackingField: 
-  StartingHealth: 10
+  StartingHealth: 20
   preferPos: -1
   Speed: 1
-  Sprite: {fileID: 21300000, guid: 4e9829d32f37d7a448150f68447c02b1, type: 3}
+  Sprite: {fileID: 21300000, guid: 74cdbded02725d14aad19a51ee1cd584, type: 3}
   EndTurnActions:
   - OnEndTurnInteractions:
     - rid: 5181037750336094388
-    Amount: 0
-  - OnEndTurnInteractions:
-    - rid: 5181037750336094389
-    Amount: 3
+    Amount: 4
   - OnEndTurnInteractions:
     - rid: 5181037750336094391
-    Amount: 0
+    Amount: 4
   references:
     version: 2
     RefIds:
@@ -37,10 +34,6 @@ MonoBehaviour:
       data:
         possibleTargets: 0000000001000000
         damageAmount: 4
-    - rid: 5181037750336094389
-      type: {class: HealAllAllies, ns: , asm: Assembly-CSharp}
-      data:
-        HealAmount: 3
     - rid: 5181037750336094391
       type: {class: HealLowestTarget, ns: , asm: Assembly-CSharp}
       data:

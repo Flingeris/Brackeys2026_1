@@ -43,6 +43,9 @@ public class DraggableCard
     {
         base.OnBeginDrag(eventData);
         
+        float pitch = Random.Range(0.96f, 1.04f);
+        G.audioSystem.PlayPitched(SoundId.SFX_CardGrab, pitch);
+        
         if (visual != null)
             visual.DOKill();
         
@@ -173,6 +176,9 @@ public class DraggableCard
             oldCard.SetContainer(null);
             oldCard.SetOwner(G.Hand);
         }
+
+        float pitch = 1f;
+        G.audioSystem.PlayPitched(SoundId.SFX_CardSwap, pitch);
     }
 
     PutInContCoroutine = null;

@@ -16,6 +16,11 @@ public class SFXPlayer : IAudioPlayer
 
     public void Play(SoundEntity sound)
     {
+        PlayPitched(sound, 1f, 1f);
+    }
+    
+    public void PlayPitched(SoundEntity sound, float pitch, float volumeMul = 1f)
+    {
         if (isMuted) return;
         if (sound == null) return;
 
@@ -24,12 +29,13 @@ public class SFXPlayer : IAudioPlayer
         if (source == null) return;
 
         source.clip = clip;
-        source.volume = audioSystem.SfxVolume * sound.Volume;
-        source.pitch = 1f;
+        source.volume = audioSystem.SfxVolume * sound.Volume * volumeMul;
+        source.pitch = pitch;
         source.Play();
 
         sourcePool.ReleaseSource(source, clip);
     }
+    
 
     public void Stop()
     {

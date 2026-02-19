@@ -61,6 +61,39 @@ public class AudioSystem : MonoBehaviour
             player.Play(soundEntity);
         }
     }
+    
+    public void PlayPitched(SoundId soundID, float pitch, float volumeMul = 1f)
+    {
+        var soundEntity = soundsLibrary.GetSound(soundID);
+        if (soundEntity == null)
+        {
+            Debug.LogWarning("No sounds found with id: " + soundID);
+            return;
+        }
+        
+        if (soundEntity.Type != AudioType.SFX)
+        {
+            Play(soundID);
+            return;
+        }
+
+        if (audioPlayers.TryGetValue(AudioType.SFX, out IAudioPlayer player))
+        {
+            if (player is SFXPlayer sfxPlayer)
+            {
+                sfxPlayer.PlayPitched(soundEntity, pitch, volumeMul);
+            }
+            else
+            {
+                player.Play(soundEntity);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No SFXPlayer found in AudioSystem for pitched play.");
+        }
+    }
+
 
     public void StopAll()
     {
