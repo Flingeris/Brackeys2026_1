@@ -171,12 +171,18 @@ public abstract class CombatGroup : MonoBehaviour
 
     public ICombatEntity GetRandomMember()
     {
-        var alive = partyMembers.Where(p => p != null && !p.IsDead).ToList();
-        if (alive.Count == 0) return null;
+        var aliveIndices = Enumerable.Range(0, partyMembers.Length)
+            .Where(i => partyMembers[i] != null && !partyMembers[i].IsDead)
+            .ToList();
 
-        var index = alive.IndexOf(alive.GetRandomElement());
-        var finalTarget = GetTauntRedirectIndex(index);
-        return GetMember(finalTarget);
+        if (aliveIndices.Count == 0)
+            return null;
+
+        var originalIndex = aliveIndices.GetRandomElement();
+
+        var finalIndex = GetTauntRedirectIndex(originalIndex);
+
+        return GetMember(finalIndex);
     }
 
     public ICombatEntity GetLowestMember()

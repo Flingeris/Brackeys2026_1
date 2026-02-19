@@ -19,6 +19,7 @@ MonoBehaviour:
   OnPlayedCardInteractions: []
   OnTurnEndInteractions:
   - rid: 5181037725820911843
+  - rid: 5181037772776669400
   - rid: 5181037772776669274
   references:
     version: 2
@@ -33,7 +34,11 @@ MonoBehaviour:
       data:
         statusToAdd:
           rid: 5181037772776669276
-        stacksToAdd: 5
+        stacksToAdd: 2
     - rid: 5181037772776669276
       type: {class: BleedStatusEffect, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 5181037772776669400
+      type: {class: DealDamageToTarget, ns: , asm: Assembly-CSharp}
+      data:
+        DmgAmount: 3

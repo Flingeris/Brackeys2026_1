@@ -209,12 +209,12 @@ public class Main : MonoBehaviour
 
     private IEnumerator ShowTitleScreen()
     {
-        // G.ui.ToggleTitle(true);
+        G.UI.ToggleTitle(true);
         // G.audioSystem.Play(SoundId.SFX_LevelTransiton);
-        //
-        // yield return new WaitForSeconds(2f);
-        // G.ScreenFader.FadeOutCustom(G.ui.TitleScreenImage, 2f);
-        // TitleShown = true;
+        
+        yield return new WaitForSeconds(2f);
+        G.ScreenFader.FadeOutCustom(G.UI.TitleScreenImage, 2f);
+        TitleShown = true;
         yield break;
     }
 

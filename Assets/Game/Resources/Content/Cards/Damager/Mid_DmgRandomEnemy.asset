@@ -25,4 +25,4 @@ MonoBehaviour:
     - rid: 5181037725820911722
       type: {class: RandomTargetDamageInteraction, ns: , asm: Assembly-CSharp}
       data:
-        DmgAmount: 8
+        DmgAmount: 5

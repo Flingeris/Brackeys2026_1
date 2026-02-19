@@ -23,8 +23,6 @@ MonoBehaviour:
   - OnEndTurnInteractions:
     - rid: 5181037750336094388
     Amount: 4
-  - OnEndTurnInteractions: []
-    Amount: 3
   - OnEndTurnInteractions:
     - rid: 5181037750336094391
     Amount: 4
