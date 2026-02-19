@@ -71,11 +71,28 @@ public class AddStatusToTargetInteraction : IOnCardEndTurn
     [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
     public int stacksToAdd;
 
-    public string desc => "Apply " +stacksToAdd +" Stacks of " + statusToAdd.GetType() + " to target";
+    public string desc => "Apply " + stacksToAdd + " Stacks of " + statusToAdd.GetType() + " to target";
 
     public IEnumerator OnEndTurn(CardState state)
     {
         var target = G.main.Target;
+        if (target == null) yield break;
+        target.AddStatus(statusToAdd, stacksToAdd);
+    }
+}
+
+[Serializable]
+public class AddStatusToClassInteractions : IOnCardEndTurn
+{
+    [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
+    public ClassType member;
+    public int stacksToAdd;
+
+    public string desc => "Apply " + stacksToAdd + " Stacks of " + statusToAdd.GetType() + " to " + member;
+
+    public IEnumerator OnEndTurn(CardState state)
+    {
+        var target = G.party.GetMemberByClass(member);
         if (target == null) yield break;
         target.AddStatus(statusToAdd, stacksToAdd);
     }

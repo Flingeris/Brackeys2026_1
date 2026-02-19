@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using DG.Tweening;
 using TMPro;
@@ -29,7 +30,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
     public int MaxHP => state.MaxHP;
     public int CurrHP => state.CurrHP;
 
-    public List<IStatusEffectInteraction> statusEffects;
+    public List<IStatusEffectInteraction> statusEffects { get; set; } = new();
 
     [Header("References")] [SerializeField]
     private TMP_Text hpText;
@@ -39,23 +40,68 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private SpriteRenderer highlight;
 
+    [SerializeField] private SpriteRenderer statusEffectsIcons;
+    [SerializeField] private TMP_Text statusEffectsText;
+
+
+    private void Start()
+    {
+        UpdateVisuals();
+    }
 
     public int StatusTypeStacks(StatusEffectType type)
     {
-        throw new NotImplementedException();
+        var stacks = 0;
+        foreach (var statusEffectInteraction in statusEffects)
+        {
+            if (statusEffectInteraction.Type == type)
+            {
+                stacks += statusEffectInteraction.Stacks;
+            }
+        }
+
+        return stacks;
     }
 
     public void AddStatus(IStatusEffectInteraction statusEffect, int stacks)
     {
-        if (statusEffects.Contains(statusEffect))
+        var existing = statusEffects.FirstOrDefault(s => s.GetType() == statusEffect.GetType());
+
+        if (existing != null)
         {
-            var index = statusEffects.IndexOf(statusEffect);
-            statusEffects[index].AddStacks(stacks);
+            existing.AddStacks(stacks);
+            Debug.Log($"Added stack {stacks} to {statusEffect.GetType()}");
         }
         else
         {
-            statusEffects.Add(statusEffect);
-            statusEffect.AddStacks(stacks);
+            var instance = (IStatusEffectInteraction)Activator.CreateInstance(statusEffect.GetType());
+            instance.AddStacks(stacks);
+            statusEffects.Add(instance);
+        }
+
+        UpdateStatusIcon();
+    }
+
+    private void UpdateStatusIcon()
+    {
+        statusEffects.RemoveAll(s => s.Stacks <= 0);
+
+
+        statusEffectsIcons.enabled = false;
+        statusEffectsText.SetText("");
+
+        var effect = statusEffects.FirstOrDefault();
+        if (effect == null || effect.Type == StatusEffectType.None) return;
+
+        var sprite = effect.GetSprite();
+        if (sprite == null) return;
+
+        statusEffectsIcons.enabled = true;
+        statusEffectsIcons.sprite = sprite;
+
+        if (effect.Stacks != 0)
+        {
+            statusEffectsText.SetText(effect.Stacks.ToString());
         }
     }
 
@@ -157,6 +203,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
         UpdateHpVisuals();
         UpdateShieldVisuals();
         UpdateSprite();
+        UpdateStatusIcon();
     }
 
     private void UpdateHpVisuals()

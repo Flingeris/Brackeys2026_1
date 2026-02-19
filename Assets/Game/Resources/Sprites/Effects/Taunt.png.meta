@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 172a6e6c0134d59478ff3e5d5d7a2852
+guid: 3898614c918b3a548977782bea77ced0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -9185111827276658319
-    second: Vuln_0
+      213: 1315353878313917114
+    second: Taunt_0
   - first:
-      213: -236974442881887316
-    second: Vuln_1
+      213: 5431843456689753645
+    second: Taunt_1
   - first:
-      213: -4623706606044570368
-    second: Vuln_2
+      213: 1561947258813085763
+    second: Taunt_2
   - first:
-      213: -1104146095411592921
-    second: Vuln_3
+      213: 1695511381512181579
+    second: Taunt_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -122,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Vuln_0
+      name: Taunt_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 101
-        height: 131
+        y: 1
+        width: 32
+        height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1798fe8357de78080800000000000000
-      internalID: -9185111827276658319
+      spriteID: aba55de1263114210800000000000000
+      internalID: 1315353878313917114
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vuln_1
+      name: Taunt_1
       rect:
         serializedVersion: 2
-        x: 89
-        y: 119
-        width: 32
-        height: 32
+        x: 4
+        y: 25
+        width: 8
+        height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,20 +159,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ca3dd2feff816bcf0800000000000000
-      internalID: -236974442881887316
+      spriteID: d2ec58f38d8c16b40800000000000000
+      internalID: 5431843456689753645
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vuln_2
+      name: Taunt_2
       rect:
         serializedVersion: 2
-        x: 129
-        y: 129
-        width: 32
-        height: 32
+        x: 24
+        y: 16
+        width: 7
+        height: 13
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,20 +181,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 00d1619d65b45dfb0800000000000000
-      internalID: -4623706606044570368
+      spriteID: 348f27f91c62da510800000000000000
+      internalID: 1561947258813085763
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Vuln_3
+      name: Taunt_3
       rect:
         serializedVersion: 2
-        x: 109
-        y: 79
-        width: 32
-        height: 32
+        x: 1
+        y: 5
+        width: 6
+        height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,8 +203,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7218bdae9f84da0f0800000000000000
-      internalID: -1104146095411592921
+      spriteID: b475aa74e9aa78710800000000000000
+      internalID: 1695511381512181579
       vertices: []
       indices: 
       edges: []
@@ -223,10 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Vuln_0: -9185111827276658319
-      Vuln_1: -236974442881887316
-      Vuln_2: -4623706606044570368
-      Vuln_3: -1104146095411592921
+      Taunt_0: 1315353878313917114
+      Taunt_1: 5431843456689753645
+      Taunt_2: 1561947258813085763
+      Taunt_3: 1695511381512181579
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

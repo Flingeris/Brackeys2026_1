@@ -53,6 +53,7 @@ public abstract class CombatGroup : MonoBehaviour
     {
         return partyMembers[target] != null && !partyMembers[target].IsDead;
     }
+
     public List<ICombatEntity> GetMembers(int[] positions)
     {
         if (positions == null || positions.Length == 0)
@@ -61,6 +62,32 @@ public abstract class CombatGroup : MonoBehaviour
         }
 
         return positions.Select(i => partyMembers[i]).ToList();
+    }
+
+    private int GetTauntRedirectIndex(int originalIndex)
+    {
+        var alive = GetAliveMembers();
+        if (alive == null || alive.Count == 0)
+            return originalIndex;
+
+        var tauntIndices = new List<int>();
+
+
+        for (int i = 0; i < partyMembers.Length; i++)
+        {
+            var m = GetMember(i);
+            if (m == null || m.IsDead) continue;
+
+            if (m.StatusTypeStacks(StatusEffectType.Taunt) > 0)
+                tauntIndices.Add(i);
+        }
+
+        if (tauntIndices.Count == 0 || tauntIndices.Contains(originalIndex))
+            return originalIndex;
+
+        var index = tauntIndices.GetRandomElement();
+        GetMember(index).statusEffects.Where(s => s.Type == StatusEffectType.Taunt).ToList().FirstOrDefault()?.Tick();
+        return index;
     }
 
 
@@ -81,9 +108,10 @@ public abstract class CombatGroup : MonoBehaviour
 
     public void DealDamage(int target, int damage)
     {
-        var member = partyMembers[target];
-        if (member == null || member.IsDead) return;
-        member.TakeDamage(damage);
+        var finalTarget = GetTauntRedirectIndex(target);
+        var combatEntity = GetMember(finalTarget);
+        if (combatEntity == null || combatEntity.IsDead) return;
+        combatEntity.TakeDamage(damage);
     }
 
     public void DamageAll(int amount)
@@ -145,7 +173,10 @@ public abstract class CombatGroup : MonoBehaviour
     {
         var alive = partyMembers.Where(p => p != null && !p.IsDead).ToList();
         if (alive.Count == 0) return null;
-        return alive.GetRandomElement();
+
+        var index = alive.IndexOf(alive.GetRandomElement());
+        var finalTarget = GetTauntRedirectIndex(index);
+        return GetMember(finalTarget);
     }
 
     public ICombatEntity GetLowestMember()

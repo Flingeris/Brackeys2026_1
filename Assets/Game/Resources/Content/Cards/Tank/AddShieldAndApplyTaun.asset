@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f4336e87bbc4ab5a1141c39ea65942c, type: 3}
-  m_Name: Start_ShieldTank
+  m_Name: AddShieldAndApplyTaun
   m_EditorClassIdentifier: Assembly-CSharp::TankCard
   id: 
   <ItemName>k__BackingField: 
@@ -19,6 +19,7 @@ MonoBehaviour:
   OnPlayedCardInteractions: []
   OnTurnEndInteractions:
   - rid: 5181037725820911903
+  - rid: 5181037772776669387
   references:
     version: 2
     RefIds:
@@ -27,3 +28,13 @@ MonoBehaviour:
       data:
         ShieldAmount: 7
         ClassType: 2
+    - rid: 5181037772776669387
+      type: {class: AddStatusToClassInteractions, ns: , asm: Assembly-CSharp}
+      data:
+        statusToAdd:
+          rid: 5181037772776669388
+        member: 2
+        stacksToAdd: 1
+    - rid: 5181037772776669388
+      type: {class: TauntStatusEffect, ns: , asm: Assembly-CSharp}
+      data: 

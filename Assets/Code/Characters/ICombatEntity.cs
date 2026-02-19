@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public interface ICombatEntity
 {
     int MaxHP { get; }
@@ -16,6 +18,9 @@ public interface ICombatEntity
     void AddShield(int amount);
 
     void Kill();
+
+
+    public List<IStatusEffectInteraction> statusEffects { get; }
 
 
     public int StatusTypeStacks(StatusEffectType type);

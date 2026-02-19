@@ -22,7 +22,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     public int CurrTurnIndex = -1;
 
 
-    public List<IStatusEffectInteraction> statusEffects = new();
+    public List<IStatusEffectInteraction> statusEffects { get; set; } = new();
 
     public ActionDef nextAction;
     public CombatGroup combatGroup;
