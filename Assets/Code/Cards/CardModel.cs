@@ -76,7 +76,7 @@ public class AddStatusToTargetInteraction : IOnCardEndTurn
     public IEnumerator OnEndTurn(CardState state)
     {
         var target = G.main.Target;
-        if (target == null) yield break;
+        if (target == null || target.IsDead) yield break;
         target.AddStatus(statusToAdd, stacksToAdd);
     }
 }
@@ -93,7 +93,7 @@ public class AddStatusToClassInteractions : IOnCardEndTurn
     public IEnumerator OnEndTurn(CardState state)
     {
         var target = G.party.GetMemberByClass(member);
-        if (target == null) yield break;
+        if (target == null || target.IsDead) yield break;
         target.AddStatus(statusToAdd, stacksToAdd);
     }
 }

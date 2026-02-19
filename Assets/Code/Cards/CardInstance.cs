@@ -9,6 +9,11 @@ using UnityEngine.UIElements;
 public class CardState
 {
     public CardModel model;
+
+    public CardState(CardModel model)
+    {
+        this.model = model;
+    }
 }
 
 public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -35,10 +40,7 @@ public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     {
         if (model == null) return;
 
-        var newState = new CardState()
-        {
-            model = model
-        };
+        var newState = new CardState(model);
 
         SetState(newState);
     }
@@ -119,6 +121,11 @@ public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                 isTarget = true;
             }
         }
+    }
+
+    public void Leave()
+    {
+        this.Draggable.Leave();
     }
 
     public void OnPointerExit(PointerEventData eventData)

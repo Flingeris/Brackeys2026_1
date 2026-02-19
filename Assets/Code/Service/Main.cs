@@ -5,6 +5,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.LowLevelPhysics;
 using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 using Random = System.Random;
@@ -12,21 +13,38 @@ using Random = System.Random;
 
 public class RunState
 {
+    public List<CardState> currDeck;
+    public List<MemberState> CharactersStates;
+
+
+    public int drawSize = 5;
+
+    public int mapNodeIndex = -1;
 }
 
 public class Main : MonoBehaviour
 {
-    public int DrawSize = 6;
+    public bool IsChoosingTarget;
     public static event UnityAction OnGameReady;
     public static bool TitleShown;
     public bool ShowTitle;
     public Field field;
 
-    public bool IsChoosingTarget;
+
+    private List<CardState> drawPile;
+    private List<CardState> discardPile;
+    [SerializeField] private List<CardModel> startDeck;
 
     private void Awake()
     {
         G.main = this;
+
+        if (G.run == null) G.run = new RunState();
+        var cards = startDeck.Select(cardModel => new CardState(cardModel)).ToList();
+
+        G.run.currDeck = new List<CardState>(cards);
+        drawPile = new List<CardState>(G.run.currDeck);
+        discardPile = new List<CardState>();
     }
 
     private void Start()
@@ -36,7 +54,6 @@ public class Main : MonoBehaviour
         OnGameReady?.Invoke();
 
         StartCoroutine(GameStartSequence());
-        
     }
 
     private IEnumerator GameStartSequence()
@@ -70,7 +87,6 @@ public class Main : MonoBehaviour
         yield break;
     }
 
-    
 
     public void StartTurn()
     {
@@ -80,18 +96,37 @@ public class Main : MonoBehaviour
     private IEnumerator StartTurnSequence()
     {
         turns = BuildTurnOrder();
-        //
-        // for (int i = 0; i < DrawSize; i++)
-        // {
-        //     G.Hand.Draw();
-        // }
 
-        G.Hand.DrawControlledHand(DrawSize);
+        G.run.currDeck.Shuffle();
+        yield return DrawCards();
+
+        // G.Hand.DrawControlledHand(G.run.drawSize);
 
         G.HUD.SetEndTurnInteractable(true);
 
         yield return null;
     }
+
+    public IEnumerator DrawCards()
+    {
+        for (int i = 0; i < G.run.drawSize; i++)
+        {
+            if (drawPile.Count == 0)
+            {
+                drawPile.AddRange(discardPile);
+                discardPile.Clear();
+                drawPile.Shuffle();
+            }
+
+            var cardState = drawPile.Pop();
+            G.Hand.AddCard(cardState);
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        yield break;
+    }
+
 
     private List<ITurnEntity> BuildTurnOrder()
     {
@@ -172,9 +207,10 @@ public class Main : MonoBehaviour
     }
 
     public IEnumerator FieldClearSequence()
+
     {
-        G.Hand.Clear();
-        field.Clear();
+        yield return G.Hand.Clear();
+        yield return field.Clear();
         yield return null;
     }
 
@@ -197,6 +233,23 @@ public class Main : MonoBehaviour
     }
 
 
+    public IEnumerator KillCard(CardInstance card)
+    {
+        if (card == null) yield break;
+        card.Leave();
+
+        card.transform.DOKill();
+        card.Draggable.transform.DOKill();
+            
+        card.transform.DOMove(new Vector3(12, -3, transform.position.z), 0.1f);
+        card.transform.DOScale(0f, 0.1f);
+
+        yield return new WaitForSeconds(0.1f);
+        discardPile.Add(card.state);
+        Destroy(card.gameObject);
+    }
+
+
     public void PlayCard(CardInstance card)
     {
         StartCoroutine(OnCardPlayed(card));
@@ -211,7 +264,7 @@ public class Main : MonoBehaviour
     {
         G.UI.ToggleTitle(true);
         // G.audioSystem.Play(SoundId.SFX_LevelTransiton);
-        
+
         yield return new WaitForSeconds(2f);
         G.ScreenFader.FadeOutCustom(G.UI.TitleScreenImage, 2f);
         TitleShown = true;

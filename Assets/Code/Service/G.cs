@@ -7,6 +7,7 @@ public static class G
     public static PartyManager party;
     public static Draggable currentDrag;
 
+    public static RunState run;
 
     public static AudioSystem audioSystem;
 

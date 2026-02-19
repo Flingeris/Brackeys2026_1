@@ -1793,10 +1793,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7c1afb99aade95418f4a9796a692e77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Main
-  DrawSize: 6
+  IsChoosingTarget: 0
   ShowTitle: 1
   field: {fileID: 1089562157}
-  IsChoosingTarget: 0
+  startDeck:
+  - {fileID: 11400000, guid: 7b9f2626cc30d944d828bc07cc9d972c, type: 2}
+  - {fileID: 11400000, guid: 7b9f2626cc30d944d828bc07cc9d972c, type: 2}
+  - {fileID: 11400000, guid: a039c8f253b65a94a8bc63b858de2cb6, type: 2}
+  - {fileID: 11400000, guid: 57a773188c7525b43801d193a97b968a, type: 2}
+  - {fileID: 11400000, guid: 024c27a30ff953f4ab3e4d7e7745734c, type: 2}
+  - {fileID: 11400000, guid: e5ddf6fd5c1bf854b82dc950c22f6ec0, type: 2}
+  - {fileID: 11400000, guid: f8063561d3cf9c74692e542d539b5f98, type: 2}
+  - {fileID: 11400000, guid: b6fb002cb0531844a82f6af894cc157b, type: 2}
 --- !u!4 &1026985112
 Transform:
   m_ObjectHideFlags: 0

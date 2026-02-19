@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class Field : MonoBehaviour
@@ -29,12 +30,21 @@ public class Field : MonoBehaviour
     }
 
 
-    public void Clear()
+    public IEnumerator Clear()
     {
-        foreach (var c in cardsSlots)
+        foreach (var cardsSlot in cardsSlots)
         {
-            if (c == null) continue;
-            c.Clear();
+            if (cardsSlot == null) continue;
+            if (cardsSlot.AcceptedCard != null) yield return G.main.KillCard(cardsSlot.AcceptedCard);
         }
     }
+
+    // public void Clear()
+    // {
+    //     foreach (var c in cardsSlots)
+    //     {
+    //         if (c == null) continue;
+    //         c.Clear();
+    //     }
+    // }
 }

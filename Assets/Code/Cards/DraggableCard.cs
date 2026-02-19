@@ -39,21 +39,27 @@ public class DraggableCard
             baseVisualLocalRot = visual.localRotation;
     }
 
+
+    public void Leave()
+    {
+        SetOwner(null);
+    }
+
     public override void OnBeginDrag(PointerEventData eventData)
     {
         base.OnBeginDrag(eventData);
-        
+
         if (visual != null)
             visual.DOKill();
-        
+
         dragSourceContainer = CurrContainer;
-        
+
         if (CurrContainer != null)
         {
             CurrContainer.TryRemove(this);
             SetContainer(null);
         }
-        
+
         var cursorWorldPos = mainCamera.ScreenToWorldPoint(eventData.position);
         cursorWorldPos.z = transform.position.z;
         dragTargetPos = cursorWorldPos + offset;
@@ -105,78 +111,77 @@ public class DraggableCard
     }
 
     protected override IEnumerator PutInContainerSequence(IDraggableContainer<DraggableCard> targetCont)
-{
-    var sourceCont = dragSourceContainer;
-    bool fromSlot = sourceCont != null;
-    
-    if (targetCont == null)
     {
-        if (fromSlot)
+        var sourceCont = dragSourceContainer;
+        bool fromSlot = sourceCont != null;
+
+        if (targetCont == null)
         {
-            SetContainer(null);
-            SetOwner(G.Hand);
+            if (fromSlot)
+            {
+                SetContainer(null);
+                SetOwner(G.Hand);
+            }
+            else
+            {
+                ReturnToOrigin();
+            }
+
+            PutInContCoroutine = null;
+            dragSourceContainer = null;
+            yield break;
         }
-        else
+
+        if (fromSlot && targetCont == sourceCont)
         {
-            ReturnToOrigin();
+            if (!targetCont.TryAccept(this, out _))
+            {
+                SetOwner(G.Hand);
+            }
+            else
+            {
+                SetContainer(targetCont);
+            }
+
+            PutInContCoroutine = null;
+            dragSourceContainer = null;
+            yield break;
+        }
+
+        if (!targetCont.TryAccept(this, out var oldCard))
+        {
+            if (fromSlot)
+            {
+                SetContainer(null);
+                SetOwner(G.Hand);
+            }
+            else
+            {
+                ReturnToOrigin();
+            }
+
+            PutInContCoroutine = null;
+            dragSourceContainer = null;
+            yield break;
+        }
+
+        SetContainer(targetCont);
+
+        if (oldCard != null && oldCard != this)
+        {
+            if (fromSlot && sourceCont != null && sourceCont.CanAccept(oldCard))
+            {
+                sourceCont.TryAccept(oldCard, out _);
+                oldCard.SetContainer(sourceCont);
+            }
+            else
+            {
+                oldCard.SetContainer(null);
+                oldCard.SetOwner(G.Hand);
+            }
         }
 
         PutInContCoroutine = null;
         dragSourceContainer = null;
-        yield break;
     }
-    
-    if (fromSlot && targetCont == sourceCont)
-    {
-        if (!targetCont.TryAccept(this, out _))
-        {
-            SetOwner(G.Hand);
-        }
-        else
-        {
-            SetContainer(targetCont);
-        }
-
-        PutInContCoroutine = null;
-        dragSourceContainer = null;
-        yield break;
-    }
-    
-    if (!targetCont.TryAccept(this, out var oldCard))
-    {
-        if (fromSlot)
-        {
-            SetContainer(null);
-            SetOwner(G.Hand);
-        }
-        else
-        {
-            ReturnToOrigin();
-        }
-
-        PutInContCoroutine = null;
-        dragSourceContainer = null;
-        yield break;
-    }
-    
-    SetContainer(targetCont);
-    
-    if (oldCard != null && oldCard != this)
-    {
-        if (fromSlot && sourceCont != null && sourceCont.CanAccept(oldCard))
-        {
-            sourceCont.TryAccept(oldCard, out _);
-            oldCard.SetContainer(sourceCont);
-        }
-        else
-        {
-            oldCard.SetContainer(null);
-            oldCard.SetOwner(G.Hand);
-        }
-    }
-
-    PutInContCoroutine = null;
-    dragSourceContainer = null;
-}
-
 }

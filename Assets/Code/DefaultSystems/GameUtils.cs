@@ -59,4 +59,18 @@ public static class GameUtils
         Shuffle(list);
         return list;
     }
+
+    public static T Pop<T>(this IList<T> list)
+    {
+        if (list == null)
+            throw new ArgumentNullException(nameof(list));
+
+        if (list.Count == 0)
+            throw new InvalidOperationException("Collection is empty.");
+
+        int lastIndex = list.Count - 1;
+        T value = list[lastIndex];
+        list.RemoveAt(lastIndex);
+        return value;
+    }
 }
