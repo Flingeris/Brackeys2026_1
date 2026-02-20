@@ -39,6 +39,8 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
     
+    [SerializeField] private HpBarView hpBarView;
+    
     [Header("Popup")]
     [SerializeField] private float popupOffsetY = 1.5f;
 
@@ -136,8 +138,14 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     {
         hpValueText.SetText("");
         if (model == null) return;
-
+        
         hpValueText.SetText(CurrHP.ToString() + " / " + model.StartingHealth.ToString());
+        
+        if (hpBarView != null && model.StartingHealth > 0)
+        {
+            float normalized = (float)CurrHP / model.StartingHealth;
+            hpBarView.SetNormalized(normalized);
+        }
     }
 
 
