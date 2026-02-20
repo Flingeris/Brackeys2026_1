@@ -1304,9 +1304,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
     - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
+      propertyPath: m_fontColor.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 4987996594548256213, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
+    - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 1677725951
+      objectReference: {fileID: 0}
     - target: {fileID: 7920478919852413324, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -1591,10 +1599,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tooltip
       objectReference: {fileID: 0}
+    - target: {fileID: 6910748838220448060, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
+      propertyPath: m_MinWidth
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 7286260454094401675, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
       propertyPath: canvas
       value: 
       objectReference: {fileID: 806928176}
+    - target: {fileID: 7286260454094401675, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
+      propertyPath: minWidth
+      value: 400
+      objectReference: {fileID: 0}
     - target: {fileID: 8853428534823261982, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2835,9 +2851,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
     - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
+      propertyPath: m_fontColor.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 4987996594548256213, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
+    - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 1677725951
+      objectReference: {fileID: 0}
     - target: {fileID: 7920478919852413324, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 

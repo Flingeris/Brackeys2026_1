@@ -9,7 +9,9 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.EventSystems;
 
-public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointerClickHandler
+public class EnemyInstance : MonoBehaviour,
+    ITurnEntity, ICombatEntity,
+    IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public EnemyModel model;
     public int Speed { get; private set; }
@@ -27,8 +29,8 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     public ActionDef nextAction;
     public CombatGroup combatGroup;
 
-    [Header("Visual References")] [SerializeField]
-    private TMP_Text hpValueText;
+    [Header("Visual References")] 
+    [SerializeField] private TMP_Text hpValueText;
 
     [SerializeField] private SpriteRenderer highlight;
     [SerializeField] private SpriteRenderer sprite;
@@ -41,11 +43,41 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     
     [SerializeField] private HpBarView hpBarView;
     
+    [Header("Target highlight")]
+    [SerializeField] private Color targetColor;
+    [SerializeField] private Color hoverColor;
+    [SerializeField] private float targetScale;
+    [SerializeField] private float hoverScale;
+    
+    [Header("Target pulse")]
+    [SerializeField] private float pulseScaleMultiplier;
+    [SerializeField] private float pulseDuration;
+    [SerializeField] private float pulseMinAlpha;
+    [SerializeField] private float pulseMaxAlpha;
+    
     [Header("Popup")]
     [SerializeField] private float popupOffsetY = 1.5f;
     
     [Header("Visual Root")]
     [SerializeField] private Transform visualRoot;
+    
+    [SerializeField] private float colorTweenTime = 0.15f;
+    
+    private Tween highlightTween;
+    private bool isHovered; 
+
+    private Vector3 highlightBaseScale;
+    private Tween pulseScaleTween;
+    private Tween pulseColorTween;
+    
+    private void Awake()
+    {
+        if (highlight != null)
+        {
+            highlightBaseScale = highlight.transform.localScale;
+            highlight.gameObject.SetActive(false);
+        }
+    }
 
 
     private void Start()
@@ -56,6 +88,48 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     public void SetTarget(bool b)
     {
         IsPossibleTarget = b;
+        
+        RefreshHighlight();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        isHovered = true;
+        RefreshHighlight();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        isHovered = false;
+        RefreshHighlight();
+    }
+    
+    private void RefreshHighlight()
+    {
+        if (highlight == null) return;
+        
+        if (!G.main.IsChoosingTarget || !IsPossibleTarget)
+        {
+            StopTargetPulse();
+            return;
+        }
+        
+
+        if (isHovered)
+        {
+            pulseScaleTween?.Kill();
+            pulseColorTween?.Kill();
+            pulseScaleTween = null;
+            pulseColorTween = null;
+
+            highlight.gameObject.SetActive(true);
+            highlight.transform.localScale = highlightBaseScale * hoverScale;
+            highlight.color = hoverColor;
+        }
+        else
+        {
+            StartTargetPulse();
+        }
     }
 
     public void SetModel(EnemyModel newModel)
@@ -74,6 +148,52 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         UpdateSprite();
         UpdateNextActionIcon();
         UpdateStatusIcon();
+    }
+    
+    private void StartTargetPulse()
+    {
+        if (highlight == null) return;
+        
+        if (pulseScaleTween != null && pulseScaleTween.IsActive())
+            return;
+        
+        pulseScaleTween?.Kill();
+        pulseColorTween?.Kill();
+
+        highlight.gameObject.SetActive(true);
+        highlight.transform.localScale = highlightBaseScale;
+        
+        Color startColor = targetColor;
+        startColor.a = pulseMinAlpha;
+        highlight.color = startColor;
+
+        pulseScaleTween = highlight.transform
+            .DOScale(highlightBaseScale * pulseScaleMultiplier, pulseDuration)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine)
+            .SetUpdate(true);
+
+        Color endColor = targetColor;
+        endColor.a = pulseMaxAlpha;
+
+        pulseColorTween = highlight
+            .DOColor(endColor, pulseDuration)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine)
+            .SetUpdate(true);
+    }
+
+    private void StopTargetPulse()
+    {
+        if (highlight == null) return;
+
+        pulseScaleTween?.Kill();
+        pulseColorTween?.Kill();
+        pulseScaleTween = null;
+        pulseColorTween = null;
+
+        highlight.gameObject.SetActive(false);
+        highlight.transform.localScale = highlightBaseScale;
     }
 
 
@@ -218,19 +338,6 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         CurrShield = 0;
         AddShield(amount);
     }
-
-    private void Update()
-    {
-        SetHighlight(IsPossibleTarget);
-    }
-
-    private void SetHighlight(bool b)
-    {
-        if (highlight == null) return;
-        highlight.gameObject.SetActive(b);
-    }
-
-
     private void CheckIsDead()
     {
         if (CurrHP <= 0)
@@ -280,11 +387,11 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
             turnIndexText.SetText(TurnOrder.ToString());
     }
 
-
     public void OnPointerClick(PointerEventData eventData)
     {
         G.main.TryChooseTarget(this);
     }
+    
 
     public IEnumerator OnTurnEnd()
     {
