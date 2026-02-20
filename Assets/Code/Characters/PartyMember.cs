@@ -42,8 +42,11 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
     
+    [SerializeField] private HpBarView hpBarView;
+    
     [Header("Popup")]
     [SerializeField] private float popupOffsetY = 1.5f;
+   
     
     private void Start()
     {
@@ -222,6 +225,12 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
     private void UpdateHpVisuals()
     {
         hpText.SetText(state.CurrHP + " / " + state.MaxHP);
+
+        if (hpBarView != null && state.MaxHP > 0)
+        {
+            float normalized = (float)state.CurrHP / state.MaxHP;
+            hpBarView.SetNormalized(normalized);
+        }
     }
 
     private void UpdateShieldVisuals()

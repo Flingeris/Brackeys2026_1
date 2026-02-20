@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 74cdbded02725d14aad19a51ee1cd584
+guid: d7e212d0c68f8ca438740553b277ed56
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4728161990802336979
-    second: Cat DD 2_0
+      213: -47091839291317109
+    second: hp_ramka_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,9 +49,9 @@ TextureImporter:
   spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 9
-  spritePivot: {x: 0.21439666, y: 0.42507154}
-  spritePixelsToUnits: 150
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -96,40 +96,27 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cat DD 2_0
+      name: hp_ramka_0
       rect:
         serializedVersion: 2
-        x: 271
-        y: 423
-        width: 258
-        height: 274
+        x: 0
+        y: 0
+        width: 64
+        height: 8
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3dce64e974ecd9140800000000000000
-      internalID: 4728161990802336979
+      spriteID: b84a83fb832b85ff0800000000000000
+      internalID: -47091839291317109
       vertices: []
       indices: 
       edges: []
@@ -139,7 +126,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -148,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Cat DD 2_0: 4728161990802336979
+      hp_ramka_0: -47091839291317109
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
