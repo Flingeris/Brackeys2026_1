@@ -1304,11 +1304,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
     - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
+      propertyPath: m_fontColor.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 4987996594548256213, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
+    - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 1677725951
+      objectReference: {fileID: 0}
     - target: {fileID: 7920478919852413324, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
+      propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 4987996594548256213, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
     m_RemovedComponents: []
@@ -1595,10 +1603,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tooltip
       objectReference: {fileID: 0}
+    - target: {fileID: 6910748838220448060, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
+      propertyPath: m_MinWidth
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 7286260454094401675, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
       propertyPath: canvas
       value: 
       objectReference: {fileID: 806928176}
+    - target: {fileID: 7286260454094401675, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
+      propertyPath: minWidth
+      value: 400
+      objectReference: {fileID: 0}
     - target: {fileID: 7286260454094401675, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
       propertyPath: minWidth
       value: 500
@@ -1918,7 +1934,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7c1afb99aade95418f4a9796a692e77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Main
-  IsChoosingTarget: 0
   ShowTitle: 0
   field: {fileID: 1089562157}
   startDeck:
@@ -1933,6 +1948,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b6fb002cb0531844a82f6af894cc157b, type: 2}
   - {fileID: 11400000, guid: 78f44b3ed37f2bc4985020d4b82ce590, type: 2}
   background: {fileID: 258590793}
+  IsChoosingTarget: 0
 --- !u!4 &1026985112
 Transform:
   m_ObjectHideFlags: 0
@@ -3368,11 +3384,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
     - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
+      propertyPath: m_fontColor.a
+      value: 0.39215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 4987996594548256213, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
+    - target: {fileID: 7364711930023346930, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 1677725951
+      objectReference: {fileID: 0}
     - target: {fileID: 7920478919852413324, guid: bdd6f1776dd03a1428aecd4ce6a5faff, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
+      propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 4987996594548256213, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
     m_RemovedComponents: []

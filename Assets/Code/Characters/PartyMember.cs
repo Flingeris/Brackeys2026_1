@@ -27,7 +27,8 @@ public class MemberState
 }
 
 
-public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
+public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+
 {
     public MemberState state { get; private set; }
     public bool IsDead { get; private set; }
@@ -45,6 +46,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
 
     [SerializeField] private TMP_Text shieldText;
     [SerializeField] private SpriteRenderer shieldIconSprite;
+    [SerializeField] private SpriteRenderer shieldHpBarFrame;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private SpriteRenderer highlight;
 
@@ -55,7 +57,33 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
 
     [Header("Popup")] [SerializeField] private float popupOffsetY = 1.5f;
 
+[Header("Target highlight")]
+    [SerializeField] private Color targetColor;
+    [SerializeField] private Color hoverColor;
+    [SerializeField] private float targetScale = 1f;
+    [SerializeField] private float hoverScale = 1.1f;
 
+    [Header("Target pulse")]
+    [SerializeField] private float pulseScaleMultiplier = 1.1f;
+    [SerializeField] private float pulseDuration = 0.4f;
+    [SerializeField] private float pulseMinAlpha = 0.3f;
+    [SerializeField] private float pulseMaxAlpha = 0.8f;
+
+    private bool isHovered;
+
+    private Vector3 highlightBaseScale;
+    private Tween pulseScaleTween;
+    private Tween pulseColorTween;
+    
+    private void Awake()
+    {
+        if (highlight != null)
+        {
+            highlightBaseScale = highlight.transform.localScale;
+            highlight.gameObject.SetActive(false);
+        }
+    }
+    
     private void Start()
     {
         UpdateVisuals();
@@ -116,11 +144,23 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
             statusEffectsText.SetText(effect.Stacks.ToString());
         }
     }
-
-
+    
     public void SetTarget(bool b)
     {
         IsPossibleTarget = b;
+        RefreshHighlight();
+    }
+    
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        isHovered = true;
+        RefreshHighlight();
+    }
+    
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        isHovered = false;
+        RefreshHighlight();
     }
 
     public void SetState(MemberState newState)
@@ -142,17 +182,79 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
 
         SetState(newState);
     }
-
-    private void Update()
-    {
-        SetHighlight(IsPossibleTarget);
-    }
-
-    private void SetHighlight(bool b)
+    private void RefreshHighlight()
     {
         if (highlight == null) return;
-        highlight.gameObject.SetActive(b);
+        
+        if (!G.main.IsChoosingTarget || !IsPossibleTarget)
+        {
+            StopTargetPulse();
+            return;
+        }
+        
+        if (isHovered)
+        {
+            pulseScaleTween?.Kill();
+            pulseColorTween?.Kill();
+            pulseScaleTween = null;
+            pulseColorTween = null;
+
+            highlight.gameObject.SetActive(true);
+            highlight.transform.localScale = highlightBaseScale * hoverScale;
+            highlight.color = hoverColor;
+        }
+        else
+        {
+            StartTargetPulse();
+        }
     }
+    
+    private void StartTargetPulse()
+    {
+        if (highlight == null) return;
+        
+        if (pulseScaleTween != null && pulseScaleTween.IsActive())
+            return;
+        
+        pulseScaleTween?.Kill();
+        pulseColorTween?.Kill();
+
+        highlight.gameObject.SetActive(true);
+        highlight.transform.localScale = highlightBaseScale;
+        
+        Color startColor = targetColor;
+        startColor.a = pulseMinAlpha;
+        highlight.color = startColor;
+
+        pulseScaleTween = highlight.transform
+            .DOScale(highlightBaseScale * pulseScaleMultiplier, pulseDuration)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine)
+            .SetUpdate(true);
+
+        Color endColor = targetColor;
+        endColor.a = pulseMaxAlpha;
+
+        pulseColorTween = highlight
+            .DOColor(endColor, pulseDuration)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine)
+            .SetUpdate(true);
+    }
+
+    private void StopTargetPulse()
+    {
+        if (highlight == null) return;
+
+        pulseScaleTween?.Kill();
+        pulseColorTween?.Kill();
+        pulseScaleTween = null;
+        pulseColorTween = null;
+
+        highlight.gameObject.SetActive(false);
+        highlight.transform.localScale = highlightBaseScale;
+    }
+    
 
     public void TakeDamage(int dmgAmount)
     {
@@ -244,8 +346,10 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
     {
         shieldText.SetText("");
         shieldIconSprite.enabled = false;
+        shieldHpBarFrame.enabled = false;
         if (CurrShield <= 0) return;
         shieldIconSprite.enabled = true;
+        shieldHpBarFrame.enabled = true;
         shieldText.SetText(CurrShield.ToString());
     }
 
