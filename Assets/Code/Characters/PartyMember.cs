@@ -41,8 +41,10 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
 
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
-
-
+    
+    [Header("Popup")]
+    [SerializeField] private float popupOffsetY = 1.5f;
+    
     private void Start()
     {
         UpdateVisuals();
@@ -148,6 +150,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
         if (dmgAmount <= 0) return;
 
         var remainDmg = dmgAmount;
+        int shownDamage = dmgAmount;
 
         if (CurrShield > 0)
         {
@@ -166,6 +169,9 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
         {
             G.audioSystem.Play(SoundId.SFX_DamageBlocked);
         }
+        
+        if (shownDamage > 0 && G.textPopup != null)
+            G.textPopup.SpawnAbove(transform, popupOffsetY, shownDamage, isHeal: false);
 
         transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f);
         CheckIsDead();
@@ -177,6 +183,9 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
         if (IsDead) return;
         state.CurrHP = Mathf.Min(state.CurrHP + amount, state.MaxHP);
         UpdateVisuals();
+        
+        if (G.textPopup != null)
+            G.textPopup.SpawnAbove(transform, popupOffsetY, amount, isHeal: true);
         
         G.audioSystem.Play(SoundId.SFX_PlayerHealed);
     }
