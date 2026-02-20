@@ -102,7 +102,7 @@ public class VulnerabilityStatusEffect : StatusEffectInteractionBase, ITakenDama
 
     public int OnBeforeDamageTakenTick(int damage)
     {
-        return Mathf.RoundToInt(damage * 1.25f);
+        return Mathf.RoundToInt(damage * multiplier);
     }
 
     public override string Description { get; }

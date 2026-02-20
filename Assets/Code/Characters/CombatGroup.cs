@@ -118,10 +118,8 @@ public abstract class CombatGroup : MonoBehaviour
     {
         foreach (var member in partyMembers)
         {
-            if (!member.IsDead)
-            {
-                member.TakeDamage(amount);
-            }
+            if (member == null || member.IsDead) continue;
+            member.TakeDamage(amount);
         }
     }
 

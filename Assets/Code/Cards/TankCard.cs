@@ -54,7 +54,7 @@ public class ShieldAllInteraction : IOnCardEndTurn
 }
 
 [Serializable]
-public class ShieldAllForEveryClassCard : IOnCardEndTurn 
+public class ShieldAllForEveryClassCard : IOnCardEndTurn
 {
     public int AdditionalShieldAmount;
     public ClassType classCardsType = ClassType.Tank;
@@ -68,5 +68,20 @@ public class ShieldAllForEveryClassCard : IOnCardEndTurn
 
         G.party.ShieldAll(counter * AdditionalShieldAmount);
         yield break;
+    }
+}
+
+[Serializable]
+public class AddShildToTargetInteraction : IOnCardEndTurn
+{
+    public int shieldAmount;
+
+    public string desc => "+" + shieldAmount + " shield to target";
+
+    public IEnumerator OnEndTurn(CardState card)
+    {
+        var target = G.main.Target;
+        if (target == null) yield break;
+        target.AddShield(shieldAmount);
     }
 }

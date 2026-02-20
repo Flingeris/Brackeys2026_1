@@ -22,11 +22,11 @@ public class ContentDefExplorerWindow : EditorWindow
     {
         public string Guid;
         public string AssetPath;
-        public string FolderPath;      // относительный путь папки (Assets/./.)
-        public string Name;            // имя ассета
-        public string Id;              // ContentDef.Id
-        public string TypeName;        // короткое имя типа (ItemDef, DiceDef и т.п.)
-        public ContentDef Asset;       // ссылка на сам ассет
+        public string FolderPath; // относительный путь папки (Assets/./.)
+        public string Name; // имя ассета
+        public string Id; // ContentDef.Id
+        public string TypeName; // короткое имя типа (ItemDef, DiceDef и т.п.)
+        public ContentDef Asset; // ссылка на сам ассет
     }
 
     // --- TreeView ---
@@ -89,44 +89,13 @@ public class ContentDefExplorerWindow : EditorWindow
                 var groupItem = new TreeViewItem<int>(idCounter++, 0, group.Key);
                 root.AddChild(groupItem);
 
-                // Проверяем: это группа карточек?
-                bool isCardGroup = group.Any(i => i.Asset is CardModel);
 
-                if (isCardGroup)
+                // Обычные типы как раньше: просто список ассетов
+                foreach (var info in group.OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase))
                 {
-                    // Внутри класса карт делаем доп.уровень по CardType (Start / Mid / End)
-                    var byCardType = group
-                        .GroupBy(info =>
-                        {
-                            if (info.Asset is CardModel card)
-                                return card.CardType;
-                            return CardType.None;
-                        })
-                        .OrderBy(g => g.Key); // порядок по enum CardType
-
-                    foreach (var typeGroup in byCardType)
-                    {
-                        string headerName = typeGroup.Key.ToString(); // None / Start / Mid / End
-                        var typeItem = new TreeViewItem<int>(idCounter++, 1, headerName);
-                        groupItem.AddChild(typeItem);
-
-                        foreach (var info in typeGroup.OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase))
-                        {
-                            var child = new ContentDefTreeItem(idCounter++, 2, info.Name, info);
-                            typeItem.AddChild(child);
-                            _idToInfo[child.id] = info;
-                        }
-                    }
-                }
-                else
-                {
-                    // Обычные типы как раньше: просто список ассетов
-                    foreach (var info in group.OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase))
-                    {
-                        var child = new ContentDefTreeItem(idCounter++, 1, info.Name, info);
-                        groupItem.AddChild(child);
-                        _idToInfo[child.id] = info;
-                    }
+                    var child = new ContentDefTreeItem(idCounter++, 1, info.Name, info);
+                    groupItem.AddChild(child);
+                    _idToInfo[child.id] = info;
                 }
             }
 
@@ -174,7 +143,7 @@ public class ContentDefExplorerWindow : EditorWindow
         }
     }
 
-    // --- поля окна ---
+// --- поля окна ---
 
     private TreeViewState<int> _treeViewState;
     private ContentDefTreeView _treeView;
@@ -183,7 +152,7 @@ public class ContentDefExplorerWindow : EditorWindow
     private List<ContentDefInfo> _allDefs = new();
     private Vector2 _statusScroll;
 
-    // --- меню ---
+// --- меню ---
 
     [MenuItem("Tools/Content/ContentDef Explorer")]
     public static void Open()
@@ -270,7 +239,7 @@ public class ContentDefExplorerWindow : EditorWindow
         }
     }
 
-    // --- логика загрузки и фильтрации ---
+// --- логика загрузки и фильтрации ---
 
     private void RefreshData()
     {

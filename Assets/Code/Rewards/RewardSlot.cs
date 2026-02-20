@@ -41,6 +41,7 @@ public class RewardSlot : MonoBehaviour, IPointerClickHandler, ITooltipInfoGiver
         go.transform.parent = transform;
         go.transform.DOKill();
         go.transform.DOLocalMove(Vector3.zero, 0.5f);
+        go.transform.localScale = Vector3.one;
 
 
         OnContainerChanged?.Invoke();

@@ -32,7 +32,6 @@ public abstract class CardModel : RewardDefBase, ITooltipInfo
 
     [Header("Stats")] public abstract ClassType ClassType { get; }
 
-    public CardType CardType;
     [SerializeReference, SubclassSelector] public List<IOnCardPlayed> OnPlayedCardInteractions;
 
 

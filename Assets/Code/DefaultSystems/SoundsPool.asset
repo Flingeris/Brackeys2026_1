@@ -30,7 +30,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: e24e303257b6de94ba948b5ffb94bed9, type: 3}
     type: 0
     Loop: 0
-    Volume: 0.398
+    Volume: 0.046
   - soundId: 103
     Clips:
     - {fileID: 8300000, guid: fb00d87080e94e44aad8f003426b273e, type: 3}
@@ -49,12 +49,6 @@ MonoBehaviour:
     type: 1
     Loop: 1
     Volume: 0.117
-  - soundId: 4
-    Clips:
-    - {fileID: 8300000, guid: c898ae5893dd965409e8eb6b57167527, type: 3}
-    type: 0
-    Loop: 0
-    Volume: 0.239
   - soundId: 6
     Clips:
     - {fileID: 8300000, guid: d1208aca295c90544ad58b271deff61e, type: 3}
