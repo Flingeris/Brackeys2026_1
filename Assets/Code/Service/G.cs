@@ -22,6 +22,7 @@ public static class G
     public static ScreenFader ScreenFader;
     public static TextPopupManager textPopup;
     public static Hand Hand { get; set; }
+    public static RewardManager Reward { get; set; }
 }
 
 

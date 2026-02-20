@@ -261,6 +261,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Debug.Log("On enemy clicked");
         G.main.TryChooseTarget(this);
     }
 

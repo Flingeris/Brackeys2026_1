@@ -39,11 +39,16 @@ public class Main : MonoBehaviour
     {
         G.main = this;
 
-        if (G.run == null) G.run = new RunState();
-        var cards = startDeck.Select(cardModel => new CardState(cardModel)).ToList();
+        if (G.run == null)
+        {
+            G.run = new RunState();
+            var cards = startDeck.Select(cardModel => new CardState(cardModel)).ToList();
 
-        G.run.currDeck = new List<CardState>(cards);
-        drawPile = new List<CardState>(G.run.currDeck);
+            G.run.currDeck = new List<CardState>(cards);
+        }
+
+
+        drawPile = new List<CardState>(G.run.currDeck.Shuffle());
         discardPile = new List<CardState>();
     }
 
@@ -200,9 +205,11 @@ public class Main : MonoBehaviour
 
     private IEnumerator WinSequence()
     {
-        G.UI.SetWinActive(true);
+        // G.UI.SetWinActive(true);
 
-        yield return new WaitForSecondsRealtime(2f);
+        yield return FieldClearSequence();
+        yield return G.Reward.StartRewarding<CardModel>();
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -230,6 +237,15 @@ public class Main : MonoBehaviour
                 member.Kill();
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            var enemies = G.enemies.GetAliveEnemies();
+            foreach (var enemyInstance in enemies)
+            {
+                enemyInstance.Kill();
+            }
+        }
     }
 
 
@@ -240,7 +256,7 @@ public class Main : MonoBehaviour
 
         card.transform.DOKill();
         card.Draggable.transform.DOKill();
-            
+
         card.transform.DOMove(new Vector3(12, -3, transform.position.z), 0.1f);
         card.transform.DOScale(0f, 0.1f);
 

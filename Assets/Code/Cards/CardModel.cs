@@ -21,7 +21,7 @@ public enum CardType
 }
 
 
-public abstract class CardModel : ContentDef, ITooltipInfo
+public abstract class CardModel : RewardDefBase, ITooltipInfo
 {
     [Header("Card info")]
     [field: SerializeField]
@@ -61,6 +61,19 @@ public abstract class CardModel : ContentDef, ITooltipInfo
         }
 
         return sb.ToString();
+    }
+
+    protected override IEnumerator OnRewardPicked()
+    {
+        G.run.currDeck.Add(new CardState(this));
+        // G.Hand.AddCard(new CardState(this));
+        yield return null;
+    }
+
+
+    public override bool CanBePicked()
+    {
+        return true;
     }
 }
 

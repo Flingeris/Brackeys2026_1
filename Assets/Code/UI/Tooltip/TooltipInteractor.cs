@@ -42,3 +42,32 @@ public class TooltipInteractor : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 }
+
+public class RewardInteractor: MonoBehaviour, IPointerClickHandler
+{
+    // [SerializeField] private IReward
+    
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        throw new System.NotImplementedException();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

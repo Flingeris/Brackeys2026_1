@@ -132,9 +132,8 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
     public CardInstance CreateCard(string id)
     {
         var cardModel = CMS.Get<CardModel>(id);
-        var cardInst = Instantiate(cardModel.Prefab, cardsParent, false);
+        var cardInst = Instantiate(cardModel.Prefab);
         cardInst.SetModel(cardModel);
-        cardInst.Draggable.SetOwner(this);
         return cardInst;
     }
 
@@ -254,25 +253,25 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
         if (!cardsInHand.Contains(card))
             cardsInHand.Add(card);
 
-        var t = card.transform;
-
-        // 1) Гасим всё, что могло двигать root
-        t.DOKill();
-        d.transform.DOKill();
-
-        // 2) Сажаем строго под hand-parent (без сохранения world)
-        t.SetParent(cardsParent, false);
-
-        // 3) Обнуляем локальные координаты, дальше рука сама разложит
-        t.localPosition = Vector3.zero;
-        t.localRotation = Quaternion.identity;
+        // var t = card.transform;
+        //
+        // // 1) Гасим всё, что могло двигать root
+        // t.DOKill();
+        // d.transform.DOKill();
+        //
+        // // 2) Сажаем строго под hand-parent (без сохранения world)
+        // t.SetParent(cardsParent, false);
+        //
+        // // 3) Обнуляем локальные координаты, дальше рука сама разложит
+        // t.localPosition = Vector3.zero;
+        // t.localRotation = Quaternion.identity;
 
         // --- RESET VISUAL HOVER ---
         var hover = card.GetComponentInChildren<CardHoverVFX>();
-        if (hover != null)
-        {
-            hover.ResetVisual(); // мы сейчас напишем метод
-        }
+        // if (hover != null)
+        // {
+        //     hover.ResetVisual(); // мы сейчас напишем метод
+        // }
     }
 
 
