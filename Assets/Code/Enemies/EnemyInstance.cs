@@ -38,6 +38,9 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
 
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
+    
+    [Header("Popup")]
+    [SerializeField] private float popupOffsetY = 1.5f;
 
 
     private void Start()
@@ -153,6 +156,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
 
 
         var remainDmg = dmgAmount;
+        int shownDamage = dmgAmount;
 
         if (CurrShield > 0)
         {
@@ -170,6 +174,9 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         {
             G.audioSystem.Play(SoundId.SFX_DamageBlocked);
         }
+        
+        if (shownDamage > 0 && G.textPopup != null)
+            G.textPopup.SpawnAbove(transform, popupOffsetY, shownDamage, isHeal: false);
 
         transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f);
         CheckIsDead();
@@ -179,8 +186,12 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     public void Heal(int amount)
     {
         if (IsDead) return;
+        
         CurrHP = Mathf.Min(CurrHP + amount, MaxHP);
         UpdateVisuals();
+        
+        if (G.textPopup != null)
+            G.textPopup.SpawnAbove(transform, popupOffsetY, amount, isHeal: true);
     }
 
     public void AddShield(int amount)
