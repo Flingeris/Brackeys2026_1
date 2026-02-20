@@ -41,6 +41,9 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     [SerializeField] private HpBarView hpBarView;
 
     [Header("Popup")] [SerializeField] private float popupOffsetY = 1.5f;
+    
+    [Header("Visual Root")]
+    [SerializeField] private Transform visualRoot;
 
 
     private void Start()
@@ -137,8 +140,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         hpValueText.SetText("");
         if (model == null) return;
 
-        hpValueText.SetText(CurrHP.ToString() + " / " + model.StartingHealth.ToString());
-
+        hpValueText.SetText(CurrHP.ToString() + "/" + model.StartingHealth.ToString());
         if (hpBarView != null && model.StartingHealth > 0)
         {
             float normalized = (float)CurrHP / model.StartingHealth;
@@ -304,10 +306,11 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
 
         if (IsDead || !gameObject) yield break;
 
-        var startPos = transform.position;
+        var startPos = visualRoot.position;
         var endPos = startPos;
         endPos.x -= 3f;
-        transform.DOMove(endPos, 0.2f);
+
+        visualRoot.DOMove(endPos, 0.2f);
         yield return new WaitForSeconds(0.2f);
 
         var action = GetAction(CurrTurnIndex, model.EndTurnActions);
@@ -320,7 +323,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
             }
         }
 
-        transform.DOMove(startPos, 0.2f);
+        visualRoot.DOMove(startPos, 0.2f);
         yield return new WaitForSeconds(0.2f);
 
         UpdateNextActionIcon();

@@ -228,7 +228,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
 
     private void UpdateHpVisuals()
     {
-        hpText.SetText(state.CurrHP + " / " + state.MaxHP);
+        hpText.SetText(state.CurrHP + "/" + state.MaxHP);
 
         if (hpBarView != null && state.MaxHP > 0)
         {
