@@ -1911,7 +1911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Main
   DrawSize: 6
-  ShowTitle: 1
+  ShowTitle: 0
   field: {fileID: 1089562157}
   IsChoosingTarget: 0
 --- !u!4 &1026985112

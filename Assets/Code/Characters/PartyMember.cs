@@ -36,6 +36,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
 
     [SerializeField] private TMP_Text shieldText;
     [SerializeField] private SpriteRenderer shieldIconSprite;
+    [SerializeField] private SpriteRenderer shieldHpBarFrame;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private SpriteRenderer highlight;
 
@@ -237,8 +238,10 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
     {
         shieldText.SetText("");
         shieldIconSprite.enabled = false;
+        shieldHpBarFrame.enabled = false;
         if (CurrShield <= 0) return;
         shieldIconSprite.enabled = true;
+        shieldHpBarFrame.enabled = true;
         shieldText.SetText(CurrShield.ToString());
     }
 
