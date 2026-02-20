@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 public class MemberState
 {
-    public MemberModel model;
+    public CharacterModel model;
     public int CurrHP;
     public int MaxHP;
     public int currPos;
@@ -41,13 +41,12 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
 
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
-    
+
     [SerializeField] private HpBarView hpBarView;
-    
-    [Header("Popup")]
-    [SerializeField] private float popupOffsetY = 1.5f;
-   
-    
+
+    [Header("Popup")] [SerializeField] private float popupOffsetY = 1.5f;
+
+
     private void Start()
     {
         UpdateVisuals();
@@ -121,7 +120,12 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
         UpdateVisuals();
     }
 
-    public void SetModel(MemberModel model)
+    public void SetPos(int pos)
+    {
+        state.currPos = pos;
+    }
+
+    public void SetModel(CharacterModel model)
     {
         if (model == null) return;
         var newState = new MemberState()
@@ -172,7 +176,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
         {
             G.audioSystem.Play(SoundId.SFX_DamageBlocked);
         }
-        
+
         if (shownDamage > 0 && G.textPopup != null)
             G.textPopup.SpawnAbove(transform, popupOffsetY, shownDamage, isHeal: false);
 
@@ -186,10 +190,10 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
         if (IsDead) return;
         state.CurrHP = Mathf.Min(state.CurrHP + amount, state.MaxHP);
         UpdateVisuals();
-        
+
         if (G.textPopup != null)
             G.textPopup.SpawnAbove(transform, popupOffsetY, amount, isHeal: true);
-        
+
         G.audioSystem.Play(SoundId.SFX_PlayerHealed);
     }
 
@@ -198,7 +202,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
         if (IsDead) return;
         CurrShield += amount;
         UpdateVisuals();
-        
+
         G.audioSystem.Play(SoundId.SFX_PlayerShielded);
     }
 

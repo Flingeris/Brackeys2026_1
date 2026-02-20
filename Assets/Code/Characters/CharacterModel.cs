@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Party Member", menuName = "Party/New Party Member")]
-public class MemberModel : ContentDef
+public class CharacterModel : ContentDef
 {
     public int MaxHP;
     public ClassType Class;

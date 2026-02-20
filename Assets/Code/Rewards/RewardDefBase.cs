@@ -13,7 +13,7 @@ public abstract class RewardDefBase : ContentDef, IReward, ITooltipInfo
     [field: SerializeField]
     public string ItemName { get; protected set; }
 
-    [TextArea] [field: SerializeField] public string Description { get; protected set; }
+    [TextArea] [field: SerializeField] public virtual string Description { get; protected set; }
 
     public virtual IEnumerator PickReward()
     {

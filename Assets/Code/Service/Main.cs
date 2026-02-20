@@ -5,10 +5,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.LowLevelPhysics;
-using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
-using Random = System.Random;
 
 
 public class RunState
@@ -30,10 +27,10 @@ public class Main : MonoBehaviour
     public bool ShowTitle;
     public Field field;
 
-
     private List<CardState> drawPile;
     private List<CardState> discardPile;
     [SerializeField] private List<CardModel> startDeck;
+    [SerializeField] private SpriteRenderer background;
 
     private void Awake()
     {
@@ -43,7 +40,7 @@ public class Main : MonoBehaviour
         {
             G.run = new RunState();
             var cards = startDeck.Select(cardModel => new CardState(cardModel)).ToList();
-
+            G.run.mapNodeIndex++;
             G.run.currDeck = new List<CardState>(cards);
         }
 
@@ -68,28 +65,57 @@ public class Main : MonoBehaviour
 #if !UNITY_EDITOR
        while (!ServiceMain.ServicesReady) yield return null;
 #endif
-        yield return LoadLvl();
+        yield return LoadLvlFromIndex(G.run.mapNodeIndex);
         G.audioSystem.Play(SoundId.Ambient_Sewer);
 
         StartTurn();
     }
 
-    private IEnumerator LoadLvl()
+
+    private IEnumerator LoadLvlFromIndex(int lvlIndex)
     {
-        var characters = CMS.GetAll<MemberModel>();
-        foreach (var character in characters)
+        var allCards = CMS.GetAll<CardModel>();
+        var allLvls = CMS.GetAll<LevelModel>();
+
+        var matchedLvls = allLvls.Where(l => l.lvlIndex == lvlIndex).ToList();
+
+        if (!matchedLvls.Any())
         {
-            G.party.AddMember(character);
+            Debug.LogWarning("No lvls found for lvlindex " + lvlIndex);
+            yield break;
         }
 
-        var enemies = CMS.GetAll<EnemyModel>().ToList();
-        for (int i = 0; i <= 2; i++)
-        {
-            var enemy = enemies.GetRandomElement();
-            G.enemies.AddEnemy(enemy);
-        }
+        var lvl = matchedLvls.GetRandomElement();
+        yield return LoadLvl(lvl);
 
         yield break;
+    }
+
+    private IEnumerator LoadLvl(LevelModel lvl)
+    {
+        if (lvl == null || !lvl.enemies.Any())
+        {
+            Debug.LogError("lvl is null or empty " + lvl?.name);
+            yield break;
+        }
+
+        background.sprite = lvl.backgroundSprite;
+        G.audioSystem.Play(lvl.LevelAmbient);
+
+        var characters = CMS.GetAll<CharacterModel>();
+        foreach (var character in characters)
+        {
+            var member = G.party.CreateMember(character);
+            // member.SetState(G.run.CharactersStates.FirstOrDefault(s => s.Class == character.Class));
+            G.party.AddMember(member, member.state.currPos);
+        }
+
+        var enemies = lvl.enemies;
+        for (int i = 0; i <= enemies.Length-1; i++)
+        {
+            var enemy = enemies[i];
+            G.enemies.AddEnemy(enemy);
+        }
     }
 
 
@@ -210,6 +236,7 @@ public class Main : MonoBehaviour
         yield return FieldClearSequence();
         yield return G.Reward.StartRewarding<CardModel>();
 
+        G.run.mapNodeIndex++;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -351,12 +378,4 @@ public class Main : MonoBehaviour
     {
         Application.Quit();
     }
-}
-
-internal class LevelModel : ScriptableObject
-{
-}
-
-public class Pile : MonoBehaviour
-{
 }

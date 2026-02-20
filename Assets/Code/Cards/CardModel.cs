@@ -23,13 +23,11 @@ public enum CardType
 
 public abstract class CardModel : RewardDefBase, ITooltipInfo
 {
-    [Header("Card info")]
-    [field: SerializeField]
-    public string ItemName { get; protected set; }
+    [Header("Card info")] [field: SerializeField] [Header("Card visuals")]
+    public Sprite Sprite;
 
-    public string Description => GetDescription();
 
-    [Header("Card visuals")] public Sprite Sprite;
+    public override string Description => GetDescription();
     public CardInstance Prefab => "prefabs/Card".Load<CardInstance>();
 
     [Header("Stats")] public abstract ClassType ClassType { get; }

@@ -38,11 +38,9 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
 
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
-    
     [SerializeField] private HpBarView hpBarView;
-    
-    [Header("Popup")]
-    [SerializeField] private float popupOffsetY = 1.5f;
+
+    [Header("Popup")] [SerializeField] private float popupOffsetY = 1.5f;
 
 
     private void Start()
@@ -138,9 +136,9 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     {
         hpValueText.SetText("");
         if (model == null) return;
-        
+
         hpValueText.SetText(CurrHP.ToString() + " / " + model.StartingHealth.ToString());
-        
+
         if (hpBarView != null && model.StartingHealth > 0)
         {
             float normalized = (float)CurrHP / model.StartingHealth;
@@ -182,7 +180,7 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         {
             G.audioSystem.Play(SoundId.SFX_DamageBlocked);
         }
-        
+
         if (shownDamage > 0 && G.textPopup != null)
             G.textPopup.SpawnAbove(transform, popupOffsetY, shownDamage, isHeal: false);
 
@@ -194,10 +192,10 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     public void Heal(int amount)
     {
         if (IsDead) return;
-        
+
         CurrHP = Mathf.Min(CurrHP + amount, MaxHP);
         UpdateVisuals();
-        
+
         if (G.textPopup != null)
             G.textPopup.SpawnAbove(transform, popupOffsetY, amount, isHeal: true);
     }
@@ -313,7 +311,6 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
         yield return new WaitForSeconds(0.2f);
 
         var action = GetAction(CurrTurnIndex, model.EndTurnActions);
-
         if (action != null)
         {
             var inters = action.OnEndTurnInteractions;

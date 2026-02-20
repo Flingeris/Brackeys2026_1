@@ -29,4 +29,4 @@ MonoBehaviour:
     - rid: 5181037750336094480
       type: {class: DealDamageToRandomTarget, ns: , asm: Assembly-CSharp}
       data:
-        damageAmount: 4
+        damageAmount: 10

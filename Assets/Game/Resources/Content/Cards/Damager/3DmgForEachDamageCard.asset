@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f792f981288481f84c121a1bbc7af7d, type: 3}
-  m_Name: End_DamageTargetForEachAttack
+  m_Name: 3DmgForEachDamageCard
   m_EditorClassIdentifier: Assembly-CSharp::DamageCard
   id: 
   <ItemName>k__BackingField: Random strike

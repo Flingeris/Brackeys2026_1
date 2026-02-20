@@ -24,6 +24,7 @@ public class EnemyGroup : CombatGroup
         member.transform.localPosition = Vector3.zero;
         AddMember(member, index);
     }
+    
 
     protected override void OnMembersDeath()
     {
