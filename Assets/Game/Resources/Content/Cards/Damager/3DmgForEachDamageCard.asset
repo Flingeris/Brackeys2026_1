@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: 3DmgForEachDamageCard
   m_EditorClassIdentifier: Assembly-CSharp::DamageCard
   id: 
+  <RewardRarity>k__BackingField: 0
+  IsExcludedFromRewards: 0
   <ItemName>k__BackingField: Random strike
-  Sprite: {fileID: 21300000, guid: dc896925218ed1a44905923f086b0327, type: 3}
-  CardType: 3
+  <Description>k__BackingField: 
+  Sprite: {fileID: 21300000, guid: 5d5aaeb44b82356478db4ff7279f3b79, type: 3}
   OnPlayedCardInteractions: []
   OnTurnEndInteractions:
   - rid: 5181037750336094316

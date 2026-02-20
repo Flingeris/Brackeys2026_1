@@ -101,6 +101,7 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     private void HandleDragEnd()
     {
+        G.audioSystem.PlayPitched(SoundId.SFX_CardDraw, Random.Range(0.9f, 1.1f));
         _isDragging = false;
         
         _scaleTween?.Kill();
@@ -127,6 +128,11 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         
         if (Time.time < _draggable.HoverLockUntil) return;
         if (_isDragging) return;
+        
+        
+        G.audioSystem.PlayPitched(SoundId.SFX_CardDraw, Random.Range(0.9f, 1.1f));
+        // G.audioSystem.Play(SoundId.SFX_CardDraw);
+        
 
         if (IsInSlot())
         {

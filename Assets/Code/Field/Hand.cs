@@ -127,6 +127,7 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
         var inst = CreateCard(state.model.Id);
         inst.state = state;
         Claim(inst);
+        G.audioSystem.PlayPitched(SoundId.SFX_CardDraw, Random.Range(0.9f, 1.1f));
     }
 
     public CardInstance CreateCard(string id)
@@ -154,6 +155,7 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
         {
             if (cardInstance == null) continue;
             yield return G.main.KillCard(cardInstance);
+            G.audioSystem.PlayPitched(SoundId.SFX_CardDraw, Random.Range(0.9f, 1.1f));
         }
 
         cardsInHand.Clear();

@@ -63,10 +63,10 @@ MonoBehaviour:
     Volume: 0.71
   - soundId: 8
     Clips:
-    - {fileID: 8300000, guid: d1208aca295c90544ad58b271deff61e, type: 3}
+    - {fileID: 8300000, guid: ce1db20fe430fc24d96aaba9b29033b2, type: 3}
     type: 0
     Loop: 0
-    Volume: 1
+    Volume: 0.521
   - soundId: 5
     Clips:
     - {fileID: 8300000, guid: e24e303257b6de94ba948b5ffb94bed9, type: 3}

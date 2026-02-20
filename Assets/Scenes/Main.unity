@@ -1564,6 +1564,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 806928177}
     m_Modifications:
     - target: {fileID: 141408217759932225, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
+      propertyPath: m_text
+      value: Lifeblade (weapon)
+      objectReference: {fileID: 0}
+    - target: {fileID: 141408217759932225, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
@@ -1595,6 +1599,10 @@ PrefabInstance:
       propertyPath: canvas
       value: 
       objectReference: {fileID: 806928176}
+    - target: {fileID: 7286260454094401675, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
+      propertyPath: minWidth
+      value: 500
+      objectReference: {fileID: 0}
     - target: {fileID: 8853428534823261982, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

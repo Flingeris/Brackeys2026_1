@@ -267,6 +267,7 @@ public class Main : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
+            // G.Hand.AddCard(CMS.Get<>);
             var enemies = G.enemies.GetAliveEnemies();
             foreach (var enemyInstance in enemies)
             {
