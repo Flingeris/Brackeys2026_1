@@ -10,11 +10,20 @@ using Random = UnityEngine.Random;
 
 public class MemberState
 {
-    public CharacterModel model;
+    public readonly CharacterModel model;
     public int CurrHP;
     public int MaxHP;
     public int currPos;
-    public ClassType Class;
+    public readonly ClassType Class;
+
+    public MemberState(CharacterModel model)
+    {
+        CurrHP = model.MaxHP;
+        MaxHP = model.MaxHP;
+        this.model = model;
+        currPos = model.preferPos;
+        Class = model.Class;
+    }
 }
 
 
@@ -117,6 +126,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
     public void SetState(MemberState newState)
     {
         state = newState;
+        state.CurrHP = state.MaxHP;
         UpdateVisuals();
     }
 
@@ -128,14 +138,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
     public void SetModel(CharacterModel model)
     {
         if (model == null) return;
-        var newState = new MemberState()
-        {
-            CurrHP = model.MaxHP,
-            MaxHP = model.MaxHP,
-            model = model,
-            currPos = model.preferPos,
-            Class = model.Class
-        };
+        var newState = new MemberState(model);
 
         SetState(newState);
     }
@@ -263,6 +266,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler
         if (state.CurrHP > 0) return;
 
         IsDead = true;
+        state.MaxHP = Mathf.Max(4, state.MaxHP - 4);
         CombatGroup.CheckMemberDeath(this);
     }
 

@@ -26,6 +26,13 @@ public class PartyManager : CombatGroup
         return member;
     }
 
+    public PartyMember CreateMember(MemberState state)
+    {
+        var mem = CreateMember(state.model);
+        mem.SetState(state);
+        return mem;
+    }
+
     public void AddMember(PartyMember member, int index)
     {
         member.CombatGroup = this;

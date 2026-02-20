@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -10,8 +11,8 @@ using UnityEngine.SceneManagement;
 
 public class RunState
 {
-    public List<CardState> currDeck;
-    public List<MemberState> CharactersStates;
+    public List<CardState> currDeck = new();
+    public List<MemberState> CharactersStates = new();
 
 
     public int drawSize = 5;
@@ -42,6 +43,12 @@ public class Main : MonoBehaviour
             var cards = startDeck.Select(cardModel => new CardState(cardModel)).ToList();
             G.run.mapNodeIndex++;
             G.run.currDeck = new List<CardState>(cards);
+
+            var characters = CMS.GetAll<CharacterModel>();
+            foreach (var character in characters)
+            {
+                G.run.CharactersStates.Add(new MemberState(character));
+            }
         }
 
 
@@ -102,16 +109,17 @@ public class Main : MonoBehaviour
         background.sprite = lvl.backgroundSprite;
         G.audioSystem.Play(lvl.LevelAmbient);
 
-        var characters = CMS.GetAll<CharacterModel>();
+
+        var characters = G.run.CharactersStates;
+
         foreach (var character in characters)
         {
             var member = G.party.CreateMember(character);
-            // member.SetState(G.run.CharactersStates.FirstOrDefault(s => s.Class == character.Class));
             G.party.AddMember(member, member.state.currPos);
         }
 
         var enemies = lvl.enemies;
-        for (int i = 0; i <= enemies.Length-1; i++)
+        for (int i = 0; i <= enemies.Length - 1; i++)
         {
             var enemy = enemies[i];
             G.enemies.AddEnemy(enemy);
@@ -128,7 +136,6 @@ public class Main : MonoBehaviour
     {
         turns = BuildTurnOrder();
 
-        G.run.currDeck.Shuffle();
         yield return DrawCards();
 
         // G.Hand.DrawControlledHand(G.run.drawSize);
@@ -150,6 +157,12 @@ public class Main : MonoBehaviour
             }
 
             var cardState = drawPile.Pop();
+            if (cardState.CardOwner == null || cardState.CardOwner.IsDead)
+            {
+                i--;
+                continue;
+            }
+
             G.Hand.AddCard(cardState);
 
             yield return new WaitForSeconds(0.1f);
@@ -231,6 +244,20 @@ public class Main : MonoBehaviour
 
     private IEnumerator WinSequence()
     {
+        var allLvls = CMS.GetAll<LevelModel>();
+        var matchedLvls = allLvls.Where(l => l.lvlIndex == G.run.mapNodeIndex + 1).ToList();
+
+        if (!matchedLvls.Any())
+        {
+            Debug.Log("Starting endGame ");
+            Debug.Log($"[WinSequence] G.UI = {(G.UI ? G.UI.gameObject.name : "null")}, destroyed? {(G.UI == null)}");
+            G.UI.SetWinActive(true);
+            yield return new WaitForSecondsRealtime(2f);
+            G.run = null;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            yield break;
+        }
+
         // G.UI.SetWinActive(true);
 
         yield return FieldClearSequence();
@@ -267,15 +294,28 @@ public class Main : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            // G.Hand.AddCard(CMS.Get<>);
             var enemies = G.enemies.GetAliveEnemies();
             foreach (var enemyInstance in enemies)
             {
                 enemyInstance.Kill();
             }
+
+            EndTurn();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            StartCoroutine(KillTarget());
         }
     }
 
+
+    public IEnumerator KillTarget()
+    {
+        yield return ChooseTarget(TargetSide.Any, null);
+
+        if (Target != null && !Target.IsDead) Target.Kill();
+    }
 
     public IEnumerator KillCard(CardInstance card)
     {

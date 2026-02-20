@@ -6,6 +6,7 @@ using UnityEngine;
 public class TextPopupInstance : MonoBehaviour
 {
     public TMP_Text label;
+    private Sequence s;
 
     [Header("Motion")]
     public float riseDistance = 1f;
@@ -23,10 +24,16 @@ public class TextPopupInstance : MonoBehaviour
         var t = transform;
         t.localScale = Vector3.one * 0.9f;
 
-        Sequence s = DOTween.Sequence();
+        s = DOTween.Sequence();
         s.Append(t.DOMoveY(t.position.y + riseDistance, duration).SetEase(Ease.OutQuad));
         s.Join(t.DOScale(1.1f, duration));
         s.Join(label.DOFade(0f, duration).SetEase(Ease.InQuad).SetDelay(duration * 0.3f));
         s.OnComplete(() => Destroy(gameObject));
+    }
+
+    private void OnDestroy()
+    {
+        s.Kill();
+        transform.DOKill();
     }
 }

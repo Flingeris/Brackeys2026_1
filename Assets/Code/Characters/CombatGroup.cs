@@ -101,6 +101,7 @@ public abstract class CombatGroup : MonoBehaviour
     {
         foreach (var member in partyMembers)
         {
+            if (member == null) continue;
             member.SetTarget(false);
         }
     }

@@ -9,6 +9,7 @@ using UnityEngine.UIElements;
 public class CardState
 {
     public CardModel model;
+    public PartyMember CardOwner => G.party.GetMemberByClass(model.ClassType);
 
     public CardState(CardModel model)
     {
@@ -21,6 +22,7 @@ public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public CardState state;
     [Header("References")] public DraggableCard Draggable;
     public Hand Hand => G.Hand;
+
 
     [SerializeField] private TMP_Text cardNameText;
     [SerializeField] private TMP_Text cardDescText;

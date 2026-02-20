@@ -31,6 +31,8 @@ public static class TextStuff
     public static string green = "#65FF5D";
     public static string red = "#F84D47";
     public static string blue => "#0087FF";
+    
+    // public static string Damage => "Damage".Color(ColorUtility.ToHtmlStringRGBA(Color.red));
 
     public static Color GetColor(string html)
     {

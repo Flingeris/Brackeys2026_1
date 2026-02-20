@@ -41,9 +41,9 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
     [SerializeField] private HpBarView hpBarView;
 
     [Header("Popup")] [SerializeField] private float popupOffsetY = 1.5f;
-    
-    [Header("Visual Root")]
-    [SerializeField] private Transform visualRoot;
+
+    [Header("Visual Root")] [SerializeField]
+    private Transform visualRoot;
 
 
     private void Start()
@@ -341,6 +341,11 @@ public class EnemyInstance : MonoBehaviour, ITurnEntity, ICombatEntity, IPointer
 
         int index = turnIndex % activeAct.Count;
         return actions[index];
+    }
+
+    private void OnDestroy()
+    {
+        transform.DOKill();
     }
 }
 
