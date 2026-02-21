@@ -1,7 +1,6 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using UnityEngine;
 
 
@@ -115,12 +114,13 @@ public abstract class CombatGroup : MonoBehaviour
         combatEntity.TakeDamage(damage);
     }
 
-    public void DamageAll(int amount)
+    public IEnumerator DamageAll(int amount)
     {
         foreach (var member in partyMembers)
         {
             if (member == null || member.IsDead) continue;
             member.TakeDamage(amount);
+            yield return new WaitForSeconds(0.2f);
         }
     }
 

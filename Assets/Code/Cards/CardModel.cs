@@ -81,7 +81,8 @@ public class AddStatusToTargetInteraction : IOnCardEndTurn
     [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
     public int stacksToAdd;
 
-    public string desc => "Apply " + stacksToAdd + " Stacks of " + statusToAdd.GetType() + " to target";
+    public string desc => $"Apply {stacksToAdd} stack(s) of {TextStuff.GetStatus(statusToAdd.Type)} to the target";
+    
 
     public IEnumerator OnEndTurn(CardState state)
     {
@@ -98,7 +99,7 @@ public class AddStatusToClassInteractions : IOnCardEndTurn
     public ClassType member;
     public int stacksToAdd;
 
-    public string desc => "Apply " + stacksToAdd + " Stacks of " + statusToAdd.GetType() + " to " + member;
+    public string desc => $"Apply {stacksToAdd} stack(s) of {TextStuff.GetStatus(statusToAdd.Type)} to the {TextStuff.GetClassTypeString(member)}";
 
     public IEnumerator OnEndTurn(CardState state)
     {

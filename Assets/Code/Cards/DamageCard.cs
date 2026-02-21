@@ -12,7 +12,8 @@ public class DamageCard : CardModel
 [Serializable]
 public class RandomTargetDamageInteraction : IOnCardEndTurn
 {
-    public string desc => "Deals " + DmgAmount + " dmg to random target";
+    public string desc => $"Deal {TextStuff.ColoredValue(DmgAmount, TextStuff.Damage)} to random enemy";
+    
     public int DmgAmount;
 
     public IEnumerator OnEndTurn(CardState state)
@@ -27,7 +28,8 @@ public class RandomTargetDamageInteraction : IOnCardEndTurn
 [Serializable]
 public class DealDamageToTarget : IOnCardEndTurn
 {
-    public string desc => "Deals " + DmgAmount + " dmg to chosen target";
+    public string desc => $"Deal {TextStuff.ColoredValue(DmgAmount, TextStuff.Damage)} to chosen enemy";
+    
     public int DmgAmount;
 
     public IEnumerator OnEndTurn(CardState state)
@@ -43,12 +45,12 @@ public class DealDamageToTarget : IOnCardEndTurn
 [Serializable]
 public class DealDamageToAllInteraction : IOnCardEndTurn
 {
-    public string desc => "Deals " + DmgAmount + " dmg to all enemies";
+    public string desc => $"Deal {TextStuff.ColoredValue(DmgAmount, TextStuff.Damage)} to all enemies";
     public int DmgAmount;
 
     public IEnumerator OnEndTurn(CardState state)
     {
-        G.enemies.DamageAll(DmgAmount);
+       yield return G.enemies.DamageAll(DmgAmount);
         yield return null;
     }
 }
@@ -59,8 +61,7 @@ public class DealDamageForEachClassCard : IOnCardEndTurn
     public int AddDmg;
     public ClassType classCardsType = ClassType.Damage;
 
-    public string desc =>
-        "Deal " + AddDmg + " dmg to target enemy for each` " + classCardsType + " card on field";
+    public string desc => $"Deal {TextStuff.ColoredValue(AddDmg, TextStuff.Damage)} for each {TextStuff.GetClassTypeString(classCardsType)} card on field";
 
     public IEnumerator OnEndTurn(CardState state)
     {
@@ -77,9 +78,8 @@ public class AddDamageForStatus : IOnCardEndTurn
 {
     public int AddDmg;
     public StatusEffectType status;
-
-    public string desc =>
-        "Deal " + AddDmg + " dmg to target enemy for each` " + status + " stack on it";
+    
+    public string desc => $"Deals additional {TextStuff.ColoredValue(AddDmg, TextStuff.Damage)} for each {TextStuff.GetStatus(status)} stack";
 
     public IEnumerator OnEndTurn(CardState state)
     {

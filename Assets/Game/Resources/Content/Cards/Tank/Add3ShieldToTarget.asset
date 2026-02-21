@@ -21,16 +21,16 @@ MonoBehaviour:
   OnPlayedCardInteractions: []
   OnTurnEndInteractions:
   - rid: 5181037798637174912
-  - rid: 5181037798637174910
+  - rid: 5181037802874470656
   references:
     version: 2
     RefIds:
-    - rid: 5181037798637174910
-      type: {class: AddShildToTargetInteraction, ns: , asm: Assembly-CSharp}
-      data:
-        shieldAmount: 3
     - rid: 5181037798637174912
       type: {class: ChooseTargetOnTurnEndInteraction, ns: , asm: Assembly-CSharp}
       data:
         TargetSide: 1
         possiblePositions: 
+    - rid: 5181037802874470656
+      type: {class: AddShieldToTargetInteraction, ns: , asm: Assembly-CSharp}
+      data:
+        shieldAmount: 3

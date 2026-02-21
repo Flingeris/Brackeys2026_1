@@ -535,7 +535,7 @@ MonoBehaviour:
   hoverColor: {r: 0.990566, g: 0.78229326, b: 0, a: 1}
   targetScale: 1
   hoverScale: 1.1
-  pulseScaleMultiplier: 0.6
+  pulseScaleMultiplier: 0.7
   pulseDuration: 0.4
   pulseMinAlpha: 0.4
   pulseMaxAlpha: 0.6
@@ -593,7 +593,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 6.4, y: 3.6}
+  m_Size: {x: 5.31, y: 10.17}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -635,9 +635,9 @@ BoxCollider2D:
   m_Offset: {x: -0.16326594, y: 1.5616677}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5255103, y: 0.06620341}
-    oldSize: {x: 6.4, y: 3.6}
-    newSize: {x: 6.4, y: 3.6}
+    pivot: {x: 0.6378423, y: 0.03465431}
+    oldSize: {x: 5.31, y: 10.17}
+    newSize: {x: 5.31, y: 10.17}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0

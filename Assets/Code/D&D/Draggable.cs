@@ -31,6 +31,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
     protected Vector3 origin;
     
     public static bool DisableHoverGlobal = false;
+    public static bool DisableInteractionGlobal = false;
 
 
     public float HoverLockUntil { get; protected set; } = 0.2f;
@@ -84,7 +85,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
 
     protected virtual bool CanDrag()
     {
-        return true;
+        return !DisableInteractionGlobal;
     }
 
     public virtual void OnDrag(PointerEventData eventData)

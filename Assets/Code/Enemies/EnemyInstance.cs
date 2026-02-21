@@ -29,6 +29,8 @@ public class EnemyInstance : MonoBehaviour,
     public ActionDef nextAction;
     public CombatGroup combatGroup;
 
+    [SerializeField] private BoxCollider2D col;
+    
     [Header("Visual References")] 
     [SerializeField] private TMP_Text hpValueText;
 
@@ -41,6 +43,8 @@ public class EnemyInstance : MonoBehaviour,
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
     [SerializeField] private HpBarView hpBarView;
+    
+    
 [Header("Target highlight")]
     [SerializeField] private Color targetColor;
     [SerializeField] private Color hoverColor;
@@ -55,7 +59,7 @@ public class EnemyInstance : MonoBehaviour,
     [Header("Popup")] [SerializeField] private float popupOffsetY = 1.5f;
 
     [Header("Visual Root")] [SerializeField]
-    private Transform visualRoot;[SerializeField] private float colorTweenTime = 0.15f;
+    private Transform visualRoot;
     
     private Tween highlightTween;
     private bool isHovered; 
@@ -134,6 +138,10 @@ public class EnemyInstance : MonoBehaviour,
         Speed = model.Speed;
         CurrHP = model.StartingHealth;
         UpdateVisuals();
+
+        var b = sprite.sprite.bounds;
+        col.size = b.size;
+        col.offset = b.center;
     }
 
     private void UpdateVisuals()

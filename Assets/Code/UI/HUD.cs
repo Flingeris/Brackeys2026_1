@@ -33,8 +33,9 @@ public class HUD : MonoBehaviour
     }
 
 
-    public void HideHUD(bool b)
+    public void SetVisible(bool b)
     {
+        EndTurnButton.gameObject.SetActive(b);
     }
 
 

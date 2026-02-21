@@ -16,9 +16,9 @@ public class HealWeakestInteraction : IOnCardEndTurn
     public float AdditionalHealCondition;
     public int AdditionalHealAmount;
 
-    public string desc => "+" + HealAmount + " hp to lowest ally. If ally hp is <=" + AdditionalHealCondition +
-                          " +" + AdditionalHealAmount + "hp instead";
-
+    public string desc =>
+        $"Heal lowest-HP ally for {TextStuff.ColoredValue(HealAmount, TextStuff.Hp)}. " +
+        $"If HP is lower than {AdditionalHealCondition} Heals {TextStuff.ColoredValue(AdditionalHealAmount, TextStuff.Hp)} instead";
     public IEnumerator OnEndTurn(CardState state)
     {
         var lowest = G.party.GetLowestMember();
@@ -43,7 +43,7 @@ public class HealAllForEachClassCardInteraction : IOnCardEndTurn
     public ClassType classCardsType = ClassType.Heal;
 
     public string desc =>
-        "+" + AdditionalHealAmount + " hp to all allies for each + " + classCardsType + " card on field";
+        $"Heal all allies for {TextStuff.ColoredValue(AdditionalHealAmount, TextStuff.Hp)} for each {TextStuff.GetClassTypeString(classCardsType)} card on field";
 
     public IEnumerator OnEndTurn(CardState state)
     {
@@ -68,7 +68,7 @@ public class TargetHealInteraction : IOnCardEndTurn
 {
     public int HealAmount;
 
-    public string desc => "+" + HealAmount + " hp to target";
+    public string desc => $"Heal chosen ally for {TextStuff.ColoredValue(HealAmount, TextStuff.Hp)}";
 
     public IEnumerator OnEndTurn(CardState card)
     {
@@ -83,7 +83,7 @@ public class TargetHealInteraction : IOnCardEndTurn
 public class HealAllInteraction : IOnCardEndTurn
 {
     public int HealAmount;
-    public string desc => "+" + HealAmount + " hp to all allies";
+    public string desc => $"Heal all allies for {TextStuff.ColoredValue(HealAmount, TextStuff.Hp)}";
 
 
     public IEnumerator OnEndTurn(CardState state)
@@ -98,7 +98,7 @@ public class TargetRandomHealInteraction : IOnCardEndTurn
 {
     public int MinHealAmount;
     public int MaxHealAmount;
-    public string desc => "+ " + MinHealAmount + "-" + MaxHealAmount + " hp to target ally";
+    public string desc => $"Heal chosen ally for {TextStuff.ColoredRange(MinHealAmount, MaxHealAmount, TextStuff.Hp)}";
 
 
     public IEnumerator OnEndTurn(CardState state)

@@ -13,7 +13,7 @@ public class TankCard : CardModel
 [Serializable]
 public class AddShieldToClassInteraction : IOnCardEndTurn
 {
-    public string desc => "+" + ShieldAmount + " shield to " + ClassType;
+    public string desc => $"Grant {TextStuff.ColoredValue(ShieldAmount, TextStuff.Shield)} to {ClassType} ally";
     public int ShieldAmount;
     public ClassType ClassType = ClassType.Tank;
 
@@ -25,25 +25,11 @@ public class AddShieldToClassInteraction : IOnCardEndTurn
     }
 }
 
-[Serializable]
-public class AddTauntChargesInteraction : IOnCardEndTurn
-{
-    public string desc => "+" + ShieldAmount + " shield to " + ClassType;
-    public int ShieldAmount;
-    public ClassType ClassType = ClassType.Tank;
-
-    public IEnumerator OnEndTurn(CardState state)
-    {
-        var memberByClass = G.party.GetMemberByClass(ClassType);
-        if (memberByClass == null) yield break;
-    }
-}
-
 
 [Serializable]
 public class ShieldAllInteraction : IOnCardEndTurn
 {
-    public string desc => "+" + ShieldAmount + " shield to all allies";
+    public string desc => $"Grant {TextStuff.ColoredValue(ShieldAmount, TextStuff.Shield)} to all allies";
     public int ShieldAmount;
 
     public IEnumerator OnEndTurn(CardState state)
@@ -59,8 +45,7 @@ public class ShieldAllForEveryClassCard : IOnCardEndTurn
     public int AdditionalShieldAmount;
     public ClassType classCardsType = ClassType.Tank;
 
-    public string desc =>
-        "+" + AdditionalShieldAmount + " shield to all allies for each " + classCardsType + " card on field";
+    public string desc => $"Grant {TextStuff.ColoredValue(AdditionalShieldAmount, TextStuff.Shield)} to all allies for each {TextStuff.GetClassTypeString(classCardsType)} card on field";
 
     public IEnumerator OnEndTurn(CardState state)
     {
@@ -72,11 +57,11 @@ public class ShieldAllForEveryClassCard : IOnCardEndTurn
 }
 
 [Serializable]
-public class AddShildToTargetInteraction : IOnCardEndTurn
+public class AddShieldToTargetInteraction : IOnCardEndTurn
 {
     public int shieldAmount;
 
-    public string desc => "+" + shieldAmount + " shield to target";
+    public string desc => $"Grant {TextStuff.ColoredValue(shieldAmount, TextStuff.Shield)} to chose ally";
 
     public IEnumerator OnEndTurn(CardState card)
     {

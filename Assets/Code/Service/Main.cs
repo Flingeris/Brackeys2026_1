@@ -51,7 +51,7 @@ public class Main : MonoBehaviour
             }
         }
 
-
+        Draggable.DisableInteractionGlobal = false;
         drawPile = new List<CardState>(G.run.currDeck.Shuffle());
         discardPile = new List<CardState>();
     }
@@ -201,6 +201,7 @@ public class Main : MonoBehaviour
     private IEnumerator EndTurnSequence()
     {
         G.HUD.SetEndTurnInteractable(false);
+        Draggable.DisableInteractionGlobal = true;
 
 
         foreach (var turn in turns)
@@ -217,6 +218,7 @@ public class Main : MonoBehaviour
         }
 
         yield return FieldClearSequence();
+        Draggable.DisableInteractionGlobal = false;
         yield return StartTurnSequence();
     }
 
@@ -261,6 +263,7 @@ public class Main : MonoBehaviour
         // G.UI.SetWinActive(true);
 
         yield return FieldClearSequence();
+        SetVisualAcitve(false);
         yield return G.Reward.StartRewarding<CardModel>();
 
         G.run.mapNodeIndex++;
@@ -268,13 +271,19 @@ public class Main : MonoBehaviour
     }
 
     public IEnumerator FieldClearSequence()
-
     {
         yield return G.Hand.Clear();
         yield return field.Clear();
         yield return null;
     }
 
+
+    public void SetVisualAcitve(bool b)
+    {
+        field.gameObject.SetActive(b);
+        G.party.gameObject.SetActive(b);
+        G.HUD.SetVisible(b);
+    }
 
     private void Update()
     {

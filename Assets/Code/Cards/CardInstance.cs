@@ -17,7 +17,7 @@ public class CardState
     }
 }
 
-public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class CardInstance : MonoBehaviour
 {
     public CardState state;
     [Header("References")] public DraggableCard Draggable;
@@ -109,29 +109,9 @@ public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     }
 
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (G.main.IsChoosingTarget) return;
-        List<ICardInteraction> inters = new List<ICardInteraction>();
-        inters.AddRange(state.model.OnPlayedCardInteractions);
-        inters.AddRange(state.model.OnTurnEndInteractions);
-        bool isTarget = false;
-        foreach (var i in inters)
-        {
-            if (i is ChooseTargetInteractionBase targetInteraction)
-            {
-                isTarget = true;
-            }
-        }
-    }
-
     public void Leave()
     {
-        this.Draggable.Leave();
+        Draggable.Leave();
     }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (G.main.IsChoosingTarget) return;
-    }
 }

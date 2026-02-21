@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using UnityEngine.Rendering;
+using Random = UnityEngine.Random;
 
 public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -267,6 +269,9 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         RestoreOrder();
     }
-    
 
+    private void OnDestroy()
+    {
+        transform.DOKill();
+    }
 }

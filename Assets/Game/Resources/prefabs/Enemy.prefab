@@ -238,6 +238,7 @@ MonoBehaviour:
     OnEndTurnInteractions: []
     Amount: 0
   combatGroup: {fileID: 0}
+  col: {fileID: 5389942328359969195}
   hpValueText: {fileID: 1502222569701811038}
   highlight: {fileID: 4766533975735764207}
   sprite: {fileID: 2138436954879173375}
@@ -252,9 +253,9 @@ MonoBehaviour:
   targetScale: 1.5
   hoverScale: 1.1
   pulseScaleMultiplier: 0.7
-  pulseDuration: 0.5
-  pulseMinAlpha: 0.1
-  pulseMaxAlpha: 0.5
+  pulseDuration: 0.4
+  pulseMinAlpha: 0.4
+  pulseMaxAlpha: 0.6
   popupOffsetY: 1.5
   visualRoot: {fileID: 3269620156749806221}
   colorTweenTime: 0.15

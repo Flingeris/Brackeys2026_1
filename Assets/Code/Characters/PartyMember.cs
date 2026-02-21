@@ -60,7 +60,6 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
 [Header("Target highlight")]
     [SerializeField] private Color targetColor;
     [SerializeField] private Color hoverColor;
-    [SerializeField] private float targetScale = 1f;
     [SerializeField] private float hoverScale = 1.1f;
 
     [Header("Target pulse")]

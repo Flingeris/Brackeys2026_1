@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public static class GameUtils
 {
@@ -72,5 +73,23 @@ public static class GameUtils
         T value = list[lastIndex];
         list.RemoveAt(lastIndex);
         return value;
+    }
+
+    public static Color SetAlpha(this Color c, float alpha)
+    {
+        return new Color(c.r, c.g, c.b, alpha);
+    }
+
+    public static string Color(this string str, Color c)
+    {
+        return str.Color("#" + ColorUtility.ToHtmlStringRGBA(c));
+    }
+
+    public static string Color(this string str, string c)
+    {
+        string coloredString = "<color=" + c + ">";
+        coloredString += str;
+        coloredString += "</color>";
+        return coloredString;
     }
 }

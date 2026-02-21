@@ -20,6 +20,7 @@
     Music_Menu = 102,
     Music_Boss = 103,
     Music_Bonfire = 104,
+    Music_Jazz = 105,
 
     //Ambient
     Ambient_Sewer = 201

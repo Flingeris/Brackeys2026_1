@@ -8,10 +8,8 @@ public class DraggableCard
 {
     public CardInstance instance;
 
-    [Header("Drag physics")] [SerializeField]
-    private float dragMaxSpeed = 20f;
+    [Header("Drag physics")]
 
-    [SerializeField] private float dragAccelLerp = 25f;
     [SerializeField] private float dragTiltAmount = 1f;
     [SerializeField] private float dragTiltReturnSpeed = 10f;
     [SerializeField] float spring = 60f;
@@ -48,6 +46,7 @@ public class DraggableCard
     public override void OnBeginDrag(PointerEventData eventData)
     {
         base.OnBeginDrag(eventData);
+        if(!CanDrag()) return;
 float pitch = Random.Range(0.96f, 1.04f);
         G.audioSystem.PlayPitched(SoundId.SFX_CardGrab, pitch);
         

@@ -31,12 +31,15 @@ public class UI : MonoBehaviour
     {
         if (winScreen.activeSelf)
             G.ScreenFader.FadeOutCustom(winScreen.GetComponent<Image>(), 0f, () => SetWinActive(false));
+        else if (loseScreen.activeSelf)
+        {
+            G.ScreenFader.FadeOutCustom(loseScreen.GetComponent<Image>(), 0f, () => SetLoseActive(false));
+        }
     }
 
 
     public void SetWinActive(bool win)
     {
-        Debug.Log($"[SetWinActive] this={name}, winScreen={(winScreen ? winScreen.name : "NULL")}");
         if (winScreen == null) return;
         winScreen.SetActive(win);
     }
@@ -60,8 +63,4 @@ public class UI : MonoBehaviour
         if (titleScreen != null) titleScreen.SetActive(!hide);
     }
 
-    private void OnDestroy()
-    {
-        Debug.Log($"[UI OnDestroy] {GetInstanceID()} on {gameObject.name}");
-    }
 }
