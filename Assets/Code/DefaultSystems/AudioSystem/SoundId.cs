@@ -13,6 +13,7 @@
     SFX_CardDraw = 8,
     SFX_CardGrab = 9,
     SFX_CardSwap = 10,
+    SFX_ShieldApplied = 11,
     
 
     //Music

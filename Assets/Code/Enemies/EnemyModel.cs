@@ -60,7 +60,8 @@ public class DealDamageToPosInteraction : IOnEnemyTurnEnd, IAmountInteraction
             yield break;
 
         var targetIndx = aliveTargets.GetRandomElement();
-        G.party.DealDamage(targetIndx, damageAmount);
+        var finalDmg = e.GetFinalDamage(damageAmount);
+        yield return G.party.DealDamage(targetIndx, finalDmg);
     }
 
     public InteractionType type => InteractionType.Attack;
@@ -86,8 +87,8 @@ public class DealDamageToRandomTarget : IOnEnemyTurnEnd, IAmountInteraction
         if (target == null || target.IsDead)
             yield break;
 
-
-        target.TakeDamage(damageAmount);
+        var finalDmg = e.GetFinalDamage(damageAmount);
+        yield return target.TakeDamage(finalDmg);
     }
 
     public InteractionType type => InteractionType.Attack;
@@ -110,7 +111,9 @@ public class DamageAllRange : IOnEnemyTurnEnd, IAmountInteraction
 
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
-        yield return G.party.DamageAllRange(minDamage, maxDamage);
+        var modMin = e.GetFinalDamage(minDamage);
+        var modMax = e.GetFinalDamage(maxDamage);
+        yield return G.party.DamageAllRange(modMin, modMax);
     }
 
     public InteractionType type => InteractionType.Attack;
@@ -153,12 +156,38 @@ public class HealLowestTarget : IOnEnemyTurnEnd, IAmountInteraction
 public class HealAllAllies : IOnEnemyTurnEnd, IAmountInteraction
 {
     public int HealAmount;
-    public string desc => $"{TextStuff.TurnEnd} Heal all allie for {TextStuff.ColoredValue(HealAmount, TextStuff.Hp)}";
+    public string desc => $"{TextStuff.TurnEnd} Heal all allies for {TextStuff.ColoredValue(HealAmount, TextStuff.Hp)}";
 
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
-        G.enemies.HealAll(HealAmount);
+      yield return  G.enemies.HealAll(HealAmount);
         yield return null;
+    }
+
+    public InteractionType type => InteractionType.Heal;
+
+    public string GetAmountAsString()
+    {
+        return HealAmount.ToString();
+    }
+}
+
+[Serializable]
+public class HealAtPosition : IOnEnemyTurnEnd, IAmountInteraction
+{
+    public int[] possibleTargets;
+    public int HealAmount;
+    public string desc => $"{TextStuff.TurnEnd} Heal ally for {TextStuff.ColoredValue(HealAmount, TextStuff.Hp)}";
+
+    public IEnumerator OnEndTurn(EnemyInstance e)
+    {
+        var aliveTargets = possibleTargets.Where(i => G.party.CheckIsAlive(i)).ToArray();
+
+        if (aliveTargets.Length == 0)
+            yield break;
+
+        var targetIndx = aliveTargets.GetRandomElement();
+        G.enemies.Heal(targetIndx, HealAmount);
     }
 
     public InteractionType type => InteractionType.Heal;
@@ -171,10 +200,11 @@ public class HealAllAllies : IOnEnemyTurnEnd, IAmountInteraction
 
 
 [Serializable]
-public class ChooseRandomTarget: IOnEnemyTurnEnd
+public class ChooseRandomTarget : IOnEnemyTurnEnd, INoAnimationAction
 {
     public InteractionType type => InteractionType.None;
     public string desc { get; }
+
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
         var target = G.party.GetRandomMember();
@@ -214,7 +244,52 @@ public class ShieldAlliesOnPos : IOnEnemyTurnEnd, IAmountInteraction
 }
 
 [Serializable]
-public class ApplyStatusOnRandom : IOnEnemyTurnEnd, IAmountInteraction
+public class ShieldOnSelf : IOnEnemyTurnEnd, IAmountInteraction
+{
+    public int shieldAmount;
+
+    public string desc =>
+        $"{TextStuff.TurnEnd} Grant {TextStuff.ColoredValue(shieldAmount, TextStuff.Shield)} to yourself";
+
+    public IEnumerator OnEndTurn(EnemyInstance e)
+    {
+        if (e == null || e.IsDead) yield break;
+        e.AddShield(shieldAmount);
+    }
+
+    public InteractionType type => InteractionType.Shield;
+
+    public string GetAmountAsString()
+    {
+        return shieldAmount.ToString();
+    }
+}
+
+[Serializable]
+public class ShieldAllEnemies : IOnEnemyTurnEnd, IAmountInteraction
+{
+    public int shieldAmount;
+
+    public string desc =>
+        $"{TextStuff.TurnEnd} Grant {TextStuff.ColoredValue(shieldAmount, TextStuff.Shield)} to all enemies";
+
+    public IEnumerator OnEndTurn(EnemyInstance e)
+    {
+        G.enemies.ShieldAll(shieldAmount);
+        yield break;
+    }
+
+    public InteractionType type => InteractionType.Shield;
+
+    public string GetAmountAsString()
+    {
+        return shieldAmount.ToString();
+    }
+}
+
+
+[Serializable]
+public class ApplyStatusOnCurrTargetCharacter : IOnEnemyTurnEnd, IAmountInteraction, INoAnimationAction
 {
     [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
     public int stacksToAdd;
@@ -231,6 +306,97 @@ public class ApplyStatusOnRandom : IOnEnemyTurnEnd, IAmountInteraction
 
 
     public InteractionType type => InteractionType.Debuff;
+
+    public string GetAmountAsString()
+    {
+        return stacksToAdd.ToString();
+    }
+}
+
+[Serializable]
+public class ApplyStatusOnSelf : IOnEnemyTurnEnd, IAmountInteraction, INoAnimationAction
+{
+    [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
+    public int stacksToAdd;
+
+    public string desc =>
+        $"{TextStuff.TurnEnd} Apply {stacksToAdd} stack(s) of {TextStuff.GetStatus(statusToAdd.Type)} on yourself";
+
+
+    public IEnumerator OnEndTurn(EnemyInstance e)
+    {
+        if (e == null || e.IsDead) yield break;
+        e.AddStatus(statusToAdd, stacksToAdd);
+    }
+
+
+    public InteractionType type => InteractionType.Buff;
+
+    public string GetAmountAsString()
+    {
+        return stacksToAdd.ToString();
+    }
+}
+
+[Serializable]
+public class ApplyStatusOnAllCharacters : IOnEnemyTurnEnd, IAmountInteraction, INoAnimationAction
+{
+    [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
+    public int stacksToAdd;
+
+    public string desc =>
+        $"Apply {stacksToAdd} stack(s) of {TextStuff.GetStatus(statusToAdd.Type)} on all party members";
+
+
+    public IEnumerator OnEndTurn(EnemyInstance e)
+    {
+        var targets = G.party.GetAliveMembers();
+        foreach (var target in targets)
+        {
+            if (target == null || target.IsDead) continue;
+            target.AddStatus(statusToAdd, stacksToAdd);
+            // yield return new WaitForSeconds(0.2f);
+        }
+
+        yield break;
+    }
+
+
+    public InteractionType type => InteractionType.Debuff;
+
+    public string GetAmountAsString()
+    {
+        return stacksToAdd.ToString();
+    }
+}
+
+
+[Serializable]
+public class ApplyStatusOnPositions : IOnEnemyTurnEnd, IAmountInteraction, INoAnimationAction
+{
+    public int[] possibleTargets;
+    [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
+    public int stacksToAdd;
+
+    public string desc =>
+        $"Apply {stacksToAdd} stack(s) of {TextStuff.GetStatus(statusToAdd.Type)} on enemy";
+
+
+    public IEnumerator OnEndTurn(EnemyInstance e)
+    {
+        var aliveTargets = possibleTargets.Where(i => G.enemies.CheckIsAlive(i)).ToArray();
+
+        if (aliveTargets.Length == 0)
+            yield break;
+
+        var finalTargetIndex = aliveTargets.GetRandomElement();
+        var target = G.enemies.GetMember(finalTargetIndex);
+
+        target.AddStatus(statusToAdd, stacksToAdd);
+    }
+
+
+    public InteractionType type => InteractionType.Buff;
 
     public string GetAmountAsString()
     {

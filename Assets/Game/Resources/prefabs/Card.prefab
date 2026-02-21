@@ -665,6 +665,13 @@ MonoBehaviour:
       m_Calls: []
   m_text: '+3 hp to all ally
 
+    +1 shield to all ally
+
+    +1 shield to all ally
+
+    +1
+    shield to all ally
+
     +1 shield to all ally'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
@@ -692,12 +699,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 3
+  m_fontSize: 2.6
   m_fontSizeBase: 3
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 0.5
+  m_fontSizeMax: 3
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256

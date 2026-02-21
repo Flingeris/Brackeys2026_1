@@ -21,6 +21,7 @@ MonoBehaviour:
   Sprite: {fileID: 21300000, guid: 921e2232c78f2184ebcaedc2b61408ff, type: 3}
   EndTurnActions:
   - OnEndTurnInteractions:
+    - rid: 5181037814259384642
     - rid: 5181037750336094480
     Amount: 2
   references:
@@ -30,3 +31,6 @@ MonoBehaviour:
       type: {class: DealDamageToRandomTarget, ns: , asm: Assembly-CSharp}
       data:
         damageAmount: 2
+    - rid: 5181037814259384642
+      type: {class: ChooseRandomTarget, ns: , asm: Assembly-CSharp}
+      data: 

@@ -15,16 +15,17 @@ MonoBehaviour:
   id: 
   <ItemName>k__BackingField: 
   <Description>k__BackingField: 
-  StartingHealth: 10
+  StartingHealth: 14
   preferPos: -1
-  Speed: 6
+  Speed: 7
   Sprite: {fileID: 8160775752198118580, guid: a0e8e145fe29d3b46a70d7ad718151ad, type: 3}
   EndTurnActions:
   - OnEndTurnInteractions:
     - rid: 5181037802874470764
     Amount: 2
   - OnEndTurnInteractions:
-    - rid: 5181037802874470793
+    - rid: 5181037814259384515
+    - rid: 5181037814259384516
     Amount: 2
   - OnEndTurnInteractions:
     - rid: 5181037802874470764
@@ -36,13 +37,16 @@ MonoBehaviour:
       type: {class: ShieldAlliesOnPos, ns: , asm: Assembly-CSharp}
       data:
         possibleTargets: 0000000001000000
-        shieldAmount: 2
-    - rid: 5181037802874470793
-      type: {class: ApplyStatusOnRandom, ns: , asm: Assembly-CSharp}
+        shieldAmount: 3
+    - rid: 5181037814259384515
+      type: {class: ChooseRandomTarget, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5181037814259384516
+      type: {class: ApplyStatusOnCurrTargetCharacter, ns: , asm: Assembly-CSharp}
       data:
         statusToAdd:
-          rid: 5181037802874470794
+          rid: 5181037814259384517
         stacksToAdd: 2
-    - rid: 5181037802874470794
+    - rid: 5181037814259384517
       type: {class: VulnerabilityStatusEffect, ns: , asm: Assembly-CSharp}
       data: 

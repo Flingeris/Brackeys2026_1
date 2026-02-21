@@ -20,7 +20,7 @@ public class RandomTargetDamageInteraction : IOnCardEndTurn
     {
         var enemy = G.enemies.GetRandomMember();
         if (enemy == null) yield break;
-        enemy.TakeDamage(DmgAmount);
+        yield return enemy.TakeDamage(DmgAmount);
         yield return null;
     }
 }
@@ -37,7 +37,7 @@ public class DealDamageToTarget : IOnCardEndTurn
         var target = G.main.Target;
         if (target == null) yield break;
 
-        target.TakeDamage(DmgAmount);
+      yield return  target.TakeDamage(DmgAmount);
         yield return null;
     }
 }
@@ -68,13 +68,13 @@ public class DealDamageForEachClassCard : IOnCardEndTurn
         var count = G.main.field.CountCardsWithClass(classCardsType);
         var target = G.main.Target;
         if (target == null) yield break;
-        target.TakeDamage(AddDmg);
+      yield return  target.TakeDamage(AddDmg);
     }
 }
 
 
 [Serializable]
-public class AddDamageForStatus : IOnCardEndTurn
+public class AddDamageForStatus : IOnCardEndTurn, INoAnimationAction
 {
     public int AddDmg;
     public StatusEffectType status;
@@ -88,6 +88,6 @@ public class AddDamageForStatus : IOnCardEndTurn
 
         var stack = target.StatusTypeStacks(status);
 
-        target.TakeDamage(stack * AddDmg);
+        yield return target.TakeDamage(stack * AddDmg);
     }
 }

@@ -14,8 +14,6 @@ public class EnemyGroup : CombatGroup
         {
             index = model.preferPos;
         }
-
-
         if (index == -1)
             index = Array.FindIndex(partyMembers, m => m == null);
 

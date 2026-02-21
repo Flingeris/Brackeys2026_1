@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
-using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -206,7 +205,7 @@ public class Main : MonoBehaviour
 
         foreach (var m in G.party.GetAliveMembers())
         {
-          yield return  m.TickStatusEffects();
+            yield return m.EndTurnStatusTick();
         }
 
         foreach (var turn in turns)
@@ -219,7 +218,7 @@ public class Main : MonoBehaviour
                 yield break;
             }
 
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.35f);
         }
 
         yield return FieldClearSequence();
@@ -256,8 +255,6 @@ public class Main : MonoBehaviour
 
         if (!matchedLvls.Any())
         {
-            Debug.Log("Starting endGame ");
-            Debug.Log($"[WinSequence] G.UI = {(G.UI ? G.UI.gameObject.name : "null")}, destroyed? {(G.UI == null)}");
             G.UI.SetWinActive(true);
             yield return new WaitForSecondsRealtime(2f);
             G.run = null;
@@ -265,13 +262,14 @@ public class Main : MonoBehaviour
             yield break;
         }
 
-        // G.UI.SetWinActive(true);
 
         yield return FieldClearSequence();
         SetVisualActive(false);
         yield return G.Reward.StartRewarding<CardModel>();
 
         G.run.mapNodeIndex++;
+
+        yield return G.ScreenFader.LevelTransition();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -321,6 +319,11 @@ public class Main : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             StartCoroutine(KillTarget());
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            G.Hand.AddCard(new CardState(CMS.Get<CardModel>("tank_taunt")));
         }
     }
 
@@ -414,7 +417,16 @@ public class Main : MonoBehaviour
                 targets = G.party.GetMembers(possiblePos).ToList();
                 break;
             case TargetSide.Enemies:
-                targets = G.enemies.GetMembers(possiblePos).ToList();
+                var taunted = G.enemies.GetMembersWithStatus(StatusEffectType.Taunt);
+                if (taunted.Count > 0)
+                {
+                    targets = taunted;
+                }
+                else
+                {
+                    targets = G.enemies.GetMembers(possiblePos).ToList();
+                }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

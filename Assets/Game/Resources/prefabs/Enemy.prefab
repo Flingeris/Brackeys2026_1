@@ -358,6 +358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3591180127486408515}
   - component: {fileID: 2138436954879173375}
+  - component: {fileID: 5684939274977454505}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -439,6 +440,24 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &5684939274977454505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4272360023097357648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c5e140f1f77124d98f7954675eab75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BreathingAnimation
+  scaleAmplitude: 0.03
+  scaleDuration: 1
+  moveYAmplitude: 0.00001
+  moveYDuration: 0.8
+  playOnStart: 1
+  maxRandomStartDelay: 0.5
 --- !u!1 &4574086170391651580
 GameObject:
   m_ObjectHideFlags: 0

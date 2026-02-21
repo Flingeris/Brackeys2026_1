@@ -36,6 +36,12 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
 
         Owner = newOwner;
 
+        if (newOwner is MonoBehaviour mb)
+        {
+            transform.SetParent(mb.transform, true);
+        }
+
+       
         Owner?.OnDragEnter(selfCasted);
     }
 
@@ -98,7 +104,6 @@ public abstract class DraggableWContainer<TD, TC> : Draggable
         PutInContCoroutine = null;
         yield break;
     }
-
 
 
     protected virtual bool ValidateMove(TC sourceCont, TC targetCont)

@@ -40,6 +40,7 @@ public class PartyManager : CombatGroup
         member.transform.SetParent(memberPosition, false);
         member.transform.localPosition = Vector3.zero;
         partyMembers[index] = member;
+        member.SetPos(index);
     }
 
     public PartyMember GetMemberByClass(ClassType classType)

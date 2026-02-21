@@ -9,20 +9,21 @@ public interface ICombatEntity
     int CurrShield { get; }
     int CurrHP { get; }
     bool IsDead { get; }
+    int CurrPos { get; }
 
     public void SetTarget(bool b);
 
     public bool IsPossibleTarget { get; }
 
-    void TakeDamage(int amount);
+    IEnumerator TakeDamage(int amount);
     void Heal(int amount);
     void AddShield(int amount);
 
     void Kill();
 
+    public void SetPos(int index);
 
-
-    public IEnumerator TickStatusEffects();
+    public IEnumerator EndTurnStatusTick();
     public List<IStatusEffectInteraction> statusEffects { get; }
 
 

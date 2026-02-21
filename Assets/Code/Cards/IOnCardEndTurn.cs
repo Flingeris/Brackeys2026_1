@@ -9,7 +9,7 @@ public interface IOnCardEndTurn : ICardInteraction
 
 
 [Serializable]
-public class ChooseTargetOnTurnEndInteraction : ChooseTargetInteractionBase, IOnCardEndTurn
+public class ChooseTargetOnTurnEndInteraction : ChooseTargetInteractionBase, IOnCardEndTurn, INoAnimationAction
 {
     public string desc => string.Empty;
 

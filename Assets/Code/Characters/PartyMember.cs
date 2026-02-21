@@ -40,6 +40,8 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     public int MaxHP => state.MaxHP;
     public int CurrHP => state.CurrHP;
 
+    public int CurrPos => state.currPos;
+
     public List<IStatusEffectInteraction> statusEffects { get; set; } = new();
 
     [Header("References")] [SerializeField]
@@ -48,13 +50,14 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     [SerializeField] private TMP_Text shieldText;
     [SerializeField] private SpriteRenderer shieldIconSprite;
     [SerializeField] private SpriteRenderer shieldHpBarFrame;
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] public SpriteRenderer spriteRenderer;
     [SerializeField] private SpriteRenderer highlight;
 
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
 
     [SerializeField] private HpBarView hpBarView;
+    
 
     [Header("Popup")] [SerializeField] private float popupOffsetY = 1.5f;
 
@@ -261,10 +264,10 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     }
 
 
-    public void TakeDamage(int dmgAmount)
+    public IEnumerator TakeDamage(int dmgAmount)
     {
-        if (IsDead) return;
-        if (dmgAmount <= 0) return;
+        if (IsDead) yield break;
+        if (dmgAmount <= 0) yield break;
 
 
         foreach (var statusEffectInteraction in statusEffects)
@@ -300,7 +303,9 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         if (shownDamage > 0 && G.textPopup != null)
             G.textPopup.SpawnAbove(transform, popupOffsetY, shownDamage, isHeal: false);
 
+        yield return OnDamageStatusTick(); 
         transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f);
+        spriteRenderer.transform.DOShakePosition(0.5f, 0.15f, 40);
         CheckIsDead();
         UpdateVisuals();
     }
@@ -321,9 +326,10 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     {
         if (IsDead) return;
         CurrShield += amount;
+        // G.audioSystem.Play(SoundId.SFX_PlayerHealed);
         UpdateVisuals();
 
-        G.audioSystem.Play(SoundId.SFX_PlayerShielded);
+        G.audioSystem.Play(SoundId.SFX_ShieldApplied);
     }
 
     public void SetShield(int amount)
@@ -333,25 +339,49 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         AddShield(amount);
     }
 
-    public IEnumerator TickStatusEffects()
+    public IEnumerator OnDamageStatusTick()
     {
         foreach (var status in statusEffects)
         {
             if (status == null) continue;
+            
+            if (status is IOnDamageTakenStatusTick)
+            {
+                status.Tick();
+            }
+        }
 
+        statusEffects.RemoveAll(s => s.Stacks <= 0);
+        UpdateStatusIcon();
+        yield break;
+    }
+    
+    public IEnumerator EndTurnStatusTick()
+    {
+        var effects = new List<IStatusEffectInteraction>(statusEffects);
+        foreach (var status in effects)
+        {
+            if (status == null) continue;
+
+            if(!statusEffects.Contains(status)) continue;
             if (status is IOnTurnEndStatusInteraction endStatus)
             {
-                yield return endStatus.OnTurnEndTick(this);
+                yield return endStatus.OnTurnEndStatusEffect(this);
                 yield return new WaitForSeconds(0.2f);
                 if (IsDead) yield break;
             }
 
-            status.Tick();
+            if (status is IOnTurnEndStatusTick)
+            {
+                status.Tick();
+            }
         }
 
         statusEffects.RemoveAll(s => s.Stacks <= 0);
         UpdateStatusIcon();
     }
+    
+    
 
     public void OnTurnEnd()
     {
@@ -411,7 +441,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
 
     public void Kill()
     {
-        TakeDamage(CurrHP);
+        StartCoroutine(TakeDamage(CurrHP + CurrShield));
     }
 
     public void OnPointerClick(PointerEventData eventData)
