@@ -18,7 +18,7 @@ public class ActionDef : ITooltipInfo
 {
     public virtual InteractionType Type => GetActionType();
     [SerializeReference, SubclassSelector] public List<IOnEnemyTurnEnd> OnEndTurnInteractions;
-    [HideInInspector] public int Amount;
+    [HideInInspector] public string Amount;
 
     private InteractionType GetActionType()
     {
@@ -27,7 +27,7 @@ public class ActionDef : ITooltipInfo
             if (interaction.type == InteractionType.None) continue;
             if (interaction is IAmountInteraction amountInteraction)
             {
-                Amount = amountInteraction.GetAmount();
+                Amount = amountInteraction.GetAmountAsString();
             }
 
             return interaction.type;

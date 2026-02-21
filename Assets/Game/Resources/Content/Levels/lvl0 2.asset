@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StreetLvlModel
   id: 
   enemies:
-  - {fileID: 11400000, guid: 5d9d7aa92d77b1142af25a6d6799617b, type: 2}
-  - {fileID: 11400000, guid: 5d9d7aa92d77b1142af25a6d6799617b, type: 2}
-  lvlIndex: 1
+  - {fileID: 11400000, guid: 265743d9f76775b49bd124dff7d51f7b, type: 2}
+  - {fileID: 11400000, guid: 174cfd51f960bd9449c86aa12ebb080f, type: 2}
+  - {fileID: 11400000, guid: 32d5ec4c19b72eb44b6a705c5f791959, type: 2}
+  lvlIndex: 0

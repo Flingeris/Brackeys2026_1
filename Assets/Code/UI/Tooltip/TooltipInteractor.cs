@@ -16,35 +16,9 @@ public class TooltipInteractor : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
-    void Update()
-    {
-        // Позиция мыши на экране (пиксели)
-        Vector3 mouseScreenPos = Input.mousePosition;
-
-        // Переводим в мировые координаты
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
-        // Для 2D важно обнулить Z до плоскости, где лежат объекты
-        mouseWorldPos.z = 0f;
-
-        // Луч без направления (Vector2.zero) — просто точечный хит-тест в этой позиции
-        RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero);
-
-        if (hit.collider != null)
-        {
-            // Логируем объект под мышкой
-            Debug.Log("Hover: " + hit.collider.gameObject.name);
-        }
-        else
-        {
-            // Если никто не пойман — по желанию:
-            // Debug.Log("Hover: ничего нет");
-        }
-    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Pointer entered: " + gameObject.transform.parent.name);
-        Debug.Log("Pointer current Raycast: " + eventData.pointerCurrentRaycast.gameObject.transform.parent.name);
         if (eventData.pointerCurrentRaycast.gameObject != gameObject)
             return;
 
@@ -52,7 +26,6 @@ public class TooltipInteractor : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
         if (InfoGiver != null && G.HUD != null && G.HUD.tooltip != null)
         {
-            Debug.Log("Showing tooltip");
             G.HUD.tooltip.Show(InfoGiver.GetTooltipInfo(), gameObject);
         }
     }

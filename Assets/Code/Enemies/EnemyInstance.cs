@@ -30,9 +30,9 @@ public class EnemyInstance : MonoBehaviour,
     public CombatGroup combatGroup;
 
     [SerializeField] private BoxCollider2D col;
-    
-    [Header("Visual References")] 
-    [SerializeField] private TMP_Text hpValueText;
+
+    [Header("Visual References")] [SerializeField]
+    private TMP_Text hpValueText;
 
     [SerializeField] private SpriteRenderer highlight;
     [SerializeField] private SpriteRenderer sprite;
@@ -43,16 +43,22 @@ public class EnemyInstance : MonoBehaviour,
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
     [SerializeField] private HpBarView hpBarView;
-    
-    
-[Header("Target highlight")]
-    [SerializeField] private Color targetColor;
+
+    [SerializeField] private SpriteRenderer shieldIconImage;
+    [SerializeField] private SpriteRenderer shieldHpBarFrame;
+    [SerializeField] private TMP_Text shieldValueText;
+
+
+    [Header("Target highlight")] [SerializeField]
+    private Color targetColor;
+
     [SerializeField] private Color hoverColor;
     [SerializeField] private float targetScale;
     [SerializeField] private float hoverScale;
-    
-    [Header("Target pulse")]
-    [SerializeField] private float pulseScaleMultiplier;
+
+    [Header("Target pulse")] [SerializeField]
+    private float pulseScaleMultiplier;
+
     [SerializeField] private float pulseDuration;
     [SerializeField] private float pulseMinAlpha;
     [SerializeField] private float pulseMaxAlpha;
@@ -60,14 +66,14 @@ public class EnemyInstance : MonoBehaviour,
 
     [Header("Visual Root")] [SerializeField]
     private Transform visualRoot;
-    
+
     private Tween highlightTween;
-    private bool isHovered; 
+    private bool isHovered;
 
     private Vector3 highlightBaseScale;
     private Tween pulseScaleTween;
     private Tween pulseColorTween;
-    
+
     private void Awake()
     {
         if (highlight != null)
@@ -86,7 +92,7 @@ public class EnemyInstance : MonoBehaviour,
     public void SetTarget(bool b)
     {
         IsPossibleTarget = b;
-        
+
         RefreshHighlight();
     }
 
@@ -101,17 +107,17 @@ public class EnemyInstance : MonoBehaviour,
         isHovered = false;
         RefreshHighlight();
     }
-    
+
     private void RefreshHighlight()
     {
         if (highlight == null) return;
-        
+
         if (!G.main.IsChoosingTarget || !IsPossibleTarget)
         {
             StopTargetPulse();
             return;
         }
-        
+
 
         if (isHovered)
         {
@@ -150,21 +156,34 @@ public class EnemyInstance : MonoBehaviour,
         UpdateSprite();
         UpdateNextActionIcon();
         UpdateStatusIcon();
+        UpdateShieldVisuals();
     }
-    
+
+
+    private void UpdateShieldVisuals()
+    {
+        shieldValueText.SetText("");
+        shieldIconImage.enabled = false;
+        shieldHpBarFrame.enabled = false;
+        if (CurrShield <= 0) return;
+        shieldIconImage.enabled = true;
+        shieldHpBarFrame.enabled = true;
+        shieldValueText.SetText(CurrShield.ToString());
+    }
+
     private void StartTargetPulse()
     {
         if (highlight == null) return;
-        
+
         if (pulseScaleTween != null && pulseScaleTween.IsActive())
             return;
-        
+
         pulseScaleTween?.Kill();
         pulseColorTween?.Kill();
 
         highlight.gameObject.SetActive(true);
         highlight.transform.localScale = highlightBaseScale;
-        
+
         Color startColor = targetColor;
         startColor.a = pulseMinAlpha;
         highlight.color = startColor;
@@ -213,7 +232,7 @@ public class EnemyInstance : MonoBehaviour,
         actionIconImage.enabled = true;
         actionIconImage.sprite = actionSprite;
 
-        if (nextAction.Amount != 0)
+        if (nextAction.Amount != "")
         {
             actionValueText.SetText(nextAction.Amount.ToString());
         }
@@ -339,6 +358,7 @@ public class EnemyInstance : MonoBehaviour,
         CurrShield = 0;
         AddShield(amount);
     }
+
     private void CheckIsDead()
     {
         if (CurrHP <= 0)
@@ -390,10 +410,9 @@ public class EnemyInstance : MonoBehaviour,
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("On enemy clicked");
         G.main.TryChooseTarget(this);
     }
-    
+
 
     public IEnumerator OnTurnEnd()
     {

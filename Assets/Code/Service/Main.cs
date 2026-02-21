@@ -122,7 +122,8 @@ public class Main : MonoBehaviour
         for (int i = 0; i <= enemies.Length - 1; i++)
         {
             var enemy = enemies[i];
-            G.enemies.AddEnemy(enemy);
+            if (enemy == null) continue;
+            G.enemies.AddEnemy(enemy,i);
         }
     }
 

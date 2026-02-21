@@ -7,10 +7,14 @@ public class EnemyGroup : CombatGroup
 {
     protected override TargetSide Side => TargetSide.Enemies;
 
-    public void AddEnemy(EnemyModel model)
+    public void AddEnemy(EnemyModel model, int index = -1)
     {
         //TODO - check array bound
-        var index = model.preferPos;
+        if (index == -1)
+        {
+            index = model.preferPos;
+        }
+
 
         if (index == -1)
             index = Array.FindIndex(partyMembers, m => m == null);
@@ -24,7 +28,7 @@ public class EnemyGroup : CombatGroup
         member.transform.localPosition = Vector3.zero;
         AddMember(member, index);
     }
-    
+
 
     protected override void OnMembersDeath()
     {

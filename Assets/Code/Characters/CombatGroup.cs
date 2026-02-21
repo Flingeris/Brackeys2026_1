@@ -93,7 +93,11 @@ public abstract class CombatGroup : MonoBehaviour
     public void TargetAll()
     {
         foreach (var member in partyMembers)
+
+        {
+            if (member == null) continue;
             member.SetTarget(true);
+        }
     }
 
     public void UntargetAll()
@@ -124,6 +128,18 @@ public abstract class CombatGroup : MonoBehaviour
         }
     }
 
+    public IEnumerator DamageAllRange(int min, int max)
+    {
+        foreach (var member in partyMembers)
+        {
+            if (member == null || member.IsDead) continue;
+            var dmg = UnityEngine.Random.Range(min, max + 1);
+            member.TakeDamage(dmg);
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+
+
     public void Heal(int target, int amount)
     {
         var member = partyMembers[target];
@@ -135,8 +151,8 @@ public abstract class CombatGroup : MonoBehaviour
     {
         foreach (var member in partyMembers)
         {
-            if (!member.IsDead)
-                member.Heal(amount);
+            if (member == null || member.IsDead) continue;
+            member.Heal(amount);
         }
     }
 
@@ -152,8 +168,8 @@ public abstract class CombatGroup : MonoBehaviour
     {
         foreach (var member in partyMembers)
         {
-            if (!member.IsDead)
-                member.AddShield(amount);
+            if (member == null || member.IsDead) continue;
+            member.AddShield(amount);
         }
     }
 
