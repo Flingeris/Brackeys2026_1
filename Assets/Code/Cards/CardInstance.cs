@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -90,21 +91,34 @@ public class CardInstance : MonoBehaviour
 
     public IEnumerator OnTurnEnd()
     {
+        var ownerTransform = state.CardOwner.spriteRenderer.transform;
+        var ownerStartPos = ownerTransform.position;
+        var ownerEndPos = ownerStartPos;
+        ownerEndPos.x += 3f;
+
         var startPos = transform.position;
         var NewPos = startPos;
-        NewPos.y += 0.8f;
+        NewPos.y += 0.3f;
         yield return transform.DOMove(NewPos, 0.2f).WaitForCompletion();
-
+        transform.DOShakePosition(0.5f, 0.2f, 40);
+        yield return new WaitForSeconds(0.5f);
+        
+        
         var inters = state.model.OnTurnEndInteractions;
         foreach (var i in inters)
         {
             yield return i.OnEndTurn(state);
+            if (i is not INoAnimationAction)
+            {
+                ownerTransform.DOMove(ownerEndPos, 0.2f);
+                yield return new WaitForSeconds(0.2f);
+                ownerTransform.DOMove(ownerStartPos, 0.2f);
+                yield return new WaitForSeconds(0.2f);
+            }
         }
 
-        transform.DOShakePosition(0.5f, 0.2f, 40);
 
-
-        yield return new WaitForSeconds(0.5f);
+ 
         yield return transform.DOMove(startPos, 0.2f).WaitForCompletion();
     }
 
@@ -113,5 +127,4 @@ public class CardInstance : MonoBehaviour
     {
         Draggable.Leave();
     }
-
 }

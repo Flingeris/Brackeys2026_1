@@ -87,17 +87,15 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private void HandleDragBegin()
     {
         _isDragging = true;
-        
+
         _card?.Hand?.ClearHovered(_card);
-        
+
         _scaleTween?.Kill();
         _slotMoveTween?.Kill();
         _slotRotateTween?.Kill();
-        
+
         visual.localPosition = _visualBaseLocalPos;
         visual.localRotation = _visualBaseLocalRot;
-        
-
     }
 
 
@@ -105,16 +103,16 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     {
         G.audioSystem.PlayPitched(SoundId.SFX_CardDraw, Random.Range(0.9f, 1.1f));
         _isDragging = false;
-        
+
         _scaleTween?.Kill();
         _slotMoveTween?.Kill();
         _slotRotateTween?.Kill();
         visual.DOKill();
-        
+
         visual.localScale = _baseScale;
         visual.localPosition = _visualBaseLocalPos;
         visual.localRotation = _visualBaseLocalRot;
-        
+
         RestoreOrder();
     }
 
@@ -123,18 +121,18 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     {
         if (Draggable.DisableHoverGlobal)
             return;
-        
+
         if (G.currentDrag != null)
             return;
-        
-        
+
+
         if (Time.time < _draggable.HoverLockUntil) return;
         if (_isDragging) return;
-        
-        
+
+
         G.audioSystem.PlayPitched(SoundId.SFX_CardDraw, Random.Range(0.9f, 1.1f));
         // G.audioSystem.Play(SoundId.SFX_CardDraw);
-        
+
 
         if (IsInSlot())
         {
@@ -155,7 +153,7 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             BringToFront();
             return;
         }
-        
+
         PlayHandHoverScale(true);
         BringToFront();
         _card?.Hand?.SetHovered(_card);
@@ -166,7 +164,7 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     {
         if (Draggable.DisableHoverGlobal)
             return;
-        
+
         if (Time.time < _draggable.HoverLockUntil) return;
         if (_isDragging) return;
 
@@ -174,7 +172,7 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         {
             if (G.currentDrag != null)
                 return;
-            
+
             visual.DOKill();
             PlaySlotHoverScale(false);
 
@@ -186,7 +184,7 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             RestoreOrder();
             return;
         }
-        
+
         PlayHandHoverScale(false);
         RestoreOrder();
         _card?.Hand?.ClearHovered(_card);
@@ -229,14 +227,7 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             transform.SetSiblingIndex(_baseSiblingIndex);
         }
     }
-
-    private void OnDisable()
-    {
-        _scaleTween?.Kill();
-        visual.localScale = _baseScale;
-        RestoreOrder();
-    }
-
+    
     private void PlayHandHoverScale(bool hovered)
     {
         var target = hovered ? _baseScale * handHoverScale : _baseScale;
@@ -256,7 +247,7 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             .SetEase(scaleEase)
             .SetUpdate(true);
     }
-    
+
     public void ResetVisual()
     {
         _scaleTween?.Kill();
@@ -270,8 +261,44 @@ public class CardHoverVFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         RestoreOrder();
     }
 
+
+    private void KillAllTweens()
+    {
+        _scaleTween?.Kill();
+        _slotMoveTween?.Kill();
+        _slotRotateTween?.Kill();
+
+        _scaleTween = null;
+        _slotMoveTween = null;
+        _slotRotateTween = null;
+
+        if (visual != null) visual.DOKill(true); 
+        
+        transform.DOKill(true);
+    }
+
+    private void OnDisable()
+    {
+        KillAllTweens();
+
+        if (visual != null)
+        {
+            visual.localScale = _baseScale;
+            visual.localPosition = _visualBaseLocalPos;
+            visual.localRotation = _visualBaseLocalRot;
+        }
+
+        RestoreOrder();
+    }
+
     private void OnDestroy()
     {
-        transform.DOKill();
+        KillAllTweens();
+
+        if (_draggable != null)
+        {
+            _draggable.OnDragBegin -= HandleDragBegin;
+            _draggable.OnDragEnd -= HandleDragEnd;
+        }
     }
 }

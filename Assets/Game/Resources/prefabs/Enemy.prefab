@@ -248,6 +248,9 @@ MonoBehaviour:
   statusEffectsIcons: {fileID: 8532249185688984969}
   statusEffectsText: {fileID: 167166884010118653}
   hpBarView: {fileID: 2832606991003871566}
+  shieldIconImage: {fileID: 4961309401909055510}
+  shieldHpBarFrame: {fileID: 9132297448639701346}
+  shieldValueText: {fileID: 3217820756397456237}
   targetColor: {r: 0.7830189, g: 0.039918613, b: 0, a: 1}
   hoverColor: {r: 0.8584906, g: 0.66451406, b: 0.09313814, a: 0.8}
   targetScale: 1.5
@@ -258,7 +261,6 @@ MonoBehaviour:
   pulseMaxAlpha: 0.6
   popupOffsetY: 1.5
   visualRoot: {fileID: 3269620156749806221}
-  colorTweenTime: 0.15
   references:
     version: 2
     RefIds: []
@@ -356,6 +358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3591180127486408515}
   - component: {fileID: 2138436954879173375}
+  - component: {fileID: 5684939274977454505}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -437,6 +440,24 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &5684939274977454505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4272360023097357648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c5e140f1f77124d98f7954675eab75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BreathingAnimation
+  scaleAmplitude: 0.03
+  scaleDuration: 1
+  moveYAmplitude: 0.00001
+  moveYDuration: 0.8
+  playOnStart: 1
+  maxRandomStartDelay: 0.5
 --- !u!1 &4574086170391651580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,7 +1095,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3862462704913995552, guid: 9d8694f042bc9eb46859508b0e616ea4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1505380455978105377}
   m_SourcePrefab: {fileID: 100100000, guid: 9d8694f042bc9eb46859508b0e616ea4, type: 3}
 --- !u!114 &167166884010118653 stripped
 MonoBehaviour:
@@ -1103,12 +1127,46 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2829185705273930536, guid: 9d8694f042bc9eb46859508b0e616ea4, type: 3}
   m_PrefabInstance: {fileID: 3439702562953830}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 3861275077088775494}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8031de9001404ecfa7008a5f77441243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HpBarView
+--- !u!114 &3217820756397456237 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3218884654536270091, guid: 9d8694f042bc9eb46859508b0e616ea4, type: 3}
+  m_PrefabInstance: {fileID: 3439702562953830}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshPro
+--- !u!1 &3861275077088775494 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3862462704913995552, guid: 9d8694f042bc9eb46859508b0e616ea4, type: 3}
+  m_PrefabInstance: {fileID: 3439702562953830}
+  m_PrefabAsset: {fileID: 0}
+--- !u!210 &1505380455978105377
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3861275077088775494}
+  m_Enabled: 1
+  m_SortingLayerID: -1560947125
+  m_SortingLayer: 2
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
+--- !u!212 &4961309401909055510 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4960192692550994544, guid: 9d8694f042bc9eb46859508b0e616ea4, type: 3}
+  m_PrefabInstance: {fileID: 3439702562953830}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6785302052104530435 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6784114424233767013, guid: 9d8694f042bc9eb46859508b0e616ea4, type: 3}
@@ -1117,5 +1175,10 @@ Transform:
 --- !u!212 &8532249185688984969 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 8531114059544545263, guid: 9d8694f042bc9eb46859508b0e616ea4, type: 3}
+  m_PrefabInstance: {fileID: 3439702562953830}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &9132297448639701346 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 9128875889361550084, guid: 9d8694f042bc9eb46859508b0e616ea4, type: 3}
   m_PrefabInstance: {fileID: 3439702562953830}
   m_PrefabAsset: {fileID: 0}

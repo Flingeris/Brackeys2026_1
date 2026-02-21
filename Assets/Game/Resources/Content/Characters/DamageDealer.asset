@@ -17,4 +17,5 @@ MonoBehaviour:
   Class: 3
   preferPos: 1
   Prefab: {fileID: 2495532178361408155, guid: 7dae229a47f60774fb427850df77496c, type: 3}
-  sprite: {fileID: 21300000, guid: 9408456f55a60434d87de9e0a791bda4, type: 3}
+  sprite: {fileID: 21300000, guid: 1ab6d6e4d958c8e4fb75467b2a693087, type: 3}
+  idleAnim: {fileID: 0}

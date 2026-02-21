@@ -57,7 +57,7 @@ public class HealAllForEachClassCardInteraction : IOnCardEndTurn
             }
         }
 
-        G.party.HealAll(addHeal * AdditionalHealAmount);
+      yield return  G.party.HealAll(addHeal * AdditionalHealAmount);
         yield break;
     }
 }
@@ -88,7 +88,7 @@ public class HealAllInteraction : IOnCardEndTurn
 
     public IEnumerator OnEndTurn(CardState state)
     {
-        G.party.HealAll(HealAmount);
+       yield return G.party.HealAll(HealAmount);
         yield break;
     }
 }

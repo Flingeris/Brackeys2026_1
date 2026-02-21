@@ -14,7 +14,7 @@ public interface IOnCardPlayed : ICardInteraction
 
 
 [Serializable]
-public class ChooseTargetInteraction : ChooseTargetInteractionBase, IOnCardPlayed
+public class ChooseTargetInteraction : ChooseTargetInteractionBase, IOnCardPlayed, INoAnimationAction
 {
     public string desc => string.Empty;
 

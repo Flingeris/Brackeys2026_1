@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3387f52dd55a253478b8379f46370f95, type: 3}
+  m_Name: Enemy_HitAll1-2
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyModel
+  id: 
+  <ItemName>k__BackingField: 
+  <Description>k__BackingField: 
+  StartingHealth: 10
+  preferPos: -1
+  Speed: 5
+  Sprite: {fileID: 8160775752198118580, guid: a0e8e145fe29d3b46a70d7ad718151ad, type: 3}
+  EndTurnActions:
+  - OnEndTurnInteractions:
+    - rid: 5181037802874470746
+    Amount: 1-2
+  references:
+    version: 2
+    RefIds:
+    - rid: 5181037802874470746
+      type: {class: DamageAllRange, ns: , asm: Assembly-CSharp}
+      data:
+        minDamage: 1
+        maxDamage: 2

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -15,9 +16,9 @@ public class TooltipInteractor : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //Debug.Log("Pointer entered: " + gameObject.name);
         if (eventData.pointerCurrentRaycast.gameObject != gameObject)
             return;
 

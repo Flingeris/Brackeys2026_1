@@ -27,6 +27,7 @@ public abstract class CombatGroup : MonoBehaviour
     protected void AddMember(ICombatEntity member, int index)
     {
         partyMembers[index] = member;
+        member.SetPos(index);
     }
 
     public void Clear()
@@ -63,29 +64,62 @@ public abstract class CombatGroup : MonoBehaviour
         return positions.Select(i => partyMembers[i]).ToList();
     }
 
-    private int GetTauntRedirectIndex(int originalIndex)
+
+    public List<ICombatEntity> GetMembersWithStatus(StatusEffectType status)
     {
-        var alive = GetAliveMembers();
-        if (alive == null || alive.Count == 0)
-            return originalIndex;
+        if (AllMembersDead()) return null;
 
-        var tauntIndices = new List<int>();
-
+        var enemiesWithStatus = new List<ICombatEntity>();
 
         for (int i = 0; i < partyMembers.Length; i++)
         {
             var m = GetMember(i);
             if (m == null || m.IsDead) continue;
 
-            if (m.StatusTypeStacks(StatusEffectType.Taunt) > 0)
-                tauntIndices.Add(i);
+            if (m.StatusTypeStacks(status) > 0)
+                enemiesWithStatus.Add(m);
         }
+
+        return enemiesWithStatus;
+    }
+
+
+    private int GetTauntRedirectIndex(int originalIndex)
+    {
+        var tauntMembers = GetMembersWithStatus(StatusEffectType.Taunt);
+        if (tauntMembers == null || tauntMembers.Count == 0)
+        {
+            return originalIndex;
+        }
+        
+        var tauntIndices = new List<int>();
+
+        foreach (var m in tauntMembers)
+        {
+            if (m == null || m.IsDead) continue;
+            tauntIndices.Add(m.CurrPos);
+        }
+        
+    // var alive = GetAliveMembers();
+    //     if (alive == null || alive.Count == 0)
+    //         return originalIndex;
+    //
+    //     // var tauntIndices = new List<int>();
+    //
+    //
+    //     for (int i = 0; i < partyMembers.Length; i++)
+    //     {
+    //         var m = GetMember(i);
+    //         if (m == null || m.IsDead) continue;
+    //
+    //         if (m.StatusTypeStacks(StatusEffectType.Taunt) > 0)
+    //             tauntIndices.Add(i);
+    //     }
 
         if (tauntIndices.Count == 0 || tauntIndices.Contains(originalIndex))
             return originalIndex;
 
         var index = tauntIndices.GetRandomElement();
-        GetMember(index).statusEffects.Where(s => s.Type == StatusEffectType.Taunt).ToList().FirstOrDefault()?.Tick();
         return index;
     }
 
@@ -93,7 +127,11 @@ public abstract class CombatGroup : MonoBehaviour
     public void TargetAll()
     {
         foreach (var member in partyMembers)
+
+        {
+            if (member == null) continue;
             member.SetTarget(true);
+        }
     }
 
     public void UntargetAll()
@@ -106,12 +144,12 @@ public abstract class CombatGroup : MonoBehaviour
     }
 
 
-    public void DealDamage(int target, int damage)
+    public IEnumerator DealDamage(int target, int damage)
     {
         var finalTarget = GetTauntRedirectIndex(target);
         var combatEntity = GetMember(finalTarget);
-        if (combatEntity == null || combatEntity.IsDead) return;
-        combatEntity.TakeDamage(damage);
+        if (combatEntity == null || combatEntity.IsDead) yield break;
+      yield return  combatEntity.TakeDamage(damage);
     }
 
     public IEnumerator DamageAll(int amount)
@@ -119,10 +157,22 @@ public abstract class CombatGroup : MonoBehaviour
         foreach (var member in partyMembers)
         {
             if (member == null || member.IsDead) continue;
-            member.TakeDamage(amount);
+           yield return member.TakeDamage(amount);
             yield return new WaitForSeconds(0.2f);
         }
     }
+
+    public IEnumerator DamageAllRange(int min, int max)
+    {
+        foreach (var member in partyMembers)
+        {
+            if (member == null || member.IsDead) continue;
+            var dmg = UnityEngine.Random.Range(min, max + 1);
+           yield return member.TakeDamage(dmg);
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+
 
     public void Heal(int target, int amount)
     {
@@ -131,12 +181,13 @@ public abstract class CombatGroup : MonoBehaviour
         member.Heal(amount);
     }
 
-    public void HealAll(int amount)
+    public IEnumerator HealAll(int amount)
     {
         foreach (var member in partyMembers)
         {
-            if (!member.IsDead)
-                member.Heal(amount);
+            if (member == null || member.IsDead) continue;
+            member.Heal(amount);
+            yield return new WaitForSeconds(0.2f);
         }
     }
 
@@ -152,8 +203,8 @@ public abstract class CombatGroup : MonoBehaviour
     {
         foreach (var member in partyMembers)
         {
-            if (!member.IsDead)
-                member.AddShield(amount);
+            if (member == null || member.IsDead) continue;
+            member.AddShield(amount);
         }
     }
 

@@ -44,7 +44,10 @@ public static class TextStuff
 
     public static string Bleed => "Bleed".Color(new Color(0.725f, 0.094f, 0.094f, 1f));
     public static string Taunt => "Taunt".Color(Color.darkSlateBlue);
+    public static string SharpClaws => "Sharp claws".Color(new Color(0.725f, 0.094f, 0.094f, 1f));
     public static string Vulnerable => "Vulnerable".Color(Color.chocolate);
+    
+    public static string TurnEnd => "On turn:".Color(Color.softRed);
 
 
     public static string GetStatus(StatusEffectType type)
@@ -59,6 +62,8 @@ public static class TextStuff
                 return Vulnerable;
             case StatusEffectType.Taunt:
                 return Taunt;
+            case StatusEffectType.Claws:
+                return SharpClaws;
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }

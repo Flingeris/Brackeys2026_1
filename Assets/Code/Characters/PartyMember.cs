@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
@@ -39,6 +40,8 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     public int MaxHP => state.MaxHP;
     public int CurrHP => state.CurrHP;
 
+    public int CurrPos => state.currPos;
+
     public List<IStatusEffectInteraction> statusEffects { get; set; } = new();
 
     [Header("References")] [SerializeField]
@@ -47,33 +50,38 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     [SerializeField] private TMP_Text shieldText;
     [SerializeField] private SpriteRenderer shieldIconSprite;
     [SerializeField] private SpriteRenderer shieldHpBarFrame;
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] public SpriteRenderer spriteRenderer;
     [SerializeField] private SpriteRenderer highlight;
 
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
 
     [SerializeField] private HpBarView hpBarView;
+    
 
     [Header("Popup")] [SerializeField] private float popupOffsetY = 1.5f;
 
-[Header("Target highlight")]
-    [SerializeField] private Color targetColor;
+    [Header("Target highlight")] [SerializeField]
+    private Color targetColor;
+
     [SerializeField] private Color hoverColor;
     [SerializeField] private float hoverScale = 1.1f;
 
-    [Header("Target pulse")]
-    [SerializeField] private float pulseScaleMultiplier = 1.1f;
+    [Header("Target pulse")] [SerializeField]
+    private float pulseScaleMultiplier = 1.1f;
+
     [SerializeField] private float pulseDuration = 0.4f;
     [SerializeField] private float pulseMinAlpha = 0.3f;
     [SerializeField] private float pulseMaxAlpha = 0.8f;
+
+    [SerializeField] private Animator animator;
 
     private bool isHovered;
 
     private Vector3 highlightBaseScale;
     private Tween pulseScaleTween;
     private Tween pulseColorTween;
-    
+
     private void Awake()
     {
         if (highlight != null)
@@ -82,7 +90,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
             highlight.gameObject.SetActive(false);
         }
     }
-    
+
     private void Start()
     {
         UpdateVisuals();
@@ -143,19 +151,19 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
             statusEffectsText.SetText(effect.Stacks.ToString());
         }
     }
-    
+
     public void SetTarget(bool b)
     {
         IsPossibleTarget = b;
         RefreshHighlight();
     }
-    
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         isHovered = true;
         RefreshHighlight();
     }
-    
+
     public void OnPointerExit(PointerEventData eventData)
     {
         isHovered = false;
@@ -181,16 +189,17 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
 
         SetState(newState);
     }
+
     private void RefreshHighlight()
     {
         if (highlight == null) return;
-        
+
         if (!G.main.IsChoosingTarget || !IsPossibleTarget)
         {
             StopTargetPulse();
             return;
         }
-        
+
         if (isHovered)
         {
             pulseScaleTween?.Kill();
@@ -207,20 +216,20 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
             StartTargetPulse();
         }
     }
-    
+
     private void StartTargetPulse()
     {
         if (highlight == null) return;
-        
+
         if (pulseScaleTween != null && pulseScaleTween.IsActive())
             return;
-        
+
         pulseScaleTween?.Kill();
         pulseColorTween?.Kill();
 
         highlight.gameObject.SetActive(true);
         highlight.transform.localScale = highlightBaseScale;
-        
+
         Color startColor = targetColor;
         startColor.a = pulseMinAlpha;
         highlight.color = startColor;
@@ -253,15 +262,25 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         highlight.gameObject.SetActive(false);
         highlight.transform.localScale = highlightBaseScale;
     }
-    
 
-    public void TakeDamage(int dmgAmount)
+
+    public IEnumerator TakeDamage(int dmgAmount)
     {
-        if (IsDead) return;
-        if (dmgAmount <= 0) return;
+        if (IsDead) yield break;
+        if (dmgAmount <= 0) yield break;
+
+
+        foreach (var statusEffectInteraction in statusEffects)
+        {
+            if (statusEffectInteraction is ITakenDamageFilter dmgFilter)
+            {
+                dmgAmount = dmgFilter.OnBeforeDamageTakenTick(dmgAmount);
+            }
+        }
 
         var remainDmg = dmgAmount;
         int shownDamage = dmgAmount;
+
 
         if (CurrShield > 0)
         {
@@ -284,7 +303,9 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         if (shownDamage > 0 && G.textPopup != null)
             G.textPopup.SpawnAbove(transform, popupOffsetY, shownDamage, isHeal: false);
 
+        yield return OnDamageStatusTick(); 
         transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f);
+        spriteRenderer.transform.DOShakePosition(0.5f, 0.15f, 40);
         CheckIsDead();
         UpdateVisuals();
     }
@@ -305,9 +326,10 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     {
         if (IsDead) return;
         CurrShield += amount;
+        // G.audioSystem.Play(SoundId.SFX_PlayerHealed);
         UpdateVisuals();
 
-        G.audioSystem.Play(SoundId.SFX_PlayerShielded);
+        G.audioSystem.Play(SoundId.SFX_ShieldApplied);
     }
 
     public void SetShield(int amount)
@@ -316,6 +338,50 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         CurrShield = 0;
         AddShield(amount);
     }
+
+    public IEnumerator OnDamageStatusTick()
+    {
+        foreach (var status in statusEffects)
+        {
+            if (status == null) continue;
+            
+            if (status is IOnDamageTakenStatusTick)
+            {
+                status.Tick();
+            }
+        }
+
+        statusEffects.RemoveAll(s => s.Stacks <= 0);
+        UpdateStatusIcon();
+        yield break;
+    }
+    
+    public IEnumerator EndTurnStatusTick()
+    {
+        var effects = new List<IStatusEffectInteraction>(statusEffects);
+        foreach (var status in effects)
+        {
+            if (status == null) continue;
+
+            if(!statusEffects.Contains(status)) continue;
+            if (status is IOnTurnEndStatusInteraction endStatus)
+            {
+                yield return endStatus.OnTurnEndStatusEffect(this);
+                yield return new WaitForSeconds(0.2f);
+                if (IsDead) yield break;
+            }
+
+            if (status is IOnTurnEndStatusTick)
+            {
+                status.Tick();
+            }
+        }
+
+        statusEffects.RemoveAll(s => s.Stacks <= 0);
+        UpdateStatusIcon();
+    }
+    
+    
 
     public void OnTurnEnd()
     {
@@ -375,7 +441,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
 
     public void Kill()
     {
-        TakeDamage(CurrHP);
+        StartCoroutine(TakeDamage(CurrHP + CurrShield));
     }
 
     public void OnPointerClick(PointerEventData eventData)

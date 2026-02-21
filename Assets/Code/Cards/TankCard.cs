@@ -61,7 +61,7 @@ public class AddShieldToTargetInteraction : IOnCardEndTurn
 {
     public int shieldAmount;
 
-    public string desc => $"Grant {TextStuff.ColoredValue(shieldAmount, TextStuff.Shield)} to chose ally";
+    public string desc => $"Grant {TextStuff.ColoredValue(shieldAmount, TextStuff.Shield)} to chosen ally";
 
     public IEnumerator OnEndTurn(CardState card)
     {

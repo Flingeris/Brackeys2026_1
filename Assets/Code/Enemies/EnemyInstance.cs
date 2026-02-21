@@ -22,7 +22,10 @@ public class EnemyInstance : MonoBehaviour,
     public int CurrShield { get; private set; }
     public bool IsPossibleTarget { get; private set; }
     public int CurrTurnIndex = -1;
+    public int CurrPos { get; private set; }
 
+
+    public ICombatEntity currentTarget;
 
     public List<IStatusEffectInteraction> statusEffects { get; set; } = new();
 
@@ -30,9 +33,9 @@ public class EnemyInstance : MonoBehaviour,
     public CombatGroup combatGroup;
 
     [SerializeField] private BoxCollider2D col;
-    
-    [Header("Visual References")] 
-    [SerializeField] private TMP_Text hpValueText;
+
+    [Header("Visual References")] [SerializeField]
+    private TMP_Text hpValueText;
 
     [SerializeField] private SpriteRenderer highlight;
     [SerializeField] private SpriteRenderer sprite;
@@ -43,16 +46,22 @@ public class EnemyInstance : MonoBehaviour,
     [SerializeField] private SpriteRenderer statusEffectsIcons;
     [SerializeField] private TMP_Text statusEffectsText;
     [SerializeField] private HpBarView hpBarView;
-    
-    
-[Header("Target highlight")]
-    [SerializeField] private Color targetColor;
+
+    [SerializeField] private SpriteRenderer shieldIconImage;
+    [SerializeField] private SpriteRenderer shieldHpBarFrame;
+    [SerializeField] private TMP_Text shieldValueText;
+
+
+    [Header("Target highlight")] [SerializeField]
+    private Color targetColor;
+
     [SerializeField] private Color hoverColor;
     [SerializeField] private float targetScale;
     [SerializeField] private float hoverScale;
-    
-    [Header("Target pulse")]
-    [SerializeField] private float pulseScaleMultiplier;
+
+    [Header("Target pulse")] [SerializeField]
+    private float pulseScaleMultiplier;
+
     [SerializeField] private float pulseDuration;
     [SerializeField] private float pulseMinAlpha;
     [SerializeField] private float pulseMaxAlpha;
@@ -60,14 +69,14 @@ public class EnemyInstance : MonoBehaviour,
 
     [Header("Visual Root")] [SerializeField]
     private Transform visualRoot;
-    
+
     private Tween highlightTween;
-    private bool isHovered; 
+    private bool isHovered;
 
     private Vector3 highlightBaseScale;
     private Tween pulseScaleTween;
     private Tween pulseColorTween;
-    
+
     private void Awake()
     {
         if (highlight != null)
@@ -78,6 +87,25 @@ public class EnemyInstance : MonoBehaviour,
     }
 
 
+    public int GetFinalDamage(int damage)
+    {
+        var finalDmg = damage;
+        foreach (var statusEffectInteraction in statusEffects)
+        {
+            if (statusEffectInteraction is IDamageModifier dmgMod)
+            {
+                finalDmg = dmgMod.ModifyDamage(finalDmg);
+            }
+
+            if (statusEffectInteraction is IOnDamageDealtStatusTick)
+            {
+                statusEffectInteraction.Tick();
+            }
+        }
+
+        return finalDmg;
+    }
+
     private void Start()
     {
         UpdateVisuals();
@@ -86,7 +114,7 @@ public class EnemyInstance : MonoBehaviour,
     public void SetTarget(bool b)
     {
         IsPossibleTarget = b;
-        
+
         RefreshHighlight();
     }
 
@@ -101,17 +129,16 @@ public class EnemyInstance : MonoBehaviour,
         isHovered = false;
         RefreshHighlight();
     }
-    
+
     private void RefreshHighlight()
     {
         if (highlight == null) return;
-        
+
         if (!G.main.IsChoosingTarget || !IsPossibleTarget)
         {
             StopTargetPulse();
             return;
         }
-        
 
         if (isHovered)
         {
@@ -146,25 +173,40 @@ public class EnemyInstance : MonoBehaviour,
 
     private void UpdateVisuals()
     {
+        if (IsDead) return;
+        if (IsDead) return;
         UpdateHpText();
         UpdateSprite();
         UpdateNextActionIcon();
         UpdateStatusIcon();
+        UpdateShieldVisuals();
     }
-    
+
+
+    private void UpdateShieldVisuals()
+    {
+        shieldValueText.SetText("");
+        shieldIconImage.enabled = false;
+        shieldHpBarFrame.enabled = false;
+        if (CurrShield <= 0) return;
+        shieldIconImage.enabled = true;
+        shieldHpBarFrame.enabled = true;
+        shieldValueText.SetText(CurrShield.ToString());
+    }
+
     private void StartTargetPulse()
     {
         if (highlight == null) return;
-        
+
         if (pulseScaleTween != null && pulseScaleTween.IsActive())
             return;
-        
+
         pulseScaleTween?.Kill();
         pulseColorTween?.Kill();
 
         highlight.gameObject.SetActive(true);
         highlight.transform.localScale = highlightBaseScale;
-        
+
         Color startColor = targetColor;
         startColor.a = pulseMinAlpha;
         highlight.color = startColor;
@@ -213,7 +255,7 @@ public class EnemyInstance : MonoBehaviour,
         actionIconImage.enabled = true;
         actionIconImage.sprite = actionSprite;
 
-        if (nextAction.Amount != 0)
+        if (nextAction.Amount != "")
         {
             actionValueText.SetText(nextAction.Amount.ToString());
         }
@@ -273,10 +315,10 @@ public class EnemyInstance : MonoBehaviour,
     }
 
 
-    public void TakeDamage(int dmgAmount)
+    public IEnumerator TakeDamage(int dmgAmount)
     {
-        if (IsDead) return;
-        if (dmgAmount <= 0) return;
+        if (IsDead) yield break;
+        if (dmgAmount <= 0) yield break;
 
         foreach (var statusEffectInteraction in statusEffects)
         {
@@ -311,9 +353,30 @@ public class EnemyInstance : MonoBehaviour,
             G.textPopup.SpawnAbove(transform, popupOffsetY, shownDamage, isHeal: false);
 
         transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f);
+        visualRoot.transform.DOShakePosition(0.5f, 0.15f, 40);
+
+        yield return OnDamageStatusTick();
         CheckIsDead();
         UpdateVisuals();
     }
+
+    public IEnumerator OnDamageStatusTick()
+    {
+        foreach (var status in statusEffects)
+        {
+            if (status == null) continue;
+
+            if (status is IOnDamageTakenStatusTick)
+            {
+                status.Tick();
+            }
+        }
+
+        statusEffects.RemoveAll(s => s.Stacks <= 0);
+        UpdateStatusIcon();
+        yield break;
+    }
+
 
     public void Heal(int amount)
     {
@@ -330,6 +393,7 @@ public class EnemyInstance : MonoBehaviour,
     {
         if (IsDead) return;
         CurrShield += amount;
+        G.audioSystem.Play(SoundId.SFX_PlayerShielded);
         UpdateVisuals();
     }
 
@@ -339,6 +403,7 @@ public class EnemyInstance : MonoBehaviour,
         CurrShield = 0;
         AddShield(amount);
     }
+
     private void CheckIsDead()
     {
         if (CurrHP <= 0)
@@ -352,7 +417,12 @@ public class EnemyInstance : MonoBehaviour,
 
     public void Kill()
     {
-        TakeDamage(CurrHP);
+        StartCoroutine(TakeDamage(CurrHP + CurrShield));
+    }
+
+    public void SetPos(int index)
+    {
+        CurrPos = index;
     }
 
 
@@ -390,39 +460,47 @@ public class EnemyInstance : MonoBehaviour,
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("On enemy clicked");
         G.main.TryChooseTarget(this);
     }
-    
 
-    public IEnumerator OnTurnEnd()
+
+    public IEnumerator EndTurnStatusTick()
     {
-        CurrTurnIndex++;
-
-
-        foreach (var status in statusEffects)
+        var effects = new List<IStatusEffectInteraction>(statusEffects);
+        foreach (var status in effects)
         {
+            if (status == null) continue;
+
+            if(!statusEffects.Contains(status)) continue;
             if (status is IOnTurnEndStatusInteraction endStatus)
             {
-                yield return endStatus.OnTurnEndTick(this);
+                yield return endStatus.OnTurnEndStatusEffect(this);
                 yield return new WaitForSeconds(0.2f);
                 if (IsDead) yield break;
             }
 
-            status.Tick();
+            if (status is IOnTurnEndStatusTick)
+            {
+                status.Tick();
+            }
         }
 
         statusEffects.RemoveAll(s => s.Stacks <= 0);
         UpdateStatusIcon();
+    }
+
+    public IEnumerator OnTurn()
+    {
+        CurrTurnIndex++;
+        currentTarget = null;
+
+        yield return EndTurnStatusTick();
 
         if (IsDead || !gameObject) yield break;
 
         var startPos = visualRoot.position;
         var endPos = startPos;
         endPos.x -= 3f;
-
-        visualRoot.DOMove(endPos, 0.2f);
-        yield return new WaitForSeconds(0.2f);
 
         var action = GetAction(CurrTurnIndex, model.EndTurnActions);
         if (action != null)
@@ -431,11 +509,16 @@ public class EnemyInstance : MonoBehaviour,
             foreach (var inter in inters)
             {
                 yield return inter.OnEndTurn(this);
+
+                if (inter is not INoAnimationAction)
+                {
+                    visualRoot.DOMove(endPos, 0.2f);
+                    yield return new WaitForSeconds(0.2f);
+                    visualRoot.DOMove(startPos, 0.2f);
+                    yield return new WaitForSeconds(0.2f);
+                }
             }
         }
-
-        visualRoot.DOMove(startPos, 0.2f);
-        yield return new WaitForSeconds(0.2f);
 
         UpdateNextActionIcon();
     }
@@ -457,6 +540,8 @@ public class EnemyInstance : MonoBehaviour,
     private void OnDestroy()
     {
         transform.DOKill();
+        if (visualRoot != null)
+            visualRoot.DOKill();
     }
 }
 
@@ -465,5 +550,5 @@ public interface ITurnEntity
     public int TurnOrder { get; }
     public int Speed { get; }
     public void SetTurnIndex(int turnIndex);
-    public IEnumerator OnTurnEnd();
+    public IEnumerator OnTurn();
 }

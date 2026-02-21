@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3387f52dd55a253478b8379f46370f95, type: 3}
+  m_Name: Enemy_weak_healer
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyModel
+  id: 
+  <ItemName>k__BackingField: 
+  <Description>k__BackingField: 
+  StartingHealth: 8
+  preferPos: -1
+  Speed: 5
+  Sprite: {fileID: 8160775752198118580, guid: a0e8e145fe29d3b46a70d7ad718151ad, type: 3}
+  EndTurnActions:
+  - OnEndTurnInteractions:
+    - rid: 5181037814259384567
+    Amount: 1
+  - OnEndTurnInteractions:
+    - rid: 5181037814259384656
+    Amount: 3
+  - OnEndTurnInteractions:
+    - rid: 5181037814259384630
+    Amount: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 5181037814259384567
+      type: {class: ApplyStatusOnAllCharacters, ns: , asm: Assembly-CSharp}
+      data:
+        statusToAdd:
+          rid: 5181037814259384568
+        stacksToAdd: 1
+    - rid: 5181037814259384568
+      type: {class: VulnerabilityStatusEffect, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5181037814259384630
+      type: {class: DealDamageToRandomTarget, ns: , asm: Assembly-CSharp}
+      data:
+        damageAmount: 1
+    - rid: 5181037814259384656
+      type: {class: HealAtPosition, ns: , asm: Assembly-CSharp}
+      data:
+        possibleTargets: 00000000
+        HealAmount: 3

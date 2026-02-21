@@ -13,18 +13,36 @@ public interface IStatusEffectInteraction
     public void Tick();
 }
 
-public interface IOnTurnEndStatusInteraction : IStatusEffectInteraction
+public interface IOnTurnEndStatusInteraction : IStatusEffectInteraction, IOnTurnEndStatusTick
 {
-    IEnumerator OnTurnEndTick(ICombatEntity entity);
+    IEnumerator OnTurnEndStatusEffect(ICombatEntity entity);
+}
+
+public interface IOnTurnEndStatusTick
+{
+}
+
+public interface IOnDamageTakenStatusTick
+{
+}
+
+public interface IOnDamageDealtStatusTick
+{
 }
 
 
-public interface ITakenDamageFilter : IStatusEffectInteraction
+
+public interface IDamageModifier : IStatusEffectInteraction
+{
+    int ModifyDamage(int baseDmg);
+}
+
+public interface ITakenDamageFilter : IStatusEffectInteraction, IOnTurnEndStatusTick
 {
     int OnBeforeDamageTakenTick(int damage);
 }
 
-public interface ITargetFilter : IStatusEffectInteraction
+public interface ITargetFilter : IStatusEffectInteraction, IOnDamageTakenStatusTick
 {
     ICombatEntity OnTargetChoose(List<ICombatEntity> aliveMembers, ICombatEntity owner);
 }
@@ -36,6 +54,7 @@ public enum StatusEffectType
     Bleed = 1,
     Vulnerable = 2,
     Taunt = 3,
+    Claws = 4,
 }
 
 
@@ -70,12 +89,32 @@ public abstract class StatusEffectInteractionBase : IStatusEffectInteraction
                 return "Sprites/Effects/Vuln".Load<Sprite>();
             case StatusEffectType.Taunt:
                 return "Sprites/Effects/Taunt".Load<Sprite>();
+            case StatusEffectType.Claws:
+                return "Sprites/Effects/Claws".Load<Sprite>();
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
         return null;
     }
+}
+
+[Serializable]
+public class SharpClawsStatusEffect : StatusEffectInteractionBase, IDamageModifier
+{
+    public int AddBonusForStack = 2;
+    public override StatusEffectType Type => StatusEffectType.Claws;
+    public int ModifyDamage(int baseDmg)
+    {
+       var bonus = AddBonusForStack*Stacks;
+       return baseDmg + bonus;
+    }
+
+    public override void Tick()
+    {
+    }
+
+    public override string Description { get; }
 }
 
 
@@ -86,10 +125,10 @@ public class BleedStatusEffect : StatusEffectInteractionBase, IOnTurnEndStatusIn
     public override string Description { get; }
 
 
-    public IEnumerator OnTurnEndTick(ICombatEntity entity)
+    public IEnumerator OnTurnEndStatusEffect(ICombatEntity entity)
     {
         Debug.Log($"[Bleed] Tick on {entity} for {Stacks} dmg");
-        entity.TakeDamage(Stacks);
+        yield return entity.TakeDamage(Stacks);
         yield return null;
     }
 }
@@ -97,7 +136,7 @@ public class BleedStatusEffect : StatusEffectInteractionBase, IOnTurnEndStatusIn
 [Serializable]
 public class VulnerabilityStatusEffect : StatusEffectInteractionBase, ITakenDamageFilter
 {
-    private float multiplier = 1.25f;
+    private float multiplier = 1.5f;
     public override StatusEffectType Type => StatusEffectType.Vulnerable;
 
     public int OnBeforeDamageTakenTick(int damage)

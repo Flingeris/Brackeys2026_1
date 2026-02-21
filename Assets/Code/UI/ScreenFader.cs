@@ -153,6 +153,6 @@ public class ScreenFader : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         G.audioSystem.Play(SoundId.SFX_LevelTransiton);
         yield return new WaitForSeconds(1f);
-        G.ScreenFader.FadeOut(1f);
+        G.ScreenFader.FadeOut(1.5f);
     }
 }

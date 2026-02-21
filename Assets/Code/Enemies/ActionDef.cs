@@ -9,7 +9,9 @@ public enum InteractionType
     None = 0,
     Attack = 1,
     Shield = 2,
-    Heal = 3
+    Heal = 3,
+    Debuff = 4,
+    Buff = 5
 }
 
 
@@ -18,7 +20,7 @@ public class ActionDef : ITooltipInfo
 {
     public virtual InteractionType Type => GetActionType();
     [SerializeReference, SubclassSelector] public List<IOnEnemyTurnEnd> OnEndTurnInteractions;
-    [HideInInspector] public int Amount;
+    [HideInInspector] public string Amount;
 
     private InteractionType GetActionType()
     {
@@ -27,7 +29,7 @@ public class ActionDef : ITooltipInfo
             if (interaction.type == InteractionType.None) continue;
             if (interaction is IAmountInteraction amountInteraction)
             {
-                Amount = amountInteraction.GetAmount();
+                Amount = amountInteraction.GetAmountAsString();
             }
 
             return interaction.type;
@@ -70,6 +72,10 @@ public class ActionDef : ITooltipInfo
                 return "Sprites/Actions/Shield".Load<Sprite>();
             case InteractionType.Heal:
                 return "Sprites/Actions/Heal".Load<Sprite>();
+            case InteractionType.Debuff:
+                return "Sprites/Actions/Debuff".Load<Sprite>();
+            case InteractionType.Buff:
+                return "Sprites/Actions/Buff".Load<Sprite>();
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
