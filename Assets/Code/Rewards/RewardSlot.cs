@@ -20,19 +20,22 @@ public class RewardSlot : MonoBehaviour, IPointerClickHandler, ITooltipInfoGiver
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Reward == null) return;
-        OnRewardSlotClicked?.Invoke(Reward);   
+        OnRewardSlotClicked?.Invoke(Reward);
         G.Hand.Claim(cardInstance);
-        
     }
 
     public void SetRewardInSlot(RewardDefBase newReward)
     {
-        
         cardInstance = null;
-        if(newReward == null) return;
+        if (newReward == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
         this.Reward = newReward;
         bool hasReward = Reward != null;
-        
+
 
         if (clickCollider) clickCollider.enabled = hasReward;
 

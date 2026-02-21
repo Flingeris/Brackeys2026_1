@@ -45,7 +45,7 @@ public class Tooltip : MonoBehaviour
 
     public void Show(ITooltipInfo data, GameObject user)
     {
-        //Debug.Log("Showing tooltip for: " + data.ItemName);
+        Debug.Log("Showing tooltip for: " + (data != null));
         if (IsBlocked) return;
         if (data == null) return;
         this.currUser = user;

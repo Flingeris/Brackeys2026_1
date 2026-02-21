@@ -68,6 +68,8 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     [SerializeField] private float pulseMinAlpha = 0.3f;
     [SerializeField] private float pulseMaxAlpha = 0.8f;
 
+    [SerializeField] private Animator animator;
+ 
     private bool isHovered;
 
     private Vector3 highlightBaseScale;

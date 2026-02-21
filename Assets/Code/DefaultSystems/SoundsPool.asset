@@ -93,7 +93,7 @@ MonoBehaviour:
     Volume: 0.138
   - soundId: 105
     Clips:
-    - {fileID: 8300000, guid: abbbedf07b6a077469d2076c253ea24b, type: 3}
+    - {fileID: 8300000, guid: 7104ae9afabf2e94e916ce01d6439ce6, type: 3}
     type: 2
     Loop: 0
     Volume: 0.043

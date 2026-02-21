@@ -8,4 +8,6 @@ public class CharacterModel : ContentDef
     public int preferPos;
     public PartyMember Prefab;
     public Sprite sprite;
+
+    public Animation idleAnim;
 }
