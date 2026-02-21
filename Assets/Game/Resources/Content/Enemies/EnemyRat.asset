@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3387f52dd55a253478b8379f46370f95, type: 3}
   m_Name: EnemyRat
   m_EditorClassIdentifier: Assembly-CSharp::EnemyModel
-  id: FastEnemy
+  id: 
   <ItemName>k__BackingField: 
   <Description>k__BackingField: 
   StartingHealth: 10

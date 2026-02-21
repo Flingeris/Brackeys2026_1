@@ -33,6 +33,8 @@ public class RewardSlot : MonoBehaviour, IPointerClickHandler, ITooltipInfoGiver
             return;
         }
 
+        gameObject.SetActive(true);
+
         this.Reward = newReward;
         bool hasReward = Reward != null;
 

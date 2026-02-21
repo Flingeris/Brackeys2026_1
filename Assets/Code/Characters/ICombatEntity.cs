@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 
 public interface ICombatEntity
@@ -20,6 +21,8 @@ public interface ICombatEntity
     void Kill();
 
 
+
+    public IEnumerator TickStatusEffects();
     public List<IStatusEffectInteraction> statusEffects { get; }
 
 

@@ -9,7 +9,8 @@ public enum InteractionType
     None = 0,
     Attack = 1,
     Shield = 2,
-    Heal = 3
+    Heal = 3,
+    Debuff = 4
 }
 
 
@@ -70,6 +71,8 @@ public class ActionDef : ITooltipInfo
                 return "Sprites/Actions/Shield".Load<Sprite>();
             case InteractionType.Heal:
                 return "Sprites/Actions/Heal".Load<Sprite>();
+            case InteractionType.Debuff:
+                return "Sprites/Actions/Debuff".Load<Sprite>();
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }

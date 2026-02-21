@@ -123,7 +123,7 @@ public class Main : MonoBehaviour
         {
             var enemy = enemies[i];
             if (enemy == null) continue;
-            G.enemies.AddEnemy(enemy,i);
+            G.enemies.AddEnemy(enemy, i);
         }
     }
 
@@ -204,11 +204,15 @@ public class Main : MonoBehaviour
         G.HUD.SetEndTurnInteractable(false);
         Draggable.DisableInteractionGlobal = true;
 
+        foreach (var m in G.party.GetAliveMembers())
+        {
+          yield return  m.TickStatusEffects();
+        }
 
         foreach (var turn in turns)
         {
             if (turn is MonoBehaviour mb && mb == null) continue;
-            yield return turn.OnTurnEnd();
+            yield return turn.OnTurn();
             if (CheckForWin())
             {
                 yield return WinSequence();
@@ -264,7 +268,7 @@ public class Main : MonoBehaviour
         // G.UI.SetWinActive(true);
 
         yield return FieldClearSequence();
-        SetVisualAcitve(false);
+        SetVisualActive(false);
         yield return G.Reward.StartRewarding<CardModel>();
 
         G.run.mapNodeIndex++;
@@ -279,7 +283,7 @@ public class Main : MonoBehaviour
     }
 
 
-    public void SetVisualAcitve(bool b)
+    public void SetVisualActive(bool b)
     {
         field.gameObject.SetActive(b);
         G.party.gameObject.SetActive(b);
@@ -290,6 +294,7 @@ public class Main : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
+            G.run = null;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 

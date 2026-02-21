@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public interface IEnemyInteraction
@@ -80,7 +81,7 @@ public class DealDamageToRandomTarget : IOnEnemyTurnEnd, IAmountInteraction
 
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
-        var target = G.party.GetRandomMember();
+        var target = e.currentTarget;
 
         if (target == null || target.IsDead)
             yield break;
@@ -170,11 +171,26 @@ public class HealAllAllies : IOnEnemyTurnEnd, IAmountInteraction
 
 
 [Serializable]
+public class ChooseRandomTarget: IOnEnemyTurnEnd
+{
+    public InteractionType type => InteractionType.None;
+    public string desc { get; }
+    public IEnumerator OnEndTurn(EnemyInstance e)
+    {
+        var target = G.party.GetRandomMember();
+        if (target == null || target.IsDead) yield break;
+        e.currentTarget = target;
+    }
+}
+
+[Serializable]
 public class ShieldAlliesOnPos : IOnEnemyTurnEnd, IAmountInteraction
 {
     public int[] possibleTargets;
     public int shieldAmount;
-    public string desc => $"{TextStuff.TurnEnd} Grant {TextStuff.ColoredValue(shieldAmount, TextStuff.Shield)} to allies";
+
+    public string desc =>
+        $"{TextStuff.TurnEnd} Grant {TextStuff.ColoredValue(shieldAmount, TextStuff.Shield)} to allies";
 
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
@@ -194,5 +210,30 @@ public class ShieldAlliesOnPos : IOnEnemyTurnEnd, IAmountInteraction
     public string GetAmountAsString()
     {
         return shieldAmount.ToString();
+    }
+}
+
+[Serializable]
+public class ApplyStatusOnRandom : IOnEnemyTurnEnd, IAmountInteraction
+{
+    [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
+    public int stacksToAdd;
+
+    public string desc => $"Apply {stacksToAdd} stack(s) of {TextStuff.GetStatus(statusToAdd.Type)}";
+
+
+    public IEnumerator OnEndTurn(EnemyInstance e)
+    {
+        var target = e.currentTarget;
+        if (target == null || target.IsDead) yield break;
+        target.AddStatus(statusToAdd, stacksToAdd);
+    }
+
+
+    public InteractionType type => InteractionType.Debuff;
+
+    public string GetAmountAsString()
+    {
+        return stacksToAdd.ToString();
     }
 }

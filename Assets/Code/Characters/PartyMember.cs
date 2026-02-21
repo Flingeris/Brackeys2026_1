@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
@@ -57,25 +58,27 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
 
     [Header("Popup")] [SerializeField] private float popupOffsetY = 1.5f;
 
-[Header("Target highlight")]
-    [SerializeField] private Color targetColor;
+    [Header("Target highlight")] [SerializeField]
+    private Color targetColor;
+
     [SerializeField] private Color hoverColor;
     [SerializeField] private float hoverScale = 1.1f;
 
-    [Header("Target pulse")]
-    [SerializeField] private float pulseScaleMultiplier = 1.1f;
+    [Header("Target pulse")] [SerializeField]
+    private float pulseScaleMultiplier = 1.1f;
+
     [SerializeField] private float pulseDuration = 0.4f;
     [SerializeField] private float pulseMinAlpha = 0.3f;
     [SerializeField] private float pulseMaxAlpha = 0.8f;
 
     [SerializeField] private Animator animator;
- 
+
     private bool isHovered;
 
     private Vector3 highlightBaseScale;
     private Tween pulseScaleTween;
     private Tween pulseColorTween;
-    
+
     private void Awake()
     {
         if (highlight != null)
@@ -84,7 +87,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
             highlight.gameObject.SetActive(false);
         }
     }
-    
+
     private void Start()
     {
         UpdateVisuals();
@@ -145,19 +148,19 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
             statusEffectsText.SetText(effect.Stacks.ToString());
         }
     }
-    
+
     public void SetTarget(bool b)
     {
         IsPossibleTarget = b;
         RefreshHighlight();
     }
-    
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         isHovered = true;
         RefreshHighlight();
     }
-    
+
     public void OnPointerExit(PointerEventData eventData)
     {
         isHovered = false;
@@ -183,16 +186,17 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
 
         SetState(newState);
     }
+
     private void RefreshHighlight()
     {
         if (highlight == null) return;
-        
+
         if (!G.main.IsChoosingTarget || !IsPossibleTarget)
         {
             StopTargetPulse();
             return;
         }
-        
+
         if (isHovered)
         {
             pulseScaleTween?.Kill();
@@ -209,20 +213,20 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
             StartTargetPulse();
         }
     }
-    
+
     private void StartTargetPulse()
     {
         if (highlight == null) return;
-        
+
         if (pulseScaleTween != null && pulseScaleTween.IsActive())
             return;
-        
+
         pulseScaleTween?.Kill();
         pulseColorTween?.Kill();
 
         highlight.gameObject.SetActive(true);
         highlight.transform.localScale = highlightBaseScale;
-        
+
         Color startColor = targetColor;
         startColor.a = pulseMinAlpha;
         highlight.color = startColor;
@@ -255,15 +259,25 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         highlight.gameObject.SetActive(false);
         highlight.transform.localScale = highlightBaseScale;
     }
-    
+
 
     public void TakeDamage(int dmgAmount)
     {
         if (IsDead) return;
         if (dmgAmount <= 0) return;
 
+
+        foreach (var statusEffectInteraction in statusEffects)
+        {
+            if (statusEffectInteraction is ITakenDamageFilter dmgFilter)
+            {
+                dmgAmount = dmgFilter.OnBeforeDamageTakenTick(dmgAmount);
+            }
+        }
+
         var remainDmg = dmgAmount;
         int shownDamage = dmgAmount;
+
 
         if (CurrShield > 0)
         {
@@ -317,6 +331,26 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         if (IsDead) return;
         CurrShield = 0;
         AddShield(amount);
+    }
+
+    public IEnumerator TickStatusEffects()
+    {
+        foreach (var status in statusEffects)
+        {
+            if (status == null) continue;
+
+            if (status is IOnTurnEndStatusInteraction endStatus)
+            {
+                yield return endStatus.OnTurnEndTick(this);
+                yield return new WaitForSeconds(0.2f);
+                if (IsDead) yield break;
+            }
+
+            status.Tick();
+        }
+
+        statusEffects.RemoveAll(s => s.Stacks <= 0);
+        UpdateStatusIcon();
     }
 
     public void OnTurnEnd()

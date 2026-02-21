@@ -19,7 +19,7 @@ public class FieldCardSlot : ContainerBase<DraggableCard>, ITurnEntity
     [field: SerializeField] public int Speed { get; private set; }
 
 
-    public IEnumerator OnTurnEnd()
+    public IEnumerator OnTurn()
     {
         if (AcceptedCard != null) yield return AcceptedCard.OnTurnEnd();
     }

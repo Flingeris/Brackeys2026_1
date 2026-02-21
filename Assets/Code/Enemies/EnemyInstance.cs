@@ -23,6 +23,7 @@ public class EnemyInstance : MonoBehaviour,
     public bool IsPossibleTarget { get; private set; }
     public int CurrTurnIndex = -1;
 
+    public ICombatEntity currentTarget;
 
     public List<IStatusEffectInteraction> statusEffects { get; set; } = new();
 
@@ -152,6 +153,7 @@ public class EnemyInstance : MonoBehaviour,
 
     private void UpdateVisuals()
     {
+        if(IsDead) return;
         UpdateHpText();
         UpdateSprite();
         UpdateNextActionIcon();
@@ -414,13 +416,11 @@ public class EnemyInstance : MonoBehaviour,
     }
 
 
-    public IEnumerator OnTurnEnd()
+    public IEnumerator TickStatusEffects()
     {
-        CurrTurnIndex++;
-
-
         foreach (var status in statusEffects)
         {
+            if (status == null) continue;
             if (status is IOnTurnEndStatusInteraction endStatus)
             {
                 yield return endStatus.OnTurnEndTick(this);
@@ -433,6 +433,14 @@ public class EnemyInstance : MonoBehaviour,
 
         statusEffects.RemoveAll(s => s.Stacks <= 0);
         UpdateStatusIcon();
+    }
+
+    public IEnumerator OnTurn()
+    {
+        CurrTurnIndex++;
+        currentTarget = null;
+
+        yield return TickStatusEffects();
 
         if (IsDead || !gameObject) yield break;
 
@@ -484,5 +492,5 @@ public interface ITurnEntity
     public int TurnOrder { get; }
     public int Speed { get; }
     public void SetTurnIndex(int turnIndex);
-    public IEnumerator OnTurnEnd();
+    public IEnumerator OnTurn();
 }

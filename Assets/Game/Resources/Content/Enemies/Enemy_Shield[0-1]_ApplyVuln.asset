@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3387f52dd55a253478b8379f46370f95, type: 3}
-  m_Name: 'Enemy_Shield[0-1]'
+  m_Name: Enemy_Shield[0-1]_ApplyVuln
   m_EditorClassIdentifier: Assembly-CSharp::EnemyModel
   id: 
   <ItemName>k__BackingField: 
@@ -22,7 +22,13 @@ MonoBehaviour:
   EndTurnActions:
   - OnEndTurnInteractions:
     - rid: 5181037802874470764
-    Amount: 1-3
+    Amount: 2
+  - OnEndTurnInteractions:
+    - rid: 5181037802874470793
+    Amount: 2
+  - OnEndTurnInteractions:
+    - rid: 5181037802874470764
+    Amount: 2
   references:
     version: 2
     RefIds:
@@ -30,4 +36,13 @@ MonoBehaviour:
       type: {class: ShieldAlliesOnPos, ns: , asm: Assembly-CSharp}
       data:
         possibleTargets: 0000000001000000
-        shieldAmount: 3
+        shieldAmount: 2
+    - rid: 5181037802874470793
+      type: {class: ApplyStatusOnRandom, ns: , asm: Assembly-CSharp}
+      data:
+        statusToAdd:
+          rid: 5181037802874470794
+        stacksToAdd: 2
+    - rid: 5181037802874470794
+      type: {class: VulnerabilityStatusEffect, ns: , asm: Assembly-CSharp}
+      data: 

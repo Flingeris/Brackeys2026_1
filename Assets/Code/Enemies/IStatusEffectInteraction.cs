@@ -97,7 +97,7 @@ public class BleedStatusEffect : StatusEffectInteractionBase, IOnTurnEndStatusIn
 [Serializable]
 public class VulnerabilityStatusEffect : StatusEffectInteractionBase, ITakenDamageFilter
 {
-    private float multiplier = 1.25f;
+    private float multiplier = 1.5f;
     public override StatusEffectType Type => StatusEffectType.Vulnerable;
 
     public int OnBeforeDamageTakenTick(int damage)
