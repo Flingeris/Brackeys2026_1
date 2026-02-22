@@ -68,7 +68,7 @@ public class DealDamageForEachClassCard : IOnCardEndTurn
         var count = G.main.field.CountCardsWithClass(classCardsType);
         var target = G.main.Target;
         if (target == null) yield break;
-      yield return  target.TakeDamage(AddDmg);
+      yield return  target.TakeDamage(AddDmg*count);
     }
 }
 

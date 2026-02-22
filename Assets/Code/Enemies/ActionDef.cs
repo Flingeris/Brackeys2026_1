@@ -60,6 +60,15 @@ public class ActionDef : ITooltipInfo
         return sb.ToString();
     }
 
+    public string GetName()
+    {
+        if (OnEndTurnInteractions == null || OnEndTurnInteractions.Count == 0)
+            return string.Empty;
+
+        return OnEndTurnInteractions[0].GetType().Name;
+    }
+
+
     public static Sprite GetSprite(InteractionType type)
     {
         switch (type)

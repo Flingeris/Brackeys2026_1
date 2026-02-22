@@ -296,6 +296,11 @@ public class Main : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             var party = G.party.GetAliveMembers();
@@ -323,7 +328,7 @@ public class Main : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            G.Hand.AddCard(new CardState(CMS.Get<CardModel>("tank_taunt")));
+            G.Hand.AddCard(new CardState(CMS.Get<CardModel>("vuln")));
         }
     }
 

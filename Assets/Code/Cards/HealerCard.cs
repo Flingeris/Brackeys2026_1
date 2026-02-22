@@ -57,8 +57,7 @@ public class HealAllForEachClassCardInteraction : IOnCardEndTurn
             }
         }
 
-      yield return  G.party.HealAll(addHeal * AdditionalHealAmount);
-        yield break;
+        yield return  G.party.HealAll(addHeal * AdditionalHealAmount);
     }
 }
 

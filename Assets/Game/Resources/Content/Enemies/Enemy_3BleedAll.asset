@@ -15,10 +15,10 @@ MonoBehaviour:
   id: 
   <ItemName>k__BackingField: 
   <Description>k__BackingField: 
-  StartingHealth: 10
+  StartingHealth: 18
   preferPos: -1
   Speed: 5
-  Sprite: {fileID: 8160775752198118580, guid: a0e8e145fe29d3b46a70d7ad718151ad, type: 3}
+  Sprite: {fileID: 21300000, guid: 87d8e713987b85648b5c2a55f335962a, type: 3}
   EndTurnActions:
   - OnEndTurnInteractions:
     - rid: 5181037814259384553
@@ -32,7 +32,7 @@ MonoBehaviour:
       data:
         statusToAdd:
           rid: 5181037814259384551
-        stacksToAdd: 2
+        stacksToAdd: 3
     - rid: 5181037814259384551
       type: {class: BleedStatusEffect, ns: , asm: Assembly-CSharp}
       data: 

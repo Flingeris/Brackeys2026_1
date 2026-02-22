@@ -13,7 +13,7 @@ public class RewardManager : MonoBehaviour
     [Header("Reward View")] [SerializeField]
     private RewardSlot[] rewardSlots;
 
-    [SerializeField] private SpriteRenderer rewardGiver;
+    [SerializeField] private SpriteRenderer Blackout;
     private RewardDefBase pickedReward;
 
     private Coroutine rewardCoroutine;
@@ -24,7 +24,7 @@ public class RewardManager : MonoBehaviour
         G.Reward = this;
 
         InitRewardSlots();
-        // rewardGiver.gameObject.SetActive(false);
+        Blackout.gameObject.SetActive(false);
     }
 
 
@@ -46,20 +46,17 @@ public class RewardManager : MonoBehaviour
 
     private IEnumerator RewardingSequence<T>() where T : RewardDefBase
     {
-        // G.HUD.SetHideAll(true);
-        // G.HUD.SetSkipButtonVisuals(true);
-
+        Blackout.gameObject.SetActive(true);
         SetupRewards<T>();
-        // ShowRewardGiver();
 
         while (IsActive) yield return null;
 
-        // G.HUD.SetSkipButtonVisuals(false);
         yield return HideRewards();
         yield return new WaitForSeconds(0.25f);
         if (pickedReward != null) yield return pickedReward.PickReward();
 
         pickedReward = null;
+        Blackout.gameObject.SetActive(false);
     }
 
     public void EndRewarding()
@@ -96,13 +93,6 @@ public class RewardManager : MonoBehaviour
         return allRewards;
     }
 
-    private void ShowRewardGiver()
-    {
-        rewardGiver.transform.localScale = Vector3.zero;
-        rewardGiver.gameObject.SetActive(true);
-        // G.audioSystem.Play(SoundId.SFX_Poof);
-        rewardGiver.transform.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
-    }
 
     public void HandleRewardClick(RewardDefBase reward)
     {
@@ -134,10 +124,5 @@ public class RewardManager : MonoBehaviour
             yield return slot.transform.DOPunchScale(new Vector3(0.4f, 0.4f), 0.2f, 3).WaitForCompletion();
             slot.SetRewardInSlot(null);
         }
-
-        // rewardGiver.transform.DOScale(0f, 0.4f).SetEase(Ease.OutQuart).OnComplete(() =>
-        // {
-        //     rewardGiver.gameObject.SetActive(false);
-        // });
     }
 }
