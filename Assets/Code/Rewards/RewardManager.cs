@@ -73,6 +73,16 @@ public class RewardManager : MonoBehaviour
         {
             var reward = pool[i % pool.Count];
             rewardSlots[i].SetRewardInSlot(reward);
+            
+            if (reward != null)
+            {
+                AnalyticsSystem.OnRewardOffered(
+                    reward.Id,
+                    reward.GetType().Name,
+                    i,
+                    G.run != null ? G.run.mapNodeIndex : -1
+                );
+            }
         }
     }
 

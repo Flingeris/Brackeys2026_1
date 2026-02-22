@@ -80,6 +80,12 @@ public class Main : MonoBehaviour
 #if !UNITY_EDITOR
        while (!ServiceMain.ServicesReady) yield return null;
 #endif
+        if (G.run != null && G.run.mapNodeIndex == 0 && G.run.currDeck != null)
+        {
+            AnalyticsSystem.OnRunStarted(G.run.mapNodeIndex, G.run.currDeck.Count);
+        }
+
+
         if (debugLvl != null)
         {
             yield return LoadLvl(debugLvl);
@@ -191,13 +197,7 @@ public class Main : MonoBehaviour
             yield break;
         }
 
-
-        AnalyticsSystem.OnLevelChanged(
-            oldLevelIndex: G.run.mapNodeIndex - 1,
-            newLevelIndex: G.run.mapNodeIndex,
-            levelName: lvl.name
-        );
-
+        AnalyticsSystem.OnLevelChanged(lvl.lvlIndex, lvl.name);
 
         background.sprite = lvl.backgroundSprite;
         postFX.profile = lvl.postFx;
@@ -264,6 +264,17 @@ public class Main : MonoBehaviour
             }
 
             G.Hand.AddCard(cardState);
+            
+            var model = cardState.model;
+            if (model != null)
+            {
+                AnalyticsSystem.OnCardDrawn(
+                    model.Id,
+                    model.name,
+                    model.ClassType.ToString(),
+                    G.run != null ? G.run.mapNodeIndex : -1
+                );
+            }
 
             yield return new WaitForSeconds(0.1f);
         }
@@ -341,6 +352,9 @@ public class Main : MonoBehaviour
     {
         G.UI.SetLoseActive(true);
 
+        var levelsPassed = G.run != null ? G.run.mapNodeIndex + 1 : 0;
+        AnalyticsSystem.OnGameEnded("lose", levelsPassed);
+        
         yield return new WaitForSecondsRealtime(2f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
@@ -354,6 +368,10 @@ public class Main : MonoBehaviour
         if (!matchedLvls.Any())
         {
             G.UI.SetWinActive(true);
+            
+            var levelsPassed = G.run != null ? G.run.mapNodeIndex + 1 : 0;
+            AnalyticsSystem.OnGameEnded("win", levelsPassed);
+            
             yield return new WaitForSecondsRealtime(2f);
             G.run = null;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -475,6 +493,17 @@ public class Main : MonoBehaviour
     public IEnumerator OnCardPlayed(CardInstance card)
     {
         yield return card.OnCardPlayed();
+        
+        var model = card.state?.model;
+        if (model != null)
+        {
+            AnalyticsSystem.OnCardPlayed(
+                model.Id,
+                model.name,
+                model.ClassType.ToString(),
+                G.run != null ? G.run.mapNodeIndex : -1
+            );
+        }
     }
 
     private IEnumerator ShowTitleScreen()
@@ -561,6 +590,11 @@ public class Main : MonoBehaviour
 
     public void QuitGame()
     {
+        AnalyticsSystem.OnGameQuit(
+            "in_game",
+            G.run != null ? G.run.mapNodeIndex : -1
+        );
+        
         Application.Quit();
     }
 }

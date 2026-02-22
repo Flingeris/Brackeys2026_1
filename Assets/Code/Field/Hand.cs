@@ -298,7 +298,6 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
     {
         var card = d.instance;
         cardsInHand.Remove(card);
-        yield break;
-        // yield return G.main.OnCardPlayed(card);
+        yield return G.main.OnCardPlayed(card);
     }
 }

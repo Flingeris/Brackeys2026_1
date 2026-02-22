@@ -20,6 +20,14 @@ public class RewardSlot : MonoBehaviour, IPointerClickHandler, ITooltipInfoGiver
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Reward == null) return;
+        
+        AnalyticsSystem.OnRewardPicked(
+            Reward.Id,
+            Reward.GetType().Name,
+            Index,
+            G.run != null ? G.run.mapNodeIndex : -1
+        );
+        
         OnRewardSlotClicked?.Invoke(Reward);
         G.Hand.Claim(cardInstance);
     }
