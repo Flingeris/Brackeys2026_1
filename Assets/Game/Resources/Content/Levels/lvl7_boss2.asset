@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08f800d229b34b23a72f53ff6476eacb, type: 3}
-  m_Name: lvl7_boss2
-  m_EditorClassIdentifier: Assembly-CSharp::StreetLvlModel
+  m_Script: {fileID: 11500000, guid: 44134e4fd80c4ec1ba402a8821e44e0e, type: 3}
+  m_Name: Lvl7_boss2
+  m_EditorClassIdentifier: Assembly-CSharp::PrisonLvlModel
   id: 
   enemies:
   - {fileID: 0}

@@ -33,6 +33,7 @@ public class CardInstance : MonoBehaviour
     [SerializeField] private SpriteRenderer cardSprite;
 
 
+    
     public void SetState(CardState newState)
     {
         this.state = newState;

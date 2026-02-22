@@ -353,13 +353,13 @@ MonoBehaviour:
   active: 1
   shadows:
     m_OverrideState: 1
-    m_Value: {r: 0.023529412, g: 0.07450981, b: 0.16862746, a: 1}
+    m_Value: {r: 0.20754719, g: 0.02055892, b: 0.032278497, a: 1}
   highlights:
     m_OverrideState: 1
     m_Value: {r: 1, g: 0.8666667, b: 0.6666667, a: 1}
   balance:
     m_OverrideState: 1
-    m_Value: 15
+    m_Value: 24.4
 --- !u!114 &-3386560400091697801
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -487,7 +487,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
-  m_Name: DefaultVolumeProfile
+  m_Name: lvltype2
   m_EditorClassIdentifier: 
   components:
   - {fileID: 1247868777620691934}
@@ -764,13 +764,13 @@ MonoBehaviour:
   active: 1
   color:
     m_OverrideState: 1
-    m_Value: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 1}
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
   center:
     m_OverrideState: 1
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.197
   smoothness:
     m_OverrideState: 1
     m_Value: 0.75

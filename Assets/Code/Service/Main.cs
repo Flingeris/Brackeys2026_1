@@ -34,6 +34,7 @@ public class Main : MonoBehaviour
     [SerializeField] private List<CardModel> startDeck;
     [SerializeField] private SpriteRenderer background;
     [SerializeField] private LevelModel debugLvl;
+    [SerializeField] private Volume postFX;
 
     private void Awake()
     {
@@ -187,6 +188,7 @@ public class Main : MonoBehaviour
         }
 
         background.sprite = lvl.backgroundSprite;
+        postFX.profile = lvl.postFx;
         G.audioSystem.Play(lvl.LevelAmbient);
 
 
