@@ -46,7 +46,7 @@ public static class TextStuff
     public static string Taunt => "Taunt".Color(Color.darkSlateBlue);
     public static string SharpClaws => "Sharp claws".Color(new Color(0.725f, 0.094f, 0.094f, 1f));
     public static string Vulnerable => "Vulnerable".Color(Color.chocolate);
-    
+
     public static string TurnEnd => "On turn:".Color(Color.softRed);
 
 
@@ -142,5 +142,24 @@ public static class TextStuff
     public static string ColoredRange(int min, int max, string coloredLabel)
     {
         return TextStuff.ColoredValue($"{min} - {max}", coloredLabel);
+    }
+
+
+    public static string ColoredNumber(int value, string coloredLabel)
+        => ColoredNumber(value.ToString(), coloredLabel);
+
+    public static string ColoredNumber(float value, string coloredLabel, string format = "0.#")
+        => ColoredNumber(value.ToString(format), coloredLabel);
+
+    public static string ColoredNumber(string valueText, string coloredLabel)
+    {
+        if (string.IsNullOrEmpty(coloredLabel))
+            return valueText;
+
+        var m = ColorTagRegex.Match(coloredLabel);
+        if (!m.Success)
+            return valueText;
+        var c = m.Groups["c"].Value;
+        return $"<color={c}>{valueText}</color>";
     }
 }

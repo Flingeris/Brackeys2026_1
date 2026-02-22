@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -65,7 +66,7 @@ public class ActionDef : ITooltipInfo
         if (OnEndTurnInteractions == null || OnEndTurnInteractions.Count == 0)
             return string.Empty;
 
-        return OnEndTurnInteractions[0].GetType().Name;
+        return OnEndTurnInteractions.FirstOrDefault(i => i!= null && i is not INoAnimationAction)?.type.ToString();
     }
 
 
@@ -92,6 +93,6 @@ public class ActionDef : ITooltipInfo
         return null;
     }
 
-    public string ItemName => string.Empty;
+    public string ItemName => GetName();
     public string Description => GetDescription();
 }
