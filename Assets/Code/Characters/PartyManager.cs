@@ -12,6 +12,19 @@ public class PartyManager : CombatGroup
         G.party = this;
     }
 
+
+    public override void CheckMemberDeath(ICombatEntity member)
+    {
+        base.CheckMemberDeath(member);
+
+        if (PlayerPrefs.GetInt("tutor2", 0) == 0)
+        {
+            G.main.StartSecondTutorial();
+        }
+        
+        
+    }
+
     protected override void OnMembersDeath()
     {
         G.main.GameLost();

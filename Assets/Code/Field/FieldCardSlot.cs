@@ -5,6 +5,7 @@ using UnityEngine;
 public class FieldCardSlot : ContainerBase<DraggableCard>, ITurnEntity
 {
     public CardInstance AcceptedCard => GetAcceptedCard();
+    
 
     [SerializeField] private TMP_Text turnIndexText;
 

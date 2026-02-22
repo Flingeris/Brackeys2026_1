@@ -1,4 +1,7 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +11,7 @@ public class HUD : MonoBehaviour
     [SerializeField] public Tooltip tooltip;
     [SerializeField] private PauseManager pauseManager;
     [SerializeField] private TMP_Text sayText;
+    public TutorialMask tutorial;
 
     [Header("Buttons")] [SerializeField] private Button EndTurnButton;
 
@@ -36,6 +40,42 @@ public class HUD : MonoBehaviour
     public void SetVisible(bool b)
     {
         EndTurnButton.gameObject.SetActive(b);
+    }
+
+    public void SetTurnOrderHighlight(bool b)
+    {
+        var turnOrderTexts = new List<TMP_Text>(G.main.field.turnOrderNumbers);
+        turnOrderTexts.AddRange(G.enemies.GetAliveEnemies().Select(e => e.turnIndexText).ToList());
+
+        // var enemyInstances = G.enemies.GetAliveEnemies();
+        // Debug.Log($"[HUD] highlight: field={G.main.field.turnOrderNumbers.Count}, enemies={enemyInstances.Count}");
+        //
+        // foreach (var e in enemyInstances)
+        // {
+        //     Debug.Log($"[HUD] enemy={e.name}, text={(e.turnIndexText ? e.turnIndexText.name : "NULL")}");
+        // }
+        if (b)
+        {
+            foreach (var text in turnOrderTexts)
+            {
+                if (text == null) continue;
+                text.DOKill();
+                var color = text.color;
+                color.a = 1f;
+                text.DOColor(color, 0.7f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+            }
+        }
+        else
+        {
+            foreach (var text in turnOrderTexts)
+            {
+                if (text == null) continue;
+                text.DOKill();
+                var color = text.color;
+                color.a = 0.4f;
+                text.color = color;
+            }
+        }
     }
 
 

@@ -39,7 +39,7 @@ public class EnemyInstance : MonoBehaviour,
 
     [SerializeField] private SpriteRenderer highlight;
     [SerializeField] private SpriteRenderer sprite;
-    [SerializeField] private TMP_Text turnIndexText;
+    [SerializeField] public TMP_Text turnIndexText;
     [SerializeField] private SpriteRenderer actionIconImage;
     [SerializeField] private TMP_Text actionValueText;
 
