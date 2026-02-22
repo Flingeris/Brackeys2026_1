@@ -1,5 +1,80 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1332279693335374572
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6566281552906146641}
+  - component: {fileID: 1947716283087428581}
+  - component: {fileID: 261785911349339800}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6566281552906146641
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332279693335374572}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8927458733388558465}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: -69, y: 78.4}
+  m_SizeDelta: {x: 76.946, y: 69.9833}
+  m_Pivot: {x: 0, y: 0.5}
+--- !u!222 &1947716283087428581
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332279693335374572}
+  m_CullTransparentMesh: 1
+--- !u!114 &261785911349339800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332279693335374572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: e0a2c70324d12f84b86e7d891a97fca4, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1444854324579028216
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,10 +170,10 @@ MonoBehaviour:
   m_Padding:
     m_Left: 46
     m_Right: 66
-    m_Top: 17
-    m_Bottom: 0
+    m_Top: 0
+    m_Bottom: 40
   m_ChildAlignment: 1
-  m_Spacing: 23.4
+  m_Spacing: 10
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -240,7 +315,7 @@ MonoBehaviour:
   m_fontSizeMax: 9.03
   m_fontStyle: 16
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -306,7 +381,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6566281552906146641}
   m_Father: {fileID: 2279597441197811213}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -342,7 +418,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: +1 Hp for each dice with roll <=2.
+  m_text: AbobaAbobaAbobaAbobaAbobaAbobaAbobaAbobaAbobaAbobaAbobaAbobaAbobaAbobaAbobaAboba
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
   m_sharedMaterial: {fileID: 4987996594548256213, guid: b34d29859b8e2754fb3a3c6629c5984c, type: 2}
@@ -466,10 +542,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Tooltip
   nameText: {fileID: 141408217759932225}
   descText: {fileID: 498152010454250425}
+  iconImage: {fileID: 261785911349339800}
   Rect: {fileID: 8884628040845843803}
   canvas: {fileID: 0}
   layout: {fileID: 6910748838220448060}
-  minWidth: 300
+  minWidth: 400
   offset: {x: 0, y: 0}
   offscreenOffset: {x: 10, y: 10}
 --- !u!225 &4956040141503202310

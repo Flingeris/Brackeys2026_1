@@ -297,6 +297,11 @@ public class Main : MonoBehaviour
             G.run = null;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+        
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            G.Hand.AddCard(new CardState(CMS.Get<CardModel>("228")));
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {

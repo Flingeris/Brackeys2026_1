@@ -51,8 +51,9 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private SpriteRenderer highlight;
 
-    [SerializeField] private SpriteRenderer statusEffectsIcons;
-    [SerializeField] private TMP_Text statusEffectsText;
+    [SerializeField] private Transform statusIconsRoot;
+    [SerializeField] private StatusIconView statusIconPrefab;
+    private readonly List<StatusIconView> statusIconViews = new();
 
     [SerializeField] private HpBarView hpBarView;
 
@@ -128,24 +129,44 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
 
     private void UpdateStatusIcon()
     {
-        statusEffects.RemoveAll(s => s.Stacks <= 0);
-
-
-        statusEffectsIcons.enabled = false;
-        statusEffectsText.SetText("");
-
-        var effect = statusEffects.FirstOrDefault();
-        if (effect == null || effect.Type == StatusEffectType.None) return;
-
-        var sprite = effect.GetSprite();
-        if (sprite == null) return;
-
-        statusEffectsIcons.enabled = true;
-        statusEffectsIcons.sprite = sprite;
-
-        if (effect.Stacks != 0)
+        statusEffects.RemoveAll(s => s == null || s.Stacks <= 0);
+        
+        if (statusIconsRoot == null || statusIconPrefab == null)
+            return;
+        
+        foreach (var view in statusIconViews)
         {
-            statusEffectsText.SetText(effect.Stacks.ToString());
+            if (view != null)
+                view.gameObject.SetActive(false);
+        }
+        
+        var activeEffects = statusEffects
+            .Where(s => s != null && s.Stacks > 0 && s.Type != StatusEffectType.None)
+            .ToList();
+
+        if (activeEffects.Count == 0)
+            return;
+
+        const float spacing = 0.5f;
+
+        for (int i = 0; i < activeEffects.Count; i++)
+        {
+            var effect = activeEffects[i];
+            var sprite = effect.GetSprite();
+            if (sprite == null)
+                continue;
+            
+            if (i >= statusIconViews.Count || statusIconViews[i] == null)
+            {
+                var inst = Instantiate(statusIconPrefab, statusIconsRoot);
+                statusIconViews.Add(inst);
+            }
+
+            var view = statusIconViews[i];
+            view.gameObject.SetActive(true);
+            view.Setup(sprite, effect.Stacks);
+            
+            view.transform.localPosition = new Vector3(i * spacing, 0f, 0f);
         }
     }
 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b809b98cebb04077982e7c7c683ba732, type: 3}
   m_Name: ApplyVulnStatus
   m_EditorClassIdentifier: Assembly-CSharp::HealerCard
-  id: 
+  id: 228
   <RewardRarity>k__BackingField: 0
   IsExcludedFromRewards: 0
   <ItemName>k__BackingField: 

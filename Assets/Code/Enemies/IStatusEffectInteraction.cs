@@ -9,6 +9,7 @@ public interface IStatusEffectInteraction
     public int Stacks { get; }
     public void AddStacks(int amount);
     public Sprite GetSprite();
+    public string Description { get; }
 
     public void Tick();
 }
@@ -83,8 +84,9 @@ public abstract class StatusEffectInteractionBase : IStatusEffectInteraction
 public class BleedStatusEffect : StatusEffectInteractionBase, IOnTurnEndStatusInteraction
 {
     public override StatusEffectType Type => StatusEffectType.Bleed;
-    public override string Description { get; }
-
+    
+    public override string Description =>
+        "Takes damage at the end of turn equal to its stacks.";
 
     public IEnumerator OnTurnEndTick(ICombatEntity entity)
     {
@@ -100,12 +102,13 @@ public class VulnerabilityStatusEffect : StatusEffectInteractionBase, ITakenDama
     private float multiplier = 1.5f;
     public override StatusEffectType Type => StatusEffectType.Vulnerable;
 
+    public override string Description =>
+        "Takes 50% more damage from all sources.";
+
     public int OnBeforeDamageTakenTick(int damage)
     {
         return Mathf.RoundToInt(damage * multiplier);
     }
-
-    public override string Description { get; }
 }
 
 [Serializable]
@@ -113,10 +116,11 @@ public class TauntStatusEffect : StatusEffectInteractionBase, ITargetFilter
 {
     public override StatusEffectType Type => StatusEffectType.Taunt;
 
+    public override string Description =>
+        "Enemies are forced to target this unit.";
+
     public ICombatEntity OnTargetChoose(List<ICombatEntity> aliveMembers, ICombatEntity statusOwner)
     {
         return statusOwner;
     }
-
-    public override string Description { get; }
 }
