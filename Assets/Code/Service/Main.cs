@@ -385,6 +385,7 @@ public class Main : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
         {
             G.Hand.AddCard(new CardState(CMS.Get<CardModel>("vuln")));
+            G.Hand.AddCard(new CardState(CMS.Get<CardModel>("bleed")));
         }
 
         if (Input.GetKeyDown(KeyCode.T))

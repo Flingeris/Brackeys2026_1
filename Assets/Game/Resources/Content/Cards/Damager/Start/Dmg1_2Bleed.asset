@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f792f981288481f84c121a1bbc7af7d, type: 3}
   m_Name: Dmg1_2Bleed
   m_EditorClassIdentifier: Assembly-CSharp::DamageCard
-  id: 
+  id: bleed
   <RewardRarity>k__BackingField: 0
   IsExcludedFromRewards: 1
   <ItemName>k__BackingField: Target srtike
