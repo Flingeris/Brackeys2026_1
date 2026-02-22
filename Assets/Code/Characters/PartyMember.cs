@@ -54,8 +54,8 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     [SerializeField] private SpriteRenderer highlight;
 
     [SerializeField] private Transform statusIconsRoot;
-    [SerializeField] private StatusIconView statusIconPrefab;
-    private readonly List<StatusIconView> statusIconViews = new();
+    [SerializeField] private StatusEffectView statusEffectPrefab;
+    private readonly List<StatusEffectView> statusIconViews = new();
 
     [SerializeField] private HpBarView hpBarView;
     
@@ -134,7 +134,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     {
         statusEffects.RemoveAll(s => s == null || s.Stacks <= 0);
         
-        if (statusIconsRoot == null || statusIconPrefab == null)
+        if (statusIconsRoot == null || statusEffectPrefab == null)
             return;
         
         foreach (var view in statusIconViews)
@@ -161,15 +161,15 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
             
             if (i >= statusIconViews.Count || statusIconViews[i] == null)
             {
-                var inst = Instantiate(statusIconPrefab, statusIconsRoot);
+                var inst = Instantiate(statusEffectPrefab, statusIconsRoot);
                 statusIconViews.Add(inst);
             }
 
             var view = statusIconViews[i];
             view.gameObject.SetActive(true);
-            view.Setup(sprite, effect.Stacks);
+            view.Setup(effect);
             
-            view.transform.localPosition = new Vector3(i * spacing, 0f, 0f);
+            view.transform.localPosition = new Vector3(i * spacing*1, 0f, 0f);
         }
     }
 

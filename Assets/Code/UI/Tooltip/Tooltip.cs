@@ -5,17 +5,17 @@ using UnityEngine.UI;
 
 public class Tooltip : MonoBehaviour
 {
-    [Header("Tooltip settings")]
-    [SerializeField] private TMP_Text nameText;
+    [Header("Tooltip settings")] [SerializeField]
+    private TMP_Text nameText;
+
     [SerializeField] private TMP_Text descText;
-    [SerializeField] private Image iconImage;
     private Camera _camera;
     [SerializeField] private RectTransform Rect;
     [SerializeField] private Canvas canvas;
     [SerializeField] private LayoutElement layout;
     [SerializeField] private int minWidth = 70;
     public Vector2 offset;
-    [SerializeField] private Vector2 offscreenOffset = new Vector2(10f, 10f);
+    [SerializeField] private Vector2 offscreenOffset;
 
     public bool IsBlocked => blockersCount > 0;
     private int blockersCount = 0;
@@ -54,19 +54,7 @@ public class Tooltip : MonoBehaviour
 
         nameText.text = data.ItemName;
         descText.text = data.Description;
-        
-        if (iconImage != null)
-        {
-            if (data is TooltipStatusEffect statusData && statusData.Icon != null)
-            {
-                iconImage.gameObject.SetActive(true);
-                iconImage.sprite = statusData.Icon;
-            }
-            else
-            {
-                iconImage.gameObject.SetActive(false);
-            }
-        }
+
 
         var textWidth = nameText.preferredWidth + 6;
         layout.preferredWidth = textWidth > minWidth ? textWidth : minWidth;
@@ -101,5 +89,37 @@ public class Tooltip : MonoBehaviour
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, mousePos, _camera, out var localPoint);
         localPoint += offset;
         Rect.anchoredPosition = localPoint;
+
+        ClampToScreen();
+    }
+
+    private void ClampToScreen()
+    {
+        if (canvas == null || Rect == null)
+            return;
+
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+        if (canvasRect == null)
+            return;
+
+        Vector2 size = Rect.rect.size;
+        Vector2 pos = Rect.anchoredPosition;
+        Vector2 pivot = Rect.pivot;
+
+        Rect cRect = canvasRect.rect;
+
+        float minX = cRect.xMin + offscreenOffset.x + pivot.x * size.x;
+        float maxX = cRect.xMax - offscreenOffset.x - (1f - pivot.x) * size.x;
+
+        float minY = cRect.yMin + offscreenOffset.y + pivot.y * size.y;
+        float maxY = cRect.yMax - offscreenOffset.y - (1f - pivot.y) * size.y;
+
+        if (minX > maxX) (minX, maxX) = (maxX, minX);
+        if (minY > maxY) (minY, maxY) = (maxY, minY);
+
+        pos.x = Mathf.Clamp(pos.x, minX, maxX);
+        pos.y = Mathf.Clamp(pos.y, minY, maxY);
+
+        Rect.anchoredPosition = pos;
     }
 }

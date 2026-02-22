@@ -5,6 +5,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
@@ -32,6 +33,7 @@ public class Main : MonoBehaviour
     private List<CardState> discardPile;
     [SerializeField] private List<CardModel> startDeck;
     [SerializeField] private SpriteRenderer background;
+    [SerializeField] private LevelModel debugLvl;
 
     private void Awake()
     {
@@ -72,7 +74,15 @@ public class Main : MonoBehaviour
 #if !UNITY_EDITOR
        while (!ServiceMain.ServicesReady) yield return null;
 #endif
-        yield return LoadLvlFromIndex(G.run.mapNodeIndex);
+        if (debugLvl != null)
+        {
+            yield return LoadLvl(debugLvl);
+        }
+        else
+        {
+            yield return LoadLvlFromIndex(G.run.mapNodeIndex);
+        }
+
         G.audioSystem.Play(SoundId.Ambient_Sewer);
 
         yield return StartTurnSequence();
@@ -243,7 +253,6 @@ public class Main : MonoBehaviour
 
             yield return new WaitForSeconds(0.1f);
         }
-
     }
 
 

@@ -53,5 +53,8 @@ TagManager:
   - name: UI_Overlay
     uniqueID: 2136261383
     locked: 0
+  - name: Tutorial
+    uniqueID: 3572615079
+    locked: 0
   m_RenderingLayers:
   - Default

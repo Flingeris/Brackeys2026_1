@@ -19,6 +19,8 @@ public class TooltipInteractor : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        Debug.Log("OnPointerEnter in tooltip interactor for " + gameObject.name);
+        
         if (eventData.pointerCurrentRaycast.gameObject != gameObject)
             return;
 
@@ -44,15 +46,6 @@ public class TooltipInteractor : MonoBehaviour, IPointerEnterHandler, IPointerEx
     }
 }
 
-public class RewardInteractor: MonoBehaviour, IPointerClickHandler
-{
-    // [SerializeField] private IReward
-    
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        throw new System.NotImplementedException();
-    }
-}
 
 
 

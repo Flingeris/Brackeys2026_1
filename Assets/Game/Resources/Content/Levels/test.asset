@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08f800d229b34b23a72f53ff6476eacb, type: 3}
+  m_Name: test
+  m_EditorClassIdentifier: Assembly-CSharp::StreetLvlModel
+  id: 
+  enemies:
+  - {fileID: 11400000, guid: 26c9da3d8d267544ea3de9f622fa75f9, type: 2}
+  - {fileID: 11400000, guid: 2fe8e7415218e0e44a7ee9aa630bc2d1, type: 2}
+  - {fileID: 11400000, guid: 32d5ec4c19b72eb44b6a705c5f791959, type: 2}
+  lvlIndex: -1

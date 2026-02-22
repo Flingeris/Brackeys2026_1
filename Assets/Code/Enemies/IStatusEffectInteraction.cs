@@ -2,15 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public interface IStatusEffectInteraction
+public interface IStatusEffectInteraction : ITooltipInfo
 {
     public abstract StatusEffectType Type { get; }
     public int Stacks { get; }
     public void AddStacks(int amount);
     public Sprite GetSprite();
-    public string Description { get; }
-
     public void Tick();
 }
 
@@ -30,7 +29,6 @@ public interface IOnDamageTakenStatusTick
 public interface IOnDamageDealtStatusTick
 {
 }
-
 
 
 public interface IDamageModifier : IStatusEffectInteraction
@@ -63,6 +61,7 @@ public enum StatusEffectType
 public abstract class StatusEffectInteractionBase : IStatusEffectInteraction
 {
     public abstract StatusEffectType Type { get; }
+    public virtual string ItemName => TextStuff.GetStatus(Type);
     public abstract string Description { get; }
 
     public int Stacks { get; protected set; } = 0;
@@ -105,17 +104,19 @@ public class SharpClawsStatusEffect : StatusEffectInteractionBase, IDamageModifi
 {
     public int AddBonusForStack = 2;
     public override StatusEffectType Type => StatusEffectType.Claws;
+
     public int ModifyDamage(int baseDmg)
     {
-       var bonus = AddBonusForStack*Stacks;
-       return baseDmg + bonus;
+        var bonus = AddBonusForStack * Stacks;
+        return baseDmg + bonus;
     }
 
     public override void Tick()
     {
     }
 
-    public override string Description { get; }
+    public override string Description =>
+        $"Adds {TextStuff.ColoredNumber(AddBonusForStack, TextStuff.Damage)} bonus {TextStuff.Damage} for each stack";
 }
 
 
@@ -123,13 +124,12 @@ public class SharpClawsStatusEffect : StatusEffectInteractionBase, IDamageModifi
 public class BleedStatusEffect : StatusEffectInteractionBase, IOnTurnEndStatusInteraction
 {
     public override StatusEffectType Type => StatusEffectType.Bleed;
-    
+
     public override string Description =>
-        "Takes damage at the end of turn equal to its stacks.";
+        $"{TextStuff.TurnEnd} deals {TextStuff.ColoredValue(1, TextStuff.Damage)} for each stack";
 
     public IEnumerator OnTurnEndStatusEffect(ICombatEntity entity)
     {
-        Debug.Log($"[Bleed] Tick on {entity} for {Stacks} dmg");
         yield return entity.TakeDamage(Stacks);
         yield return null;
     }
@@ -142,7 +142,7 @@ public class VulnerabilityStatusEffect : StatusEffectInteractionBase, ITakenDama
     public override StatusEffectType Type => StatusEffectType.Vulnerable;
 
     public override string Description =>
-        "Takes 50% more damage from all sources.";
+        $"Takes 50% more {TextStuff.Damage} from all sources";
 
     public int OnBeforeDamageTakenTick(int damage)
     {
@@ -156,7 +156,7 @@ public class TauntStatusEffect : StatusEffectInteractionBase, ITargetFilter
     public override StatusEffectType Type => StatusEffectType.Taunt;
 
     public override string Description =>
-        "Enemies are forced to target this unit.";
+        "Enemies are forced to target this unit";
 
     public ICombatEntity OnTargetChoose(List<ICombatEntity> aliveMembers, ICombatEntity statusOwner)
     {
