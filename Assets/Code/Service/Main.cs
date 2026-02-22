@@ -191,6 +191,14 @@ public class Main : MonoBehaviour
             yield break;
         }
 
+
+        AnalyticsSystem.OnLevelChanged(
+            oldLevelIndex: G.run.mapNodeIndex - 1,
+            newLevelIndex: G.run.mapNodeIndex,
+            levelName: lvl.name
+        );
+
+
         background.sprite = lvl.backgroundSprite;
         postFX.profile = lvl.postFx;
         G.audioSystem.Play(lvl.LevelAmbient);
