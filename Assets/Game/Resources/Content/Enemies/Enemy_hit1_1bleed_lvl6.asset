@@ -15,10 +15,10 @@ MonoBehaviour:
   id: 
   <ItemName>k__BackingField: 
   <Description>k__BackingField: 
-  StartingHealth: 18
+  StartingHealth: 12
   preferPos: -1
   Speed: 6
-  Sprite: {fileID: 21300000, guid: 921e2232c78f2184ebcaedc2b61408ff, type: 3}
+  Sprite: {fileID: 21300000, guid: 87d8e713987b85648b5c2a55f335962a, type: 3}
   EndTurnActions:
   - OnEndTurnInteractions:
     - rid: 5181037814259384413

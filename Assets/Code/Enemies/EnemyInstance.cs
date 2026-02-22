@@ -393,7 +393,7 @@ public class EnemyInstance : MonoBehaviour,
     {
         if (IsDead) return;
         CurrShield += amount;
-        G.audioSystem.Play(SoundId.SFX_PlayerShielded);
+        G.audioSystem.Play(SoundId.SFX_ShieldApplied);
         UpdateVisuals();
     }
 

@@ -15,5 +15,5 @@ MonoBehaviour:
   id: 
   enemies:
   - {fileID: 11400000, guid: 2fe8e7415218e0e44a7ee9aa630bc2d1, type: 2}
-  - {fileID: 11400000, guid: 947ea167e7240e94ea90800742d99676, type: 2}
+  - {fileID: 11400000, guid: ae15e84a8bfd8334e82f5b1390ca87ba, type: 2}
   lvlIndex: 6

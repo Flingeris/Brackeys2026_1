@@ -76,7 +76,7 @@ public abstract class CardModel : RewardDefBase, ITooltipInfo
 
 
 [Serializable]
-public class AddStatusToTargetInteraction : IOnCardEndTurn
+public class AddStatusToTargetInteraction : IOnCardEndTurn, INoAnimationAction
 {
     [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
     public int stacksToAdd;
@@ -93,7 +93,7 @@ public class AddStatusToTargetInteraction : IOnCardEndTurn
 }
 
 [Serializable]
-public class AddStatusToClassInteractions : IOnCardEndTurn
+public class AddStatusToClassInteractions : IOnCardEndTurn, INoAnimationAction
 {
     [SerializeReference, SubclassSelector] public IStatusEffectInteraction statusToAdd;
     public ClassType member;

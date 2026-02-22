@@ -326,7 +326,6 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     {
         if (IsDead) return;
         CurrShield += amount;
-        // G.audioSystem.Play(SoundId.SFX_PlayerHealed);
         UpdateVisuals();
 
         G.audioSystem.Play(SoundId.SFX_ShieldApplied);
