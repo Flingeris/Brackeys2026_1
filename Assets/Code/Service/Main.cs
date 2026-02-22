@@ -6,6 +6,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 
 public class RunState
@@ -74,7 +75,77 @@ public class Main : MonoBehaviour
         yield return LoadLvlFromIndex(G.run.mapNodeIndex);
         G.audioSystem.Play(SoundId.Ambient_Sewer);
 
-        StartTurn();
+        yield return StartTurnSequence();
+
+
+        if (G.run.mapNodeIndex == 0 && PlayerPrefs.GetInt("tutor1", 0) == 0)
+        {
+            yield return FirstTutorialSequence();
+        }
+    }
+
+
+    public IEnumerator FirstTutorialSequence()
+    {
+        G.HUD.SetEndTurnInteractable(false);
+
+        G.HUD.tutorial.SetTutorialText("This is your actions");
+        G.HUD.tutorial.ShowHand();
+
+        yield return G.HUD.tutorial.WaitForSkip();
+
+        G.HUD.tutorial.SetTutorialText("Drag them into action slots to play", 200);
+        G.HUD.tutorial.ShowField();
+
+        yield return G.HUD.tutorial.WaitForSkip();
+
+        Debug.Log(field.PlayedCards.Length);
+        while (field.PlayedCards.Length == 0)
+        {
+            Debug.Log("Waiting for field");
+            yield return new WaitForEndOfFrame();
+        }
+
+        G.HUD.tutorial.SetTutorialText("Red numbers on the floor are turn order", 300);
+        G.HUD.tutorial.ShowNumbers();
+        G.HUD.SetTurnOrderHighlight(true);
+
+        yield return G.HUD.tutorial.WaitForSkip();
+
+        G.HUD.SetTurnOrderHighlight(false);
+
+        G.HUD.tutorial.SetTutorialText("When you are ready press end turn");
+        G.HUD.tutorial.ShowEndTurn();
+
+        yield return G.HUD.tutorial.WaitForSkip();
+
+        yield return new WaitForSeconds(0.5f);
+
+        G.HUD.SetEndTurnInteractable(true);
+
+        PlayerPrefs.SetInt("tutor1", 1);
+    }
+
+    public void StartSecondTutorial()
+    {
+        StartCoroutine(SecondTutorialSequence());
+    }
+
+    private IEnumerator SecondTutorialSequence()
+    {
+        G.HUD.tutorial.SetTutorialText("If a character dies, actions of their type can still appear, but less often", 0,
+            300);
+        G.HUD.tutorial.ShowCharacters();
+
+        yield return G.HUD.tutorial.WaitForSkip();
+
+        G.HUD.tutorial.SetTutorialText(
+            "Winning a battle revives the character for the next fight, but lowers their max health", 0, 300);
+        G.HUD.tutorial.ShowCharacters();
+
+        yield return G.HUD.tutorial.WaitForSkip();
+
+        PlayerPrefs.SetInt("tutor2", 1);
     }
 
 
@@ -159,8 +230,13 @@ public class Main : MonoBehaviour
             var cardState = drawPile.Pop();
             if (cardState.CardOwner == null || cardState.CardOwner.IsDead)
             {
-                i--;
-                continue;
+                var rand = Random.Range(0f, 1f);
+                if (rand <= 0.6f)
+                {
+                    discardPile.Add(cardState);
+                    i--;
+                    continue;
+                }
             }
 
             G.Hand.AddCard(cardState);
@@ -168,7 +244,6 @@ public class Main : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        yield break;
     }
 
 
@@ -296,8 +371,19 @@ public class Main : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            G.Hand.AddCard(new CardState(CMS.Get<CardModel>("vuln")));
+        }
+
         if (Input.GetKeyDown(KeyCode.T))
         {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            G.run.mapNodeIndex++;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 

@@ -39,12 +39,13 @@ public class EnemyInstance : MonoBehaviour,
 
     [SerializeField] private SpriteRenderer highlight;
     [SerializeField] private SpriteRenderer sprite;
-    [SerializeField] private TMP_Text turnIndexText;
+    [SerializeField] public TMP_Text turnIndexText;
     [SerializeField] private SpriteRenderer actionIconImage;
     [SerializeField] private TMP_Text actionValueText;
 
-    [SerializeField] private SpriteRenderer statusEffectsIcons;
-    [SerializeField] private TMP_Text statusEffectsText;
+    [SerializeField] private Transform statusIconsRoot;
+    [SerializeField] private StatusIconView statusIconPrefab;
+    private readonly List<StatusIconView> statusIconViews = new();
     [SerializeField] private HpBarView hpBarView;
 
     [SerializeField] private SpriteRenderer shieldIconImage;
@@ -165,11 +166,25 @@ public class EnemyInstance : MonoBehaviour,
         Speed = model.Speed;
         CurrHP = model.StartingHealth;
         UpdateVisuals();
+    }
 
+    private void UpdateBorders()
+    {
         var b = sprite.sprite.bounds;
         col.size = b.size;
         col.offset = b.center;
+
+
+        float leftX = col.offset.x - col.size.x * 0.5f;
+        float topY = col.offset.y + col.size.y * 0.5f;
+
+        var p = actionIconImage.transform.localPosition;
+        p.x = leftX - 0.25f;
+        p.y = topY + 0.2f;
+
+        actionIconImage.transform.localPosition = p;
     }
+
 
     private void UpdateVisuals()
     {
@@ -180,6 +195,7 @@ public class EnemyInstance : MonoBehaviour,
         UpdateNextActionIcon();
         UpdateStatusIcon();
         UpdateShieldVisuals();
+        UpdateBorders();
     }
 
 
@@ -277,21 +293,42 @@ public class EnemyInstance : MonoBehaviour,
 
     private void UpdateStatusIcon()
     {
-        statusEffectsIcons.enabled = false;
-        statusEffectsText.SetText("");
+        if (statusIconsRoot == null || statusIconPrefab == null)
+            return;
 
-        var effect = statusEffects.FirstOrDefault();
-        if (effect == null || effect.Type == StatusEffectType.None) return;
-
-        var sprite = effect.GetSprite();
-        if (sprite == null) return;
-
-        statusEffectsIcons.enabled = true;
-        statusEffectsIcons.sprite = sprite;
-
-        if (effect.Stacks != 0)
+        foreach (var view in statusIconViews)
         {
-            statusEffectsText.SetText(effect.Stacks.ToString());
+            if (view != null)
+                view.gameObject.SetActive(false);
+        }
+
+        var activeEffects = statusEffects
+            .Where(s => s != null && s.Stacks > 0 && s.Type != StatusEffectType.None)
+            .ToList();
+
+        if (activeEffects.Count == 0)
+            return;
+
+        const float spacing = 0.3f;
+
+        for (int i = 0; i < activeEffects.Count; i++)
+        {
+            var effect = activeEffects[i];
+            var sprite = effect.GetSprite();
+            if (sprite == null)
+                continue;
+
+            if (i >= statusIconViews.Count || statusIconViews[i] == null)
+            {
+                var inst = Instantiate(statusIconPrefab, statusIconsRoot);
+                statusIconViews.Add(inst);
+            }
+
+            var view = statusIconViews[i];
+            view.gameObject.SetActive(true);
+            view.Setup(sprite, effect.Stacks);
+
+            view.transform.localPosition = new Vector3(i * spacing, 0f, 0f);
         }
     }
 
@@ -471,7 +508,7 @@ public class EnemyInstance : MonoBehaviour,
         {
             if (status == null) continue;
 
-            if(!statusEffects.Contains(status)) continue;
+            if (!statusEffects.Contains(status)) continue;
             if (status is IOnTurnEndStatusInteraction endStatus)
             {
                 yield return endStatus.OnTurnEndStatusEffect(this);

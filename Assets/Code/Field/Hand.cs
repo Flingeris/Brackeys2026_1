@@ -2,6 +2,7 @@ using System.Collections;
 using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
@@ -10,6 +11,9 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
     [SerializeField] private Transform cardsParent;
 
     private const float PLACEMENT_X_RANGE = 1.75f;
+
+    [SerializeField] private List<TMP_Text> turnOrderNumbersText;
+
 
     [Header("Hover layout")] [SerializeField]
     private float hoveredBottomY = -3f; // локальный Y для наведённой карты
@@ -41,6 +45,12 @@ public class Hand : MonoBehaviour, IDraggableOwner<DraggableCard>
     private void Update()
     {
         if (cardsInHand.Count > 0) UpdateCardsPositions();
+    }
+
+    public void SetTurnOrderHighlight(bool b)
+    {
+        
+        
     }
 
     private void GetBaseLayout(int index, out Vector3 pos, out Quaternion rot)

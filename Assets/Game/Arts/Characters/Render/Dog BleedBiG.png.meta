@@ -1,7 +1,10 @@
 fileFormatVersion: 2
-guid: 921e2232c78f2184ebcaedc2b61408ff
+guid: efc846599d34e8a4881840579c8d2b73
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 2688973601806340234
+    second: Dog Bleed_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -47,8 +50,8 @@ TextureImporter:
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 9
-  spritePivot: {x: 0.4004694, y: 0.2821157}
-  spritePixelsToUnits: 200
+  spritePivot: {x: 0.51, y: 0.21681416}
+  spritePixelsToUnits: 75
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -108,7 +111,29 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Dog Bleed_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 200
+        height: 226
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a80d11a7e37215520800000000000000
+      internalID: 2688973601806340234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -122,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Dog Bleed_0: 2688973601806340234
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

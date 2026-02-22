@@ -16,7 +16,7 @@ public class EnemyStatusTooltipGiver : MonoBehaviour, ITooltipInfoGiver
     {
         if (enemy == null)
             return null;
-        
+
         var activeEffects = enemy.statusEffects
             .Where(s => s != null && s.Stacks > 0 && s.Type != StatusEffectType.None)
             .ToList();
@@ -32,16 +32,25 @@ public class EnemyStatusTooltipGiver : MonoBehaviour, ITooltipInfoGiver
                 sb.Append("\n\n");
 
             var statusName = GetStatusName(effect.Type);
-
+            
             if (effect.Stacks > 0)
-                sb.Append($"{statusName} x{effect.Stacks}");
+                sb.Append($"{statusName} x{effect.Stacks}: ");
             else
                 sb.Append(statusName);
+            
+            if (!string.IsNullOrEmpty(effect.Description))
+            {
+                sb.Append('\n');
+                sb.Append(effect.Description);
+            }
         }
         
-        return new TooltipStatusEffect(string.Empty, sb.ToString());
-    }
+        var firstEffect = activeEffects[0];
+        var icon = firstEffect.GetSprite();
 
+        return new TooltipStatusEffect(string.Empty, sb.ToString(), icon);
+    }
+    
     private static string GetStatusName(StatusEffectType type)
     {
         switch (type)

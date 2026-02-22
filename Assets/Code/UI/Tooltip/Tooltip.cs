@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 public class Tooltip : MonoBehaviour
 {
-    [Header("Tooltip settings")] [SerializeField]
-    private TMP_Text nameText;
-
-    private Camera _camera;
+    [Header("Tooltip settings")]
+    [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text descText;
+    [SerializeField] private Image iconImage;
+    private Camera _camera;
     [SerializeField] private RectTransform Rect;
     [SerializeField] private Canvas canvas;
     [SerializeField] private LayoutElement layout;
@@ -47,11 +47,27 @@ public class Tooltip : MonoBehaviour
     {
         if (IsBlocked) return;
         if (data == null) return;
-        this.currUser = user;
-        if (string.IsNullOrEmpty(data.Description) && string.IsNullOrEmpty(data.ItemName)) return;
+
+        currUser = user;
+        if (string.IsNullOrEmpty(data.Description) && string.IsNullOrEmpty(data.ItemName))
+            return;
 
         nameText.text = data.ItemName;
         descText.text = data.Description;
+        
+        if (iconImage != null)
+        {
+            if (data is TooltipStatusEffect statusData && statusData.Icon != null)
+            {
+                iconImage.gameObject.SetActive(true);
+                iconImage.sprite = statusData.Icon;
+            }
+            else
+            {
+                iconImage.gameObject.SetActive(false);
+            }
+        }
+
         var textWidth = nameText.preferredWidth + 6;
         layout.preferredWidth = textWidth > minWidth ? textWidth : minWidth;
 

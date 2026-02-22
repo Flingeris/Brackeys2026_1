@@ -1,12 +1,18 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using TMPro;
 using UnityEngine;
 
 public class Field : MonoBehaviour
 {
     public FieldCardSlot[] cardsSlots;
 
-    public CardInstance[] PlayedCards => cardsSlots.Select(r => r.AcceptedCard).ToArray();
+    public CardInstance[] PlayedCards =>
+        cardsSlots.Where(r => r.AcceptedCard != null).Select(r => r.AcceptedCard).ToArray();
+
+    public List<TMP_Text> turnOrderNumbers;
 
     private void OnValidate()
     {
