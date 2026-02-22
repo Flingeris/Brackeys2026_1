@@ -166,11 +166,25 @@ public class EnemyInstance : MonoBehaviour,
         Speed = model.Speed;
         CurrHP = model.StartingHealth;
         UpdateVisuals();
+    }
 
+    private void UpdateBorders()
+    {
         var b = sprite.sprite.bounds;
         col.size = b.size;
         col.offset = b.center;
+
+
+        float leftX = col.offset.x - col.size.x * 0.5f;
+        float topY = col.offset.y + col.size.y * 0.5f;
+
+        var p = actionIconImage.transform.localPosition;
+        p.x = leftX - 0.25f;
+        p.y = topY + 0.2f;
+
+        actionIconImage.transform.localPosition = p;
     }
+
 
     private void UpdateVisuals()
     {
@@ -181,6 +195,7 @@ public class EnemyInstance : MonoBehaviour,
         UpdateNextActionIcon();
         UpdateStatusIcon();
         UpdateShieldVisuals();
+        UpdateBorders();
     }
 
 
@@ -280,13 +295,13 @@ public class EnemyInstance : MonoBehaviour,
     {
         if (statusIconsRoot == null || statusIconPrefab == null)
             return;
-        
+
         foreach (var view in statusIconViews)
         {
             if (view != null)
                 view.gameObject.SetActive(false);
         }
-        
+
         var activeEffects = statusEffects
             .Where(s => s != null && s.Stacks > 0 && s.Type != StatusEffectType.None)
             .ToList();
@@ -302,7 +317,7 @@ public class EnemyInstance : MonoBehaviour,
             var sprite = effect.GetSprite();
             if (sprite == null)
                 continue;
-            
+
             if (i >= statusIconViews.Count || statusIconViews[i] == null)
             {
                 var inst = Instantiate(statusIconPrefab, statusIconsRoot);
@@ -312,7 +327,7 @@ public class EnemyInstance : MonoBehaviour,
             var view = statusIconViews[i];
             view.gameObject.SetActive(true);
             view.Setup(sprite, effect.Stacks);
-            
+
             view.transform.localPosition = new Vector3(i * spacing, 0f, 0f);
         }
     }
@@ -493,7 +508,7 @@ public class EnemyInstance : MonoBehaviour,
         {
             if (status == null) continue;
 
-            if(!statusEffects.Contains(status)) continue;
+            if (!statusEffects.Contains(status)) continue;
             if (status is IOnTurnEndStatusInteraction endStatus)
             {
                 yield return endStatus.OnTurnEndStatusEffect(this);

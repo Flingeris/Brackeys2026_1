@@ -18,7 +18,7 @@ MonoBehaviour:
   StartingHealth: 16
   preferPos: 0
   Speed: 3
-  Sprite: {fileID: 21300000, guid: 4b8f9e0a11299f540951a7966890d13e, type: 3}
+  Sprite: {fileID: 21300000, guid: 0e598f8d4acdac946b91cf19cafde704, type: 3}
   EndTurnActions:
   - OnEndTurnInteractions:
     - rid: 5181037814259384531

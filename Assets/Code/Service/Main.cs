@@ -122,7 +122,7 @@ public class Main : MonoBehaviour
         
         G.HUD.SetEndTurnInteractable(true);   
 
-        // PlayerPrefs.SetInt("tutor1", 1);
+        PlayerPrefs.SetInt("tutor1", 1);
     }
 
     public void StartSecondTutorial()
@@ -142,7 +142,7 @@ public class Main : MonoBehaviour
         
         yield return G.HUD.tutorial.WaitForSkip();
         
-        // PlayerPrefs.SetInt("tutor2", 1);
+        PlayerPrefs.SetInt("tutor2", 1);
     }
 
 
@@ -371,6 +371,10 @@ public class Main : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }if (Input.GetKeyDown(KeyCode.Y))
+        {
+            G.run.mapNodeIndex++;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
