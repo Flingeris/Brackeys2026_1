@@ -17,6 +17,12 @@ public class Tooltip : MonoBehaviour
     public Vector2 offset;
     [SerializeField] private Vector2 offscreenOffset;
 
+    [Header("Layout")]
+    [SerializeField] private VerticalLayoutGroup verticalLayout;
+    [SerializeField] private int topPaddingWithTitle = 38;
+    [SerializeField] private int topPaddingWithoutTitle = 20;
+    [SerializeField] private int spacingWithTitle = 12;
+    [SerializeField] private int spacingWithoutTitle = 6;
     public bool IsBlocked => blockersCount > 0;
     private int blockersCount = 0;
     private GameObject currUser;
@@ -52,16 +58,36 @@ public class Tooltip : MonoBehaviour
         if (string.IsNullOrEmpty(data.Description) && string.IsNullOrEmpty(data.ItemName))
             return;
 
+        bool hasTitle = !string.IsNullOrEmpty(data.ItemName);
+
         nameText.text = data.ItemName;
         descText.text = data.Description;
 
+        if (nameText != null)
+            nameText.gameObject.SetActive(hasTitle);
+
+        if (verticalLayout != null)
+        {
+            var padding = verticalLayout.padding;
+            padding.top = hasTitle ? topPaddingWithTitle : topPaddingWithoutTitle;
+            verticalLayout.padding = padding;
+
+            verticalLayout.spacing = hasTitle ? spacingWithTitle : spacingWithoutTitle;
+        }
+        
 
         var textWidth = nameText.preferredWidth + 6;
         layout.preferredWidth = textWidth > minWidth ? textWidth : minWidth;
 
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Rect); 
+        // Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, layout.preferredHeight);
+
         UpdatePos();
         Rect.gameObject.SetActive(true);
     }
+
+
+    
 
     public void Hide()
     {

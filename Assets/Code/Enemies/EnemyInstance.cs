@@ -328,7 +328,7 @@ public class EnemyInstance : MonoBehaviour,
             view.gameObject.SetActive(true);
             view.Setup(effect);
 
-            view.transform.localPosition = new Vector3(i * spacing*-1, 0f, 0f);
+            view.transform.localPosition = new Vector3(i * spacing * -1, 0f, 0f);
         }
     }
 
@@ -393,7 +393,7 @@ public class EnemyInstance : MonoBehaviour,
         visualRoot.transform.DOShakePosition(0.5f, 0.15f, 40);
 
         yield return OnDamageStatusTick();
-        CheckIsDead();
+        yield return CheckIsDead();
         UpdateVisuals();
     }
 
@@ -441,15 +441,22 @@ public class EnemyInstance : MonoBehaviour,
         AddShield(amount);
     }
 
-    private void CheckIsDead()
+    private IEnumerator CheckIsDead()
     {
         if (CurrHP <= 0)
         {
             IsDead = true;
             combatGroup.CheckMemberDeath(this);
+            
+            transform.DOShakePosition(0.5f, 0.15f, 40);
+            transform.DOScale(Vector3.zero, 0.2f);
+            yield return new WaitForSeconds(0.2f);
+            
             StopAllCoroutines();
             Destroy(gameObject);
         }
+
+        yield break;
     }
 
     public void Kill()
@@ -580,7 +587,7 @@ public class EnemyInstance : MonoBehaviour,
         if (visualRoot != null)
             visualRoot.DOKill();
     }
-}
+}   
 
 public interface ITurnEntity
 {

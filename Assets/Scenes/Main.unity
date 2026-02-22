@@ -2033,7 +2033,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: 3f9215ea0144899419cfbc0957140d3f, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 91774eb9d468ec34f803ec26f60074a8, type: 2}
 --- !u!1 &736881534
 GameObject:
   m_ObjectHideFlags: 0
@@ -2674,6 +2674,10 @@ PrefabInstance:
       value: Tooltip
       objectReference: {fileID: 0}
     - target: {fileID: 7286260454094401675, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
+      propertyPath: Rect
+      value: 
+      objectReference: {fileID: 899711367}
+    - target: {fileID: 7286260454094401675, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
       propertyPath: canvas
       value: 
       objectReference: {fileID: 806928176}
@@ -2686,15 +2690,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8853428534823261982, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8853428534823261982, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8853428534823261982, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
       propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8853428534823261982, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8884628040845843803, guid: e9d219b85ac53c64583a232dba8868c0, type: 3}
@@ -3113,7 +3113,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 78f44b3ed37f2bc4985020d4b82ce590, type: 2}
   - {fileID: 11400000, guid: e5ddf6fd5c1bf854b82dc950c22f6ec0, type: 2}
   background: {fileID: 258590793}
-  debugLvl: {fileID: 11400000, guid: e4ca2b1429530bb4b91ec8543f818978, type: 2}
+  debugLvl: {fileID: 0}
+  postFX: {fileID: 619394803}
 --- !u!4 &1026985112
 Transform:
   m_ObjectHideFlags: 0
