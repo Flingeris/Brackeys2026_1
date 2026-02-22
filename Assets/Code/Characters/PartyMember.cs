@@ -58,7 +58,8 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     private readonly List<StatusEffectView> statusIconViews = new();
 
     [SerializeField] private HpBarView hpBarView;
-    
+
+    [SerializeField] private List<SpriteRenderer> spritesToHide;
 
     [Header("Popup")] [SerializeField] private float popupOffsetY = 1.5f;
 
@@ -133,16 +134,16 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     private void UpdateStatusIcon()
     {
         statusEffects.RemoveAll(s => s == null || s.Stacks <= 0);
-        
+
         if (statusIconsRoot == null || statusEffectPrefab == null)
             return;
-        
+
         foreach (var view in statusIconViews)
         {
             if (view != null)
                 view.gameObject.SetActive(false);
         }
-        
+
         var activeEffects = statusEffects
             .Where(s => s != null && s.Stacks > 0 && s.Type != StatusEffectType.None)
             .ToList();
@@ -158,7 +159,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
             var sprite = effect.GetSprite();
             if (sprite == null)
                 continue;
-            
+
             if (i >= statusIconViews.Count || statusIconViews[i] == null)
             {
                 var inst = Instantiate(statusEffectPrefab, statusIconsRoot);
@@ -168,8 +169,8 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
             var view = statusIconViews[i];
             view.gameObject.SetActive(true);
             view.Setup(effect);
-            
-            view.transform.localPosition = new Vector3(i * spacing*1, 0f, 0f);
+
+            view.transform.localPosition = new Vector3(i * spacing * 1, 0f, 0f);
         }
     }
 
@@ -324,10 +325,12 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         if (shownDamage > 0 && G.textPopup != null)
             G.textPopup.SpawnAbove(transform, popupOffsetY, shownDamage, isHeal: false);
 
-        yield return OnDamageStatusTick(); 
+        yield return OnDamageStatusTick();
         transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f);
         spriteRenderer.transform.DOShakePosition(0.5f, 0.15f, 40);
-        CheckIsDead();
+
+        yield return new WaitForSeconds(0.2f);
+        yield return CheckIsDead();
         UpdateVisuals();
     }
 
@@ -364,7 +367,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         foreach (var status in statusEffects)
         {
             if (status == null) continue;
-            
+
             if (status is IOnDamageTakenStatusTick)
             {
                 status.Tick();
@@ -375,7 +378,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         UpdateStatusIcon();
         yield break;
     }
-    
+
     public IEnumerator EndTurnStatusTick()
     {
         var effects = new List<IStatusEffectInteraction>(statusEffects);
@@ -383,7 +386,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         {
             if (status == null) continue;
 
-            if(!statusEffects.Contains(status)) continue;
+            if (!statusEffects.Contains(status)) continue;
             if (status is IOnTurnEndStatusInteraction endStatus)
             {
                 yield return endStatus.OnTurnEndStatusEffect(this);
@@ -400,8 +403,7 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
         statusEffects.RemoveAll(s => s.Stacks <= 0);
         UpdateStatusIcon();
     }
-    
-    
+
 
     public void OnTurnEnd()
     {
@@ -450,13 +452,27 @@ public class PartyMember : MonoBehaviour, ICombatEntity, IPointerClickHandler, I
     }
 
 
-    private void CheckIsDead()
+    private IEnumerator CheckIsDead()
     {
-        if (state.CurrHP > 0) return;
+        if (state.CurrHP > 0) yield break;
 
         IsDead = true;
         state.MaxHP = Mathf.Max(4, state.MaxHP - 4);
+        yield return new WaitForSeconds(0.2f);
+        G.textPopup.SpawnAbove(transform, popupOffsetY, 4, false, true);
+
+
         CombatGroup.CheckMemberDeath(this);
+
+
+  
+        foreach (var spr in spritesToHide)
+        {
+            if (spr != null)
+                spr.DOColor(new Color(0.33f, 0.33f, 0.33f), 0.2f);
+        }
+
+        hpText.DOColor(new Color(0.33f, 0.33f, 0.33f), 0.6f);
     }
 
     public void Kill()

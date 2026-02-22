@@ -470,6 +470,16 @@ MonoBehaviour:
   statusIconsRoot: {fileID: 5952448731037990830}
   statusEffectPrefab: {fileID: 958116271208647820, guid: e8ee7b31d3f98d14baba6392095f8dee, type: 3}
   hpBarView: {fileID: 3768468059264091980}
+  spritesToHide:
+  - {fileID: 5511553631805833332}
+  - {fileID: 80438718956748657}
+  - {fileID: 920171338293771630}
+  - {fileID: 2092859364926539397}
+  - {fileID: 9120850995467538441}
+  - {fileID: 4195961817697009934}
+  - {fileID: 4578798472297724420}
+  - {fileID: 2835014365781550210}
+  - {fileID: 787444256837201658}
   popupOffsetY: 1.5
   targetColor: {r: 0, g: 1, b: 0.08463931, a: 0}
   hoverColor: {r: 0.990566, g: 0.78229326, b: 0, a: 1}
@@ -1058,6 +1068,16 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 4613093602390984269, guid: 403fe509a260bc347a8f42717b57f870, type: 3}
   m_PrefabInstance: {fileID: 4690717428638742844}
   m_PrefabAsset: {fileID: 0}
+--- !u!212 &920171338293771630 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5610882959490942034, guid: 403fe509a260bc347a8f42717b57f870, type: 3}
+  m_PrefabInstance: {fileID: 4690717428638742844}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2092859364926539397 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 6634807372666978233, guid: 403fe509a260bc347a8f42717b57f870, type: 3}
+  m_PrefabInstance: {fileID: 4690717428638742844}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2251450745044879705 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6784114424233767013, guid: 403fe509a260bc347a8f42717b57f870, type: 3}
@@ -1092,6 +1112,11 @@ SortingGroup:
   m_SortingOrder: 0
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
+--- !u!212 &9120850995467538441 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4578756752901843253, guid: 403fe509a260bc347a8f42717b57f870, type: 3}
+  m_PrefabInstance: {fileID: 4690717428638742844}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8392308476155494462
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1169,6 +1194,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8ee7b31d3f98d14baba6392095f8dee, type: 3}
+--- !u!212 &5511553631805833332 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4038463102901190730, guid: e8ee7b31d3f98d14baba6392095f8dee, type: 3}
+  m_PrefabInstance: {fileID: 8392308476155494462}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7900976272666312383 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1860708025349652097, guid: e8ee7b31d3f98d14baba6392095f8dee, type: 3}

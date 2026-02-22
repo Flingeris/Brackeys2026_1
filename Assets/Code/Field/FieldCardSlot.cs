@@ -32,6 +32,12 @@ public class FieldCardSlot : ContainerBase<DraggableCard>, ITurnEntity
             turnIndexText.text = TurnOrder.ToString();
     }
 
+    public override void OnDragEnter(DraggableCard d)
+    {
+        base.OnDragEnter(d);
+        d.transform.localRotation = transform.rotation;
+    }
+
 
     public void SetTurnIndex(int turnIndex)
     {

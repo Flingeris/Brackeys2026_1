@@ -23,6 +23,7 @@ public class RunState
 
 public class Main : MonoBehaviour
 {
+    [SerializeField] private VideoStarter video;
     public bool IsChoosingTarget;
     public static event UnityAction OnGameReady;
     public static bool TitleShown;
@@ -70,7 +71,11 @@ public class Main : MonoBehaviour
 
     private IEnumerator GameStartSequence()
     {
-        if (ShowTitle && !TitleShown) yield return ShowTitleScreen();
+        if (ShowTitle && !TitleShown)
+        {
+            StartCoroutine(ShowTitleScreen());
+            yield return new WaitForSeconds(6f);
+        }
 
 #if !UNITY_EDITOR
        while (!ServiceMain.ServicesReady) yield return null;
@@ -86,6 +91,7 @@ public class Main : MonoBehaviour
 
         G.audioSystem.Play(SoundId.Ambient_Sewer);
 
+        yield return new WaitForSeconds(0.5f);
         yield return StartTurnSequence();
 
 
@@ -110,10 +116,8 @@ public class Main : MonoBehaviour
 
         yield return G.HUD.tutorial.WaitForSkip();
 
-        Debug.Log(field.PlayedCards.Length);
         while (field.PlayedCards.Length == 0)
         {
-            Debug.Log("Waiting for field");
             yield return new WaitForEndOfFrame();
         }
 
@@ -382,52 +386,52 @@ public class Main : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            G.Hand.AddCard(new CardState(CMS.Get<CardModel>("vuln")));
-            G.Hand.AddCard(new CardState(CMS.Get<CardModel>("bleed")));
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            G.run.mapNodeIndex++;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            var party = G.party.GetAliveMembers();
-            foreach (var member in party)
-            {
-                member.Kill();
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            var enemies = G.enemies.GetAliveEnemies();
-            foreach (var enemyInstance in enemies)
-            {
-                enemyInstance.Kill();
-            }
-
-            EndTurn();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            StartCoroutine(KillTarget());
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            G.Hand.AddCard(new CardState(CMS.Get<CardModel>("vuln")));
-        }
+        // if (Input.GetKeyDown(KeyCode.D))
+        // {
+        //     G.Hand.AddCard(new CardState(CMS.Get<CardModel>("vuln")));
+        //     G.Hand.AddCard(new CardState(CMS.Get<CardModel>("bleed")));
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.T))
+        // {
+        //     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.Y))
+        // {
+        //     G.run.mapNodeIndex++;
+        //     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.Alpha1))
+        // {
+        //     var party = G.party.GetAliveMembers();
+        //     foreach (var member in party)
+        //     {
+        //         member.Kill();
+        //     }
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.Alpha2))
+        // {
+        //     var enemies = G.enemies.GetAliveEnemies();
+        //     foreach (var enemyInstance in enemies)
+        //     {
+        //         enemyInstance.Kill();
+        //     }
+        //
+        //     EndTurn();
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.Alpha3))
+        // {
+        //     StartCoroutine(KillTarget());
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.D))
+        // {
+        //     G.Hand.AddCard(new CardState(CMS.Get<CardModel>("vuln")));
+        // }
     }
 
 
@@ -467,11 +471,13 @@ public class Main : MonoBehaviour
 
     private IEnumerator ShowTitleScreen()
     {
-        G.UI.ToggleTitle(true);
+        // G.UI.ToggleTitle(true);
         // G.audioSystem.Play(SoundId.SFX_LevelTransiton);
 
-        yield return new WaitForSeconds(2f);
-        G.ScreenFader.FadeOutCustom(G.UI.TitleScreenImage, 2f);
+        // yield return new WaitForSeconds(2f);
+        // G.ScreenFader.FadeOutCustom(G.UI.TitleScreenImage, 2f);
+
+        yield return video.PlayAndHandleVideo();
         TitleShown = true;
         yield break;
     }

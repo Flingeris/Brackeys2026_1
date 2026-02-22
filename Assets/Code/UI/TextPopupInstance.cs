@@ -8,17 +8,32 @@ public class TextPopupInstance : MonoBehaviour
     public TMP_Text label;
     private Sequence s;
 
-    [Header("Motion")]
-    public float riseDistance = 1f;
-
+    [Header("Motion")] public float riseDistance = 1f;
     public float duration = 0.6f;
 
-    public void Play(int amount, bool isHeal = false)
+    public void Play(int amount, bool isHeal = false, bool isMaxHpLoss = false)
     {
         if (!label) label = GetComponentInChildren<TMP_Text>(true);
+
         amount = Math.Abs(amount);
-        label.text = (isHeal ? "+" : "-") + amount;
-        label.color = isHeal ? new Color(0.4f, 1f, 0.4f) : new Color(1f, 0.4f, 0.4f);
+
+        // Текст
+        string sign = isHeal ? "+" : "-";
+        string suffix = isMaxHpLoss ? " Max HP" : string.Empty;
+        label.text = sign + amount + suffix;
+
+        // Цвет
+        if (isMaxHpLoss)
+        {
+            label.color = new Color(1f, 0.8f, 0.3f);
+        }
+        else
+        {
+            label.color = isHeal
+                ? new Color(0.4f, 1f, 0.4f)
+                : new Color(1f, 0.4f, 0.4f);
+        }
+
         label.alpha = 1f;
 
         var t = transform;
@@ -33,7 +48,9 @@ public class TextPopupInstance : MonoBehaviour
 
     private void OnDestroy()
     {
-        s.Kill();
+        if (s != null && s.IsActive())
+            s.Kill();
+
         transform.DOKill();
     }
 }

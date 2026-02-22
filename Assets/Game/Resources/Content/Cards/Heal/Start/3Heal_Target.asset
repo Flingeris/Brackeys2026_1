@@ -17,7 +17,7 @@ MonoBehaviour:
   IsExcludedFromRewards: 1
   <ItemName>k__BackingField: 
   <Description>k__BackingField: 
-  Sprite: {fileID: 21300000, guid: 307b7dfade6743b4ea262e540446cc20, type: 3}
+  Sprite: {fileID: 21300000, guid: 917f4cf9c5837b64bbda2eab3f707e37, type: 3}
   OnPlayedCardInteractions: []
   OnTurnEndInteractions:
   - rid: 5181037725820911845

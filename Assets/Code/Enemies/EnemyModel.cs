@@ -25,6 +25,8 @@ public class EnemyModel : ContentDef, ITooltipInfo
     [field: SerializeField]
     public string ItemName { get; private set; }
 
+    public SoundId damagedSound;
+
     [field: SerializeField] public string Description { get; private set; }
     [Header("Stats")] public int StartingHealth;
     public int preferPos;
@@ -160,7 +162,7 @@ public class HealAllAllies : IOnEnemyTurnEnd, IAmountInteraction
 
     public IEnumerator OnEndTurn(EnemyInstance e)
     {
-      yield return  G.enemies.HealAll(HealAmount);
+        yield return G.enemies.HealAll(HealAmount);
         yield return null;
     }
 

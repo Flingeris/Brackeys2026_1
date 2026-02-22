@@ -191,8 +191,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6230509172861250796}
   - component: {fileID: 2012501916991670793}
-  - component: {fileID: 6450839715153437435}
-  - component: {fileID: 5669388288245416123}
   - component: {fileID: 5389942328359969195}
   - component: {fileID: 4563360979182484993}
   m_Layer: 0
@@ -264,31 +262,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
---- !u!114 &6450839715153437435
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4047346223740971112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e40f1677e12157049a78a87b2549b93d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TooltipInteractor
---- !u!114 &5669388288245416123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4047346223740971112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba14857b6aa24b28a949a7dae95f1d26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyStatusTooltipGiver
-  enemy: {fileID: 2012501916991670793}
 --- !u!61 &5389942328359969195
 BoxCollider2D:
   m_ObjectHideFlags: 0

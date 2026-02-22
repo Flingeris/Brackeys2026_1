@@ -189,7 +189,6 @@ public class EnemyInstance : MonoBehaviour,
     private void UpdateVisuals()
     {
         if (IsDead) return;
-        if (IsDead) return;
         UpdateHpText();
         UpdateSprite();
         UpdateNextActionIcon();
@@ -259,6 +258,7 @@ public class EnemyInstance : MonoBehaviour,
 
     private void UpdateNextActionIcon()
     {
+        if (IsDead) return;
         actionIconImage.enabled = false;
         actionValueText.SetText("");
 
@@ -379,7 +379,7 @@ public class EnemyInstance : MonoBehaviour,
         if (remainDmg > 0)
         {
             CurrHP = Mathf.Max(0, CurrHP - remainDmg);
-            G.audioSystem.Play(SoundId.SFX_EnemyDamaged);
+            G.audioSystem.Play(model.damagedSound);
         }
         else
         {
@@ -391,6 +391,7 @@ public class EnemyInstance : MonoBehaviour,
 
         transform.DOPunchScale(new Vector3(0.2f, 0.2f, 0.2f), 0.2f);
         visualRoot.transform.DOShakePosition(0.5f, 0.15f, 40);
+        yield return new WaitForSeconds(0.2f);
 
         yield return OnDamageStatusTick();
         yield return CheckIsDead();
@@ -447,11 +448,11 @@ public class EnemyInstance : MonoBehaviour,
         {
             IsDead = true;
             combatGroup.CheckMemberDeath(this);
-            
+
             transform.DOShakePosition(0.5f, 0.15f, 40);
             transform.DOScale(Vector3.zero, 0.2f);
             yield return new WaitForSeconds(0.2f);
-            
+
             StopAllCoroutines();
             Destroy(gameObject);
         }
@@ -587,7 +588,7 @@ public class EnemyInstance : MonoBehaviour,
         if (visualRoot != null)
             visualRoot.DOKill();
     }
-}   
+}
 
 public interface ITurnEntity
 {
