@@ -6,6 +6,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 
 public class RunState
@@ -86,8 +87,8 @@ public class Main : MonoBehaviour
 
     public IEnumerator FirstTutorialSequence()
     {
-        G.HUD.SetEndTurnInteractable(false);    
-        
+        G.HUD.SetEndTurnInteractable(false);
+
         G.HUD.tutorial.SetTutorialText("This is your actions");
         G.HUD.tutorial.ShowHand();
 
@@ -118,9 +119,9 @@ public class Main : MonoBehaviour
 
         yield return G.HUD.tutorial.WaitForSkip();
 
-        yield return new WaitForSeconds(1f);
-        
-        G.HUD.SetEndTurnInteractable(true);   
+        yield return new WaitForSeconds(0.5f);
+
+        G.HUD.SetEndTurnInteractable(true);
 
         PlayerPrefs.SetInt("tutor1", 1);
     }
@@ -132,16 +133,18 @@ public class Main : MonoBehaviour
 
     private IEnumerator SecondTutorialSequence()
     {
-        G.HUD.tutorial.SetTutorialText("If a character dies, actions of their type can still appear, but less often", 0, 300);
+        G.HUD.tutorial.SetTutorialText("If a character dies, actions of their type can still appear, but less often", 0,
+            300);
         G.HUD.tutorial.ShowCharacters();
 
         yield return G.HUD.tutorial.WaitForSkip();
 
-        G.HUD.tutorial.SetTutorialText("Winning a battle revives the character for the next fight, but lowers their max health",0,300);
+        G.HUD.tutorial.SetTutorialText(
+            "Winning a battle revives the character for the next fight, but lowers their max health", 0, 300);
         G.HUD.tutorial.ShowCharacters();
-        
+
         yield return G.HUD.tutorial.WaitForSkip();
-        
+
         PlayerPrefs.SetInt("tutor2", 1);
     }
 
@@ -227,8 +230,13 @@ public class Main : MonoBehaviour
             var cardState = drawPile.Pop();
             if (cardState.CardOwner == null || cardState.CardOwner.IsDead)
             {
-                i--;
-                continue;
+                var rand = Random.Range(0f, 1f);
+                if (rand <= 0.6f)
+                {
+                    discardPile.Add(cardState);
+                    i--;
+                    continue;
+                }
             }
 
             G.Hand.AddCard(cardState);
@@ -236,7 +244,6 @@ public class Main : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        yield break;
     }
 
 
@@ -372,7 +379,9 @@ public class Main : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }if (Input.GetKeyDown(KeyCode.Y))
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
         {
             G.run.mapNodeIndex++;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
